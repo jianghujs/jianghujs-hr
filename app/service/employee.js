@@ -17,25 +17,37 @@ const idGenerateUtil = require("@jianghujs/jianghu/app/common/idGenerateUtil");
 const validateUtil = require("@jianghujs/jianghu/app/common/validateUtil");
 const { BizError, errorInfoEnum } = require("../constant/error");
 const fs = require("fs"),
-    fsPromises = require("fs").promises,
-    rename = fsPromises.rename,
-    util = require("util"),
-    rimraf = util.promisify(require("rimraf")),
-    exists = util.promisify(fs.exists);
+  fsPromises = require("fs").promises,
+  rename = fsPromises.rename,
+  util = require("util"),
+  rimraf = util.promisify(require("rimraf")),
+  exists = util.promisify(fs.exists);
 const actionDataScheme = Object.freeze({
   uploadItem: {
     type: 'object',
     additionalProperties: true,
-    required: [ 'data' ],
+    required: ['data'],
     properties: {
       data: { type: 'array' },
     },
   },
 });
 
+function generateCheckSum(sId) {
+  var sIdCube = Math.pow(sId, 3);
+  var sIdCubeRt = Math.sqrt(sIdCube);
+  var roundSId = Math.round(sIdCubeRt);
+  var remainder = roundSId % 22;
+
+  var charList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'T', 'U', 'V', 'W', 'X', 'Y'];
+  var checkSum = charList[remainder];
+
+  return checkSum;
+}
+
 class EmployeeService extends Service {
   // 状态统计
-  async getStatusCount(){
+  async getStatusCount() {
     const { jianghuKnex, knex } = this.app;
     const { actionData } = this.ctx.request.body.appData;
 
@@ -59,7 +71,7 @@ class EmployeeService extends Service {
     const { employeeId } = this.ctx.request.body.appData.actionData;
     if (employeeId) {
       // 更新员工在职状态
-      await this.app.jianghuKnex(tableEnum.employee).where({employeeId}).jhUpdate({ entryStatus: 3});
+      await this.app.jianghuKnex(tableEnum.employee).where({ employeeId }).jhUpdate({ entryStatus: 3 });
     }
   }
   // ================ 调整岗位/部门、晋升/降级 相关 =====================
@@ -75,24 +87,33 @@ class EmployeeService extends Service {
   // AfterHook
   async changeAfterHook() {
     const { employeeId, newDept, newPost, newPostLevel, newWorkAddress } = this.ctx.request.body.appData.actionData;
-    const params = { deptId: newDept, post: newPost, postLevel: newPostLevel, workAddress: newWorkAddress}
+    const params = { deptId: newDept, post: newPost, postLevel: newPostLevel, workAddress: newWorkAddress }
     if (employeeId) {
       // 更新员工相关
-      await this.app.jianghuKnex(tableEnum.employee).where({employeeId}).jhUpdate(params);
+      await this.app.jianghuKnex(tableEnum.employee).where({ employeeId }).jhUpdate(params);
     }
   }
   // ================ 新建员工相关 =====================
   // BeforeHook
+
   async addEmployeeInsertBeforeHook() {
+    const { ctx, app } = this;
     const { userId } = this.ctx.userInfo;
+    const { jianghuKnex } = app;
+
+    const maxSidInfo = await jianghuKnex('view01_employee_max_id').first();
+    //console.log('maxSidInfo: ', maxSidInfo);
+    var idSequence = maxSidInfo.maxId + 1;
+    //console.log('memberIdNumber: ', idSequence);
+    var employeeIdCheckSum = generateCheckSum(idSequence);
+ 
     Object.assign(this.ctx.request.body.appData.actionData, {
-      employeeId: idGenerateUtil.uuid(),
-      createUserId: userId,
-      createTime: dayjs().format('YYYY-MM-DD-HH-mm-ss')
+      employeeId: `E${idSequence}${employeeIdCheckSum}`,
+      idSequence: idSequence,
     })
   }
   // ================ 导入相关 =====================
-  async uploadItem(){
+  async uploadItem() {
     const { userId } = this.ctx.userInfo;
     const actionData = this.ctx.request.body.appData.actionData;
     validateUtil.validate(actionDataScheme.uploadItem, actionData);
@@ -139,7 +160,7 @@ class EmployeeService extends Service {
       ...dataList
     ];
 
-    const buffer = xlsx.build([{name: 'mySheetName', data: data}]); // Returns a buffer
+    const buffer = xlsx.build([{ name: 'mySheetName', data: data }]); // Returns a buffer
     const excelDirectory = 'excelTemp';
     const excelName = 'tempExcel.xlsx';
     const fileUploadPath = path.join(uploadDir, excelDirectory);

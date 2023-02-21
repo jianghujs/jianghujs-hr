@@ -118,79 +118,79 @@ SQL END!-->
       <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">姓名</span>
+          <span class="inputLabel">员工姓名</span>
           <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeName']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">手机</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['mobile']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">证件类型</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['idType']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">证件号码</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['idNumber']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">性别</span>
+          <span class="inputLabel">员工性别</span>
           <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['sex']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职日期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['entryTime']"></v-text-field>
+          <span class="inputLabel">员工年龄</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['age']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">试用期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['probation']"></v-text-field>
+          <span class="inputLabel">联系电话</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['contactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">部门</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['orgId']"></v-text-field>
+          <span class="inputLabel">紧急联系电话</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['emergencyContactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">直属上级</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['parentId']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">户籍地址</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['address']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">岗位</span>
+          <span class="inputLabel">员工岗位</span>
           <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['post']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职时间</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['entryTime']"></v-text-field>
+          <span class="inputLabel">身份证号</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['icNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">工作城市</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['workCity']"></v-text-field>
+          <span class="inputLabel">出生日期</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['dateOfBirth']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">聘用形式</span>
+          <span class="inputLabel">毕业学校</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['institution']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">专业</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['major']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">最高学历</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['highestEducation']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">家庭住址</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['residentialAddress']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">建设银行卡</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['cardNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">车牌号</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['licensePlateNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">备注</span>
           <v-text-field class="cus-v-input " dense filled single-line
-            v-model="addItem['employmentForms']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">非正式类型</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['status']"></v-text-field>
+            v-model="addItem['remarks']"></v-text-field>
         </v-col>
       </v-row>
       <v-row class="justify-end pr-6">
@@ -226,10 +226,6 @@ SQL END!-->
         <v-spacer></v-spacer>
       </v-row>
       <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">员工ID</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employeeId']"></v-text-field>
-        </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">员工姓名</span>
@@ -237,23 +233,28 @@ SQL END!-->
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">性别</span>
+          <span class="inputLabel">员工性别</span>
           <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['sex']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">手机</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['mobile']"></v-text-field>
+          <span class="inputLabel">员工年龄</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">证件类型</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['idType']"></v-text-field>
+          <span class="inputLabel">联系电话</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">生日类型</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['birthdayType']"></v-text-field>
+          <span class="inputLabel">紧急联系电话</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['emergencyContactNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">身份证号</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['icNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -262,18 +263,59 @@ SQL END!-->
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">生日</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['birthday']"></v-text-field>
+          <span class="inputLabel">毕业学校</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['institution']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">年龄</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
+          <span class="inputLabel">专业</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['major']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">个人邮箱</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['email']"></v-text-field>
+          <span class="inputLabel">最高学历</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['highestEducation']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">教师资格证类别</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualification']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">教师资格证学段</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualificationLeaver']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">教师资格证学科</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualificationSubject']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">教师资格证编号</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherCertificationNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">家庭住址</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['residentialAddress']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">建设银行卡</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['cardNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">车牌号</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['licensePlateNumber']"></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">备注</span>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['remarks']"></v-text-field>
         </v-col>
       </v-row>
 
@@ -284,44 +326,48 @@ SQL END!-->
 
       <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">部门ID</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['deptId']"></v-text-field>
+          <span class="inputLabel">员工岗位</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['post']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">部门</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['orgId']"></v-text-field>
+          <span class="inputLabel">任教学段</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teachingLevel']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职日期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryTime']"></v-text-field>
+          <span class="inputLabel">任教学科</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teachingSubject']"></v-text-field>
+        </v-col>
+  
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">入职（年）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryYear']"></v-text-field>
+        </v-col>
+  
+        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <span class="inputLabel">入职（月）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryMonth']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">试用期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['probation']"></v-text-field>
+          <span class="inputLabel">入职（日）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryDay']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">直属上级</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['parentId']"></v-text-field>
+          <span class="inputLabel">到期（年）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationYear']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">岗位职级</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['postLevel']"></v-text-field>
+          <span class="inputLabel">到期(月）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationMonth']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">司龄开始日期</span>
-          <v-text-field class="cus-v-input " dense filled single-line
-            v-model="editItem['companyAgeStartTime']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">司龄</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['companyAge']"></v-text-field>
+          <span class="inputLabel">到期（日）</span>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationDay']"></v-text-field>
         </v-col>
         <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
         <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
@@ -470,22 +516,20 @@ SQL END!-->
       showTableZebraLine: true,
       actionTab: 0,
       headers: [
-        // {text: "员工ID", value: "employeeId", width: 120, class: 'fixed', cellClass: 'fixed'},
+        {text: "员工ID", value: "employeeId", width: 120, class: 'fixed', cellClass: 'fixed'},
         { text: "员工姓名", value: "employeeName", width: 120, class: 'fixed', cellClass: 'fixed' },
-        { text: "手机", value: "mobile", width: 120 },
         { text: "性别", value: "sex", width: 120 },
         { text: "年龄", value: "age", width: 120 },
-        { text: "工号", value: "jobNumber", width: 120 },
-        { text: "部门", value: "orgId", width: 120 },
-        { text: "岗位", value: "post", width: 120 },
-        { text: "职级", value: "postLevel", width: 120 },
-        { text: "直属上级", value: "parentId", width: 120 },
-        { text: "聘用形式", value: "employmentForms", width: 120 },
-        { text: "试用期", value: "probation", width: 120 },
-        { text: "入职日期", value: "entryTime", width: 120 },
-        { text: "司龄开始日期", value: "companyAgeStartTime", width: 120 },
-        { text: "司龄", value: "companyAge", width: 120 },
-        { text: "员工状态", value: "status", width: 120 },
+        { text: "联系电话", value: "contactNumber", width: 120 },
+        { text: "岗位", value: "post", width: 200 },
+        { text: "身份证", value: "icNumber", width: 120 },
+        { text: "毕业学校", value: "institution", width: 120 },
+        { text: "最高学历", value: "highestEducation", width: 120 },
+        { text: "家庭地址", value: "residentialAddress", width: 120 },
+        { text: "入职日期", value: "entryYear", width: 120 },
+        { text: "合同到期", value: "contractExpirationYear", width: 120 },
+        { text: "建设银行卡", value: "cardNumber", width: 120 },
+        { text: "员工状态", value: "state", width: 120 },
         { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       tabs: [
@@ -642,7 +686,7 @@ SQL END!-->
         const result = await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'employeeManagement',
+              pageId: 'employeeManagementV2',
               actionId: 'selectItemList',
               actionData: {},
               where,
@@ -688,7 +732,7 @@ SQL END!-->
         const { rows, count } = (await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'employeeManagement',
+              pageId: 'employeeManagementV2',
               actionId: 'insertItem',
               actionData: data,
             }
@@ -699,7 +743,7 @@ SQL END!-->
           const member = (await window.jianghuAxios({
             data: {
               appData: {
-                pageId: 'employeeManagement',
+                pageId: 'employeeManagementV2',
                 actionId: 'getEmployee',
                 where: { id: rows[0] }
               }
@@ -734,13 +778,13 @@ SQL END!-->
         }
       },
       async doUpdateItem() {
-        const { id, parentName, salaryCardNum, accountOpeningCity, bankName, openingBank, socialSecurityNum, accumulationFundNum, socialSecurityStartMonth, schemeId, orgId, orgName, memberId, ...data } = this.editItem;
+        const { id, ...data } = this.editItem;
         console.log(data)
         await window.vtoast.loading("修改数据");
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'employeeManagement',
+              pageId: 'employeeManagementV2',
               actionId: 'updateItem',
               actionData: data,
               where: { id }
@@ -765,7 +809,7 @@ SQL END!-->
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'employeeManagement',
+              pageId: 'employeeManagementV2',
               actionId: 'deleteItem',
               actionData: {},
               where: { id: id }
