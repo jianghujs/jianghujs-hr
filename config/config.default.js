@@ -19,7 +19,7 @@ module.exports = appInfo => {
     appId,
     appTitle: '员工管理',
     appLogo: `${appId}/public/img/logo.png`,
-    appType: 'single',
+    appType: 'multiApp',
     appDirectoryLink: '/',
     indexPage: `/${appId}/page/workbench`,
     loginPage: `/${appId}/page/login`,
