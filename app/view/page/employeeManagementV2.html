@@ -154,7 +154,13 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">出生日期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['dateOfBirth']"></v-text-field>
+          <v-menu class="cus-v-input" offset-y max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                            :value="addItem['dateOfBirth']"></v-text-field>
+            </template>
+            <v-date-picker color="success" elevation="20" v-model="addItem['dateOfBirth']"></v-date-picker>
+          </v-menu>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -259,7 +265,13 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">出生日期</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['dateOfBirth']"></v-text-field>
+          <v-menu class="cus-v-input" offset-y max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                            :value="editItem['dateOfBirth']"></v-text-field>
+            </template>
+            <v-date-picker color="success" elevation="20" v-model="editItem['dateOfBirth']"></v-date-picker>
+          </v-menu>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -339,35 +351,27 @@ SQL END!-->
           <span class="inputLabel">任教学科</span>
           <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teachingSubject']"></v-text-field>
         </v-col>
-  
+
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职（年）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryYear']"></v-text-field>
-        </v-col>
-  
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职（月）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryMonth']"></v-text-field>
+          <span class="inputLabel">入职日期</span>
+          <v-menu class="cus-v-input" offset-y max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                            :value="editItem['dateOfEntry']"></v-text-field>
+            </template>
+            <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
+          </v-menu>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">入职（日）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['entryDay']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">到期（年）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationYear']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">到期(月）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationMonth']"></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">到期（日）</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contractExpirationDay']"></v-text-field>
+          <span class="inputLabel">到期日期</span>
+          <v-menu class="cus-v-input" offset-y max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                            :value="editItem['dateOfContractExpiration']"></v-text-field>
+            </template>
+            <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
+          </v-menu>
         </v-col>
         <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
         <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
