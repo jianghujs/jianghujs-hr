@@ -66,7 +66,7 @@ SQL END!-->
         <template v-for="(status, index) in constantCollection.entryStatus" :key="index" v-if="">
           <v-card class="pa-2 text-center"
             :style="{ borderRight: index ===  constantCollection.entryStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-            style="flex: 1;border-radius: 0;" @click="changeStatus('entryStatus', status.value)">
+            style="flex: 1;border-radius: 0;" @click="changeStatus('state', status.value)">
             <div class="mb-1">{{status.text}}</div>
             <div>{{status.num || 0}}</div>
           </v-card>
@@ -96,8 +96,10 @@ SQL END!-->
           {{ globalHandler.parseConstantValue('status', item.status, constantCollection) }}
         </template>
         <template v-slot:item.action="{ item }">
-          <span role="button" class="success--text mr-2" style="font-size: 12px;font-weight: 500;" @click.stop="doUiAction('startUpdateItem', {item })">详情</span>
-          <span role="button" class="success--text mr-2" style="font-size: 12px;font-weight: 500;" @click.stop="doUiAction('deleteItem', {item })">删除</span>
+          <span role="button" class="success--text mr-2" style="font-size: 12px;font-weight: 500;"
+            @click.stop="doUiAction('startUpdateItem', {item })">详情</span>
+          <span role="button" class="success--text mr-2" style="font-size: 12px;font-weight: 500;"
+            @click.stop="doUiAction('leaveItem', {item })">离职</span>
         </template>
       </v-data-table>
     </v-card>
@@ -124,7 +126,8 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">员工性别</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['sex']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['sex']"
+            :items="constantCollection.sex"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -139,12 +142,14 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">紧急联系电话</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['emergencyContactNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="addItem['emergencyContactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">员工岗位</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['post']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['post']"
+            :items="constantCollection.post"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -157,7 +162,7 @@ SQL END!-->
           <v-menu class="cus-v-input" offset-y max-width="290">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field class="cus-v-input" dense filled single-line v-on="on"
-                            :value="addItem['dateOfBirth']"></v-text-field>
+                :value="addItem['dateOfBirth']"></v-text-field>
             </template>
             <v-date-picker color="success" elevation="20" v-model="addItem['dateOfBirth']"></v-date-picker>
           </v-menu>
@@ -175,12 +180,14 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">最高学历</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['highestEducation']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="addItem['highestEducation']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">家庭住址</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['residentialAddress']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="addItem['residentialAddress']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -190,13 +197,13 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">车牌号</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['licensePlateNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="addItem['licensePlateNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">备注</span>
-          <v-text-field class="cus-v-input " dense filled single-line
-            v-model="addItem['remarks']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
         </v-col>
       </v-row>
       <v-row class="justify-end pr-6">
@@ -240,7 +247,8 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">员工性别</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['sex']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['sex']"
+          :items="constantCollection.sex"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -250,12 +258,14 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">联系电话</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['contactNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['contactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">紧急联系电话</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['emergencyContactNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['emergencyContactNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -268,7 +278,7 @@ SQL END!-->
           <v-menu class="cus-v-input" offset-y max-width="290">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field class="cus-v-input" dense filled single-line v-on="on"
-                            :value="editItem['dateOfBirth']"></v-text-field>
+                :value="editItem['dateOfBirth']"></v-text-field>
             </template>
             <v-date-picker color="success" elevation="20" v-model="editItem['dateOfBirth']"></v-date-picker>
           </v-menu>
@@ -286,32 +296,38 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">最高学历</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['highestEducation']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['highestEducation']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">教师资格证类别</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualification']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['teacherQualification']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">教师资格证学段</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualificationLeaver']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationLeaver']"
+          :items="constantCollection.level"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">教师资格证学科</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherQualificationSubject']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationSubject']"
+          :items="constantCollection.subject"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">教师资格证编号</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teacherCertificationNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['teacherCertificationNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">家庭住址</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['residentialAddress']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['residentialAddress']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -321,13 +337,13 @@ SQL END!-->
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">车牌号</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['licensePlateNumber']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line
+            v-model="editItem['licensePlateNumber']"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">备注</span>
-          <v-text-field class="cus-v-input " dense filled single-line
-            v-model="editItem['remarks']"></v-text-field>
+          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['remarks']"></v-text-field>
         </v-col>
       </v-row>
 
@@ -339,17 +355,20 @@ SQL END!-->
       <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">员工岗位</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['post']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['post']"
+          :items="constantCollection.post"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">任教学段</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teachingLevel']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
+          :items="constantCollection.level"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">任教学科</span>
-          <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['teachingSubject']"></v-text-field>
+          <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
+          :items="constantCollection.subject"></v-select>
         </v-col>
 
         <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -357,7 +376,7 @@ SQL END!-->
           <v-menu class="cus-v-input" offset-y max-width="290">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field class="cus-v-input" dense filled single-line v-on="on"
-                            :value="editItem['dateOfEntry']"></v-text-field>
+                :value="editItem['dateOfEntry']"></v-text-field>
             </template>
             <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
           </v-menu>
@@ -368,7 +387,7 @@ SQL END!-->
           <v-menu class="cus-v-input" offset-y max-width="290">
             <template v-slot:activator="{ on, attrs }">
               <v-text-field class="cus-v-input" dense filled single-line v-on="on"
-                            :value="editItem['dateOfContractExpiration']"></v-text-field>
+                :value="editItem['dateOfContractExpiration']"></v-text-field>
             </template>
             <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
           </v-menu>
@@ -405,20 +424,14 @@ SQL END!-->
           <v-col cols="3">
             <v-hover>
               <template v-slot:default="{ hover }">
-                <v-card
-                  class="mx-auto"
-                  style="box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);"
-                >
+                <v-card class="mx-auto" style="box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);">
                   <v-card-text class="text-center">
                     <v-icon dark right small color="primary">mdi-file-document-multiple-outline</v-icon>
                     <p style="font-size: 13px;" class="mt-1">员工合同</p>
                   </v-card-text>
                   <v-fade-transition>
-                    <v-overlay
-                      v-if="hover"
-                      absolute
-                    >
-                    <v-icon dark right>mdi-file-multiple</v-icon>
+                    <v-overlay v-if="hover" absolute>
+                      <v-icon dark right>mdi-file-multiple</v-icon>
                     </v-overlay>
                   </v-fade-transition>
                 </v-card>
@@ -426,25 +439,19 @@ SQL END!-->
             </v-hover>
           </v-col>
         </v-row>
-        
+
         <v-row>
           <v-col cols="3">
             <v-hover>
               <template v-slot:default="{ hover }">
-                <v-card
-                  class="mx-auto"
-                  style="box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);"
-                >
+                <v-card class="mx-auto" style="box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);">
                   <v-card-text class="text-center">
                     <v-icon dark right small color="primary">mdi-file-document-multiple-outline</v-icon>
                     <p style="font-size: 13px;" class="mt-1">员工合同</p>
                   </v-card-text>
                   <v-fade-transition>
-                    <v-overlay
-                      v-if="hover"
-                      absolute
-                    >
-                    <v-icon dark right>mdi-file-multiple</v-icon>
+                    <v-overlay v-if="hover" absolute>
+                      <v-icon dark right>mdi-file-multiple</v-icon>
                     </v-overlay>
                   </v-fade-transition>
                 </v-card>
@@ -478,6 +485,47 @@ SQL END!-->
         v => !!v || '此项为必填项',
       ],
       constantCollection: {
+        sex: [
+          { text: '男', value: '男' },
+          { text: '女', value: '女' }
+        ],
+        post: [
+          { text: "小学部老师", value: "小学部老师" },
+          { text: "初中部老师", value: "初中部老师" },
+          { text: "高中部老师", value: "高中部老师" },
+          { text: "生活老师", value: "生活老师" },
+          { text: "会计", value: "会计" },
+          { text: "行政", value: "行政" },
+          { text: "文员", value: "文员" },
+          { text: "教官", value: "教官" },
+          { text: "保安", value: "保安" },
+          { text: "厨师", value: "厨师" },
+          { text: "帮厨", value: "帮厨" },
+          { text: "面点", value: "面点" },
+          { text: "保洁", value: "保洁" }
+        ],
+        level: [
+          { text: "小学", value: "小学" },
+          { text: "初中", value: "初中" },
+          { text: "高中", value: "高中" }
+        ],
+        subject: [
+          { text: "数学", value: "数学" },
+          { text: "化学", value: "化学" },
+          { text: "物理", value: "物理" },
+          { text: "生物", value: "生物" },
+          { text: "历史", value: "历史" },
+          { text: "政治", value: "政治" },
+          { text: "地理", value: "地理" },
+          { text: "语文", value: "语文" },
+          { text: "英语", value: "英语" },
+          { text: "日语", value: "日语" },
+          { text: "信息", value: "信息" },
+          { text: "体育", value: "体育" },
+          { text: "美术", value: "美术" },
+          { text: "音乐", value: "音乐" },
+        ],
+        // 在职状态
         status: [
           { text: "全职", value: 1 },
           { text: "试用", value: 2 },
@@ -495,10 +543,10 @@ SQL END!-->
         ],
         // 在职状态
         entryStatus: [
-          { text: "在职", value: 1 },
-          { text: "待入职", value: 2 },
-          { text: "待离职", value: 3 },
-          { text: "已离职", value: 4 },
+          { text: "在职", value: '在职' },
+          // { text: "待入职", value:  },
+          // { text: "待离职", value:  },
+          { text: "已离职", value: '离职' }
         ],
       },
       serverSearchForm: {
@@ -520,7 +568,7 @@ SQL END!-->
       showTableZebraLine: true,
       actionTab: 0,
       headers: [
-        {text: "员工ID", value: "employeeId", width: 120, class: 'fixed', cellClass: 'fixed'},
+        { text: "员工ID", value: "employeeId", width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "员工姓名", value: "employeeName", width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "性别", value: "sex", width: 120 },
         { text: "年龄", value: "age", width: 120 },
@@ -546,32 +594,32 @@ SQL END!-->
         // { title: '操作记录', action: 'record' },
       ],
       memberFile: {
-      basicFile: [
-        { title: '身份证原件照片', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '学历证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '个人证件照', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-        { title: '身份证复印件', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '工资银行卡', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '社保卡', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-        { title: '公积金', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '获奖证书', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '其他', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-      ],
-      archivesFile: [
-        { title: '劳动合同', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '入职简历', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '入职登记表', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-        { title: '入职体检单', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '上家公司离职证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '转正申请表', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-        { title: '其他', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-      ],
-      resignFile: [
-        { title: '离职审批', action: 'IDCard', icon: 'mdi-file-document-multiple-outline'},
-        { title: '离职证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline'},
-        { title: '其他', action: 'documents', icon: 'mdi-file-document-multiple-outline'},
-      ]
-    },
+        basicFile: [
+          { title: '身份证原件照片', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '学历证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '个人证件照', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+          { title: '身份证复印件', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '工资银行卡', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '社保卡', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+          { title: '公积金', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '获奖证书', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '其他', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+        ],
+        archivesFile: [
+          { title: '劳动合同', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '入职简历', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '入职登记表', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+          { title: '入职体检单', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '上家公司离职证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '转正申请表', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+          { title: '其他', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+        ],
+        resignFile: [
+          { title: '离职审批', action: 'IDCard', icon: 'mdi-file-document-multiple-outline' },
+          { title: '离职证明', action: 'educationalBackground', icon: 'mdi-file-document-multiple-outline' },
+          { title: '其他', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
+        ]
+      },
       isEditDrawerShow: false,
       editItem: {},
       isAddDrawerShow: false,
@@ -614,15 +662,15 @@ SQL END!-->
             await this.openUpdateDialog();
             break;
           case 'updateItem':
-         //   await this.prepareValidate();
+            //   await this.prepareValidate();
             await this.confirmUpdateItemDialog();
             await this.doUpdateItem();
             await this.closeDrawerShow();
             await this.refreshTableData();
             break;
-          case 'deleteItem':
+          case 'leaveItem':
             await this.confirmDeleteItemDialog();
-            await this.doDeleteItem(uiActionData);
+            await this.doLeaveItem(uiActionData);
             await this.refreshTableData();
             break;
           default:
@@ -631,12 +679,14 @@ SQL END!-->
         }
       },
 
-      getHeaders(content){
-      return this[`${content.action}Headers`] || []
-    },
+      getHeaders(content) {
+        return this[`${content.action}Headers`] || []
+      },
 
       // 状态筛选
       changeStatus(filed, value) {
+        console.log(filed)
+        console.log(value)
         this.serverSearchForm.select = {};
         this.serverSearchForm.select[filed] = value;
         this.refreshTableData();
@@ -783,8 +833,6 @@ SQL END!-->
       },
       async doUpdateItem() {
         const { id, ...data } = this.editItem;
-        console.log(data)
-        await window.vtoast.loading("修改数据");
         await window.jianghuAxios({
           data: {
             appData: {
@@ -803,24 +851,26 @@ SQL END!-->
        * description: ✅获取表格数据
       */
       async confirmDeleteItemDialog() {
-        if (await window.confirmDialog({ title: "删除", content: "确定删除吗？" }) === false) {
+        if (await window.confirmDialog({ title: "离职", content: "确定离职吗？" }) === false) {
           throw new Error("取消");
         }
       },
-      async doDeleteItem({ item }) {
+      async doLeaveItem({ item }) {
         const { id } = item;
-        await window.vtoast.loading("删除数据");
+        const data = {
+          state: "离职"
+        }
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'employeeManagementV2',
-              actionId: 'deleteItem',
-              actionData: {},
+              actionId: 'updateItem',
+              actionData: data,
               where: { id: id }
             }
           }
         });
-        await window.vtoast.success("删除数据成功");
+        await window.vtoast.success("离职成功");
       },
 
 
