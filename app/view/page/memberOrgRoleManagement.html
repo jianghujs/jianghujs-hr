@@ -61,7 +61,11 @@
                 <v-icon dark>mdi-close</v-icon>
               </v-btn>
             </v-row>
+
             <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+              <v-col cols="12" xs="7" sm="7" md="9" xl="10" class="pa-0">
+                <v-btn small color="success" class="elevation-0 mr-2" @click="doUiAction('createItem', { itemList: addDrawerSelectedList })">批量添加</v-btn>
+              </v-col>
               <v-data-table 
                 fixed-header
                 :headers="nodeHeaders"
@@ -71,10 +75,11 @@
                 :items-per-page="20"
                 mobile-breakpoint="0"
                 :loading="isTableLoading"
+                v-model="addDrawerSelectedList" show-select
                 checkbox-color="success"
                 class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
               <template v-slot:item.action="{ item }">
-              <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', {item})">加入</v-btn>
+              <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
               <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
               </template>
               </v-data-table>
@@ -189,6 +194,7 @@ new Vue({
     editItem: {},
     isAddDrawerShow: false,
     addItem: {},
+    addDrawerSelectedList: [],
     activePanel: [0],
     memberData: []
   }),
@@ -206,6 +212,9 @@ new Vue({
     await this.doUiAction('refreshOrgData');
     await this.doUiAction('refreshMemberData');
     await this.getOrg();
+
+    // Tip: 测试代码
+    await this.doUiAction('startCreateItem', {item: this.orgTree[0]});
   },
   mounted() {},
   methods: {
@@ -415,25 +424,29 @@ new Vue({
         throw new Error("取消");
       }
     },
-    async doCreateItem({ item: member }) {
+    async doCreateItem({ itemList }) {
         const org = this.editItem
-        if (!org.orgId || !member.memberId) {
-          await window.vtoast.error("操作失败");
+        const memberList = itemList.map(member => {
+          return { memberId: member.employeeId };
+        })
+        if (memberList.length < 1) {
+          window.vtoast.fail("请选择");
+          throw new Error("请选择");
         }
         await window.vtoast.loading("新增数据");
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'memberOrgRoleManagement',
-              actionId: 'insertItem',
+              actionId: 'batchAddMemberOrgRole',
               actionData: {
                 orgId: org.orgId,
-                memberId: member.employeeId
+                memberList,
               }
             }
           }
         })
-        await window.vtoast.success("新增数据成功");
+        window.vtoast.success("新增数据成功");
     },
     /**
      * uiActionId:  startUpdateItem
@@ -479,7 +492,7 @@ new Vue({
     },
     async doDeleteItem({ item: member }) {
       if (!member.orgId || !member.memberId) {
-        await window.vtoast.error("操作失败");
+        await window.vtoast.fail("操作失败");
       }
       await window.vtoast.loading("删除数据");
       await window.jianghuAxios({

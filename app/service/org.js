@@ -8,6 +8,24 @@ const validateUtil = require("@jianghujs/jianghu/app/common/validateUtil");
 const { tableEnum } = require('../constant/constant');
 const { BizError, errorInfoEnum } = require("../constant/error");
 const actionDataScheme = Object.freeze({
+  batchAddMemberOrgRole: {
+    type: 'object',
+    additionalProperties: true,
+    required: ['orgId', 'memberList'],
+    properties: {
+      orgId: { anyOf: [{ type: "string" }, { type: "number" }] },
+      memberList: { 
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['memberId'],
+          properties: {
+            memberId: { anyOf: [{ type: "string" }, { type: "number" }] },
+          }
+        }
+      },
+    },
+  },
 });
 
 class ArticleService extends Service {
@@ -156,6 +174,28 @@ class ArticleService extends Service {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  async batchAddMemberOrgRole() {
+    const { jianghuKnex } = this.app
+    const ctx = this.ctx;
+    const actionData = this.ctx.request.body.appData.actionData;
+    validateUtil.validate(actionDataScheme.batchAddMemberOrgRole, actionData);
+    const { orgId, memberList } = actionData;
+
+    const insertList = memberList.map(member => {
+      return {
+        orgId,
+        memberId: member.memberId,
+      }
+    });
+
+    await jianghuKnex.transaction(async trx => {
+      if (insertList.length > 0) {
+        await trx(tableEnum.member_org_role, ctx).insert(insertList);
+      }
+    })
+
   }
 
 }
