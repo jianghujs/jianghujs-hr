@@ -132,6 +132,17 @@ new Vue({
   template: '#app-template',
   vuetify: new Vuetify(),
   data: () => ({
+    breadcrumbs: [
+      {
+        text: '首页',
+        disabled: true,
+      },
+      {
+        text: '工作台',
+        disabled: true,
+      }
+    ],
+    isHelpPageDrawerShown: false,
     globalHandler: new GlobalHandler(),
     statusFilter: [],
     searchText: null,

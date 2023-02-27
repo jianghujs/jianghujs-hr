@@ -5,6 +5,7 @@
   <div>
     <v-app mobile-breakpoint="sm">
       <jh-menu />
+      <!-- 头部内容 >>>>>>>>>>>>> -->
       <v-main class="d-flex flex-column" style="margin-top: 60px">
         <div class="jh-page-second-bar px-8">
           <v-row>
@@ -18,6 +19,7 @@
             </v-col>
           </v-row>
         </div>
+        <!-- <<<<<<<<<<<<< 头部内容 -->
 
         <v-row class="pageBodyContainer px-8">
           <v-col cols="8">
@@ -198,9 +200,20 @@ new Vue({
         disabled: true,
       }
     ],
+    isHelpPageDrawerShown: false,
+    breadcrumbs: [
+      {
+        text: '首页',
+        disabled: true,
+      },
+      {
+        text: '工作台',
+        disabled: true,
+      }
+    ],
+    isHelpPageDrawerShown: false,
     globalHandler: new GlobalHandler(),
     statusFilter: [],
-    isHelpPageDrawerShown: false,
     searchText: null,
     tableFilterKeyword: null,
     isFormValid: true,
