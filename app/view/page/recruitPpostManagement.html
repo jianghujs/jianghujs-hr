@@ -5,103 +5,130 @@
   <div>
     <v-app mobile-breakpoint="sm">
       <jh-menu />
-<template slot="serverSearch">
-  <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
-    <v-col cols="12" sm="12" xs="5" md="2" xl="2" class="pb-3" :class="{'px-0': isMobile, 'pt-0': isMobile}">
-      <v-text-field v-model="serverSearchForm.postName" prefix="职位名称：" color="success" class="cus-v-input"
-                    :class="{'mr-2': !isMobile}" dense filled single-line></v-text-field>
-    </v-col>
-    <v-col cols="12" sm="12" xs="5" md="3" xl="3" class="pb-3" :class="{'pt-0': isMobile}">
-      <v-select class="cus-v-input mr-2" v-model="serverSearchForm.select.status"
-                :items="constantCollection.status"
-                prefix="状态：" item-text="text" item-value="value" dense filled single-line clearable>
-      </v-select>
-    </v-col>
-    <v-col class="pl-0" :class="{'pr-0': isMobile, 'pt-0': isMobile}" style="max-width: 77px">
-      <v-btn
-          class="elevation-0"
-          color="success"
-          dark
-          @click="getTableData">
-        查询
-      </v-btn>
-    </v-col>
-  </v-row>
-</template>
+      <v-main class="d-flex flex-column" style="margin-top: 60px">
+      <!-- 头部内容 >>>>>>>>>>>>> -->
+        <div class="jh-page-second-bar px-8">
+          <v-row>
+            <v-col cols="12" xs="12" sm="12" md="4" xl="3">
+              <div class="pt-3 text-h7 font-weight-bold">招聘职位
+                <!-- 帮助页按钮 -->
+                <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
+                </v-icon>
+              </div>
+              <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+            </v-col>
+          </v-row>
+        </div>
 
-<!-- 页面主要内容 -->
-<v-card :class="{'px-2': isMobile}">
-  <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
-         :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
-    <v-btn color="success" dark class="elevation-0 mr-2"
-        @click.stop="doUiAction('handleTableButton', { title: '新建职位', action: 'add' })">新建职位
-    </v-btn>
-    <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
-    <v-spacer></v-spacer>
-    <v-col cols="12" xs="6" sm="4" md="3" xl="3" class="pr-0">
-      <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="cus-v-input" dense filled
-                    single-line></v-text-field>
-    </v-col>
-  </v-row>
-  <v-data-table :headers="detailHeaders" :items="tableData" :search="tableFilterKeyword"
-                mobile-breakpoint="0"
-                :loading="isTableLoading " checkbox-color="success" class="elevation-0"
-                :options="{
-            itemsPerPage: 15
-        }">
-    <template v-slot:item.action="{ item }">
-      <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">详情</v-btn>
-      <v-btn small class="mr-2 success" @click.stop="doUiAction('stopRecruiting')">停止招聘</v-btn>
-    </template>
-  </v-data-table>
-</v-card>
+        <template slot="serverSearch">
+          <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
+            <v-col cols="12" sm="12" xs="5" md="2" xl="2" class="pb-3" :class="{'px-0': isMobile, 'pt-0': isMobile}">
+              <v-text-field v-model="serverSearchForm.postName" prefix="职位名称：" color="success" class="cus-v-input"
+                            :class="{'mr-2': !isMobile}" dense filled single-line></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" xs="5" md="3" xl="3" class="pb-3" :class="{'pt-0': isMobile}">
+              <v-select class="cus-v-input mr-2" v-model="serverSearchForm.select.status"
+                        :items="constantCollection.status"
+                        prefix="状态：" item-text="text" item-value="value" dense filled single-line clearable>
+              </v-select>
+            </v-col>
+            <v-col class="pl-0" :class="{'pr-0': isMobile, 'pt-0': isMobile}" style="max-width: 77px">
+              <v-btn
+                  class="elevation-0"
+                  color="success"
+                  dark
+                  @click="getTableData">
+                查询
+              </v-btn>
+            </v-col>
+          </v-row>
+        </template>
 
-<drawer-form v-model="isEditDrawerShow"
-  ref="form"
-  :headers="detailHeaders"
-  :editItem="editItem"
-  :currentClickButton="currentClickButton"
-  :constantCollection="constantCollection"
-  @save="doUiAction('saveInfo')"
->
-</drawer-form>
+        <!-- 页面主要内容 -->
+        <div class="pageBodyContainer px-8">
+          <v-card :class="{'px-2': isMobile}">
+            <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
+                  :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+              <v-btn color="success" dark class="elevation-0 mr-2"
+                  @click.stop="doUiAction('handleTableButton', { title: '新建职位', action: 'add' })">新建职位
+              </v-btn>
+              <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
+              <v-spacer></v-spacer>
+              <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
+                <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="cus-v-input" dense filled
+                              single-line></v-text-field>
+              </v-col>
+            </v-row>
+            <v-data-table fixed-header :headers="detailHeaders" :items="tableData" :search="tableFilterKeyword"
+                          mobile-breakpoint="0"
+                          :loading="isTableLoading " checkbox-color="success" class="jh-fixed-table-height elevation-0"
+                          :options="{
+                      itemsPerPage: -1
+                  }">
+              <template v-slot:item.action="{ item }">
+                <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">详情</v-btn>
+                <v-btn small class="mr-2 success" @click.stop="doUiAction('stopRecruiting')">停止招聘</v-btn>
+              </template>
+            </v-data-table>
+          </v-card>
 
-<!-- 员工详情 -->
-<v-navigation-drawer v-if="isDetailDrawerShow" v-model="isDetailDrawerShow" :permanent="isDetailDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-row class="pt-8">
-    <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.postName}}】详情</span>
-    <v-spacer></v-spacer>
-    <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isDetailDrawerShow = false">
-      <v-icon dark>mdi-close</v-icon>
-    </v-btn>
-  </v-row>
-  <v-row class="ma-0 mb-2" :class="{'px-10': !isMobile, 'px-4': isMobile}">
-     <v-tabs dense v-model="actionTab">
-      <v-tab v-for="(tab, index) in tabs" :key="index">{{tab.title}}</v-tab>
-    </v-tabs>
-  </v-row>
-  <div class="mt-4 mb-10">
-    <template v-if="tabs[actionTab]['action'] !== 'record'">
-      <edit-form 
-        :headers="drawerHeaders"
-        :editItem="editItem"
-        :currentClickButton="currentClickButton"
-        :constantCollection="constantCollection"
-        @save="doUiAction('saveInfo')">
-      </edit-form>
-    </template>
-    <template v-else>
-      <div class="mx-10">
-        <v-timeline dense>
-          <v-timeline-item small v-for="(record, index) in recordData" :key="index">
-            <span class="text--secondary mr-3">{{record.time}}</span>{{record.content}}
-          </v-timeline-item>
-        </v-timeline>
-      </div>
-    </template>
-  </div>
-</v-navigation-drawer>
-</v-app>
+          <drawer-form v-model="isEditDrawerShow"
+            ref="form"
+            :headers="detailHeaders"
+            :editItem="editItem"
+            :currentClickButton="currentClickButton"
+            :constantCollection="constantCollection"
+            @save="doUiAction('saveInfo')"
+          >
+          </drawer-form>
+
+          <!-- 员工详情 -->
+          <v-navigation-drawer v-if="isDetailDrawerShow" v-model="isDetailDrawerShow" :permanent="isDetailDrawerShow" fixed temporary right width="80%" class="elevation-24">
+            <v-row class="pt-8">
+              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.postName}}】详情</span>
+              <v-spacer></v-spacer>
+              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isDetailDrawerShow = false">
+                <v-icon dark>mdi-close</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row class="ma-0 mb-2" :class="{'px-10': !isMobile, 'px-4': isMobile}">
+              <v-tabs dense v-model="actionTab">
+                <v-tab v-for="(tab, index) in tabs" :key="index">{{tab.title}}</v-tab>
+              </v-tabs>
+            </v-row>
+            <div class="mt-4 mb-10">
+              <template v-if="tabs[actionTab]['action'] !== 'record'">
+                <edit-form 
+                  :headers="drawerHeaders"
+                  :editItem="editItem"
+                  :currentClickButton="currentClickButton"
+                  :constantCollection="constantCollection"
+                  @save="doUiAction('saveInfo')">
+                </edit-form>
+              </template>
+              <template v-else>
+                <div class="mx-10">
+                  <v-timeline dense>
+                    <v-timeline-item small v-for="(record, index) in recordData" :key="index">
+                      <span class="text--secondary mr-3">{{record.time}}</span>{{record.content}}
+                    </v-timeline-item>
+                  </v-timeline>
+                </div>
+              </template>
+            </div>
+          </v-navigation-drawer>
+        </div>
+
+        <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
+        <v-navigation-drawer v-model="isHelpPageDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+          <iframe style="border: 0" :src="`/${appInfo.appId}/pageDoc#waitting.md`" width="100%" height="100%"></iframe>
+          <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isHelpPageDrawerShown = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-navigation-drawer>
+        <!-- <<<<<<<<<<<<< 帮助页抽屉 -->
+      </v-main>
+    </v-app>
 <jh-toast />
 <jh-mask />
 <jh-confirm-dialog />
@@ -114,6 +141,8 @@
 {% endblock %}
 
 {% block vueScript %}
+{% include 'common/jianghuJs/fixedTableHeightV4.html' %}
+
 {% include 'component/drawerForm.html' %}
 {% include 'component/editForm.html' %}
 {% include 'component/globalHandler.html' %}
@@ -129,7 +158,7 @@ new Vue({
         disabled: true,
       },
       {
-        text: '工作台',
+        text: '招聘职位',
         disabled: true,
       }
     ],
