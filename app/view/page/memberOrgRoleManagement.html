@@ -63,14 +63,19 @@
             </v-row>
 
             <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-              <v-col cols="12" xs="7" sm="7" md="9" xl="10" class="pa-0">
+              <v-col cols="7" xs="7" sm="7" md="9" xl="10" class="pa-0">
                 <v-btn small color="success" class="elevation-0 mr-2" @click="doUiAction('createItem', { itemList: addDrawerSelectedList })">批量添加</v-btn>
               </v-col>
+              <v-spacer></v-spacer>
+              <v-text-field v-model="addDrawerSearchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+            </v-row>  
+            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+
               <v-data-table 
                 fixed-header
                 :headers="nodeHeaders"
                 :items="memberData"
-                :search="searchInput"
+                :search="addDrawerSearchInput"
                 :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
                 :items-per-page="20"
                 mobile-breakpoint="0"
@@ -168,6 +173,7 @@ new Vue({
       classId: null
     },
     searchInput: null,
+    addDrawerSearchInput: null,
     isTableLoading: true,
     tableDataFromBackend: [],
     expanded: [],
