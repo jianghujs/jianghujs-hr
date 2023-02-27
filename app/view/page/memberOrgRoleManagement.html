@@ -5,100 +5,118 @@
   <div>
     <v-app mobile-breakpoint="sm">
       <jh-menu />
-<!-- 页面主要内容 -->
-<v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-  <v-card>
-    <v-row class="ma-0 pa-0">
-      <v-col cols="12" xs="3" sm="4" md="3" xl="2" style="border-right: 1px solid #EEEEEE">
-        <v-treeview
-            @update:active="onTreeChange"
-            shaped
-            hoverable
-            activatable
-            :open="openTree"
-            :items="orgTree"
-            dense
-        ></v-treeview>
-      </v-col>
-      <v-col cols="12" xs="9" sm="8" md="9" xl="10">
-        <v-expansion-panels multiple v-model="activePanel" accordion dense>
-          <table-tree 
-            :table-data="tableData" 
-            :nodeHeaders="nodeHeaders"
-            :isTableLoading="isTableLoading"
-            :activePanel="activePanel"
-            @doUiAction="doUiAction"
-          /></table-tree>
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
-  </v-card>
-</v-container>
+      <v-main class="d-flex flex-column" style="margin-top: 60px">
+        <!-- 头部内容 >>>>>>>>>>>>> -->
+        <div class="jh-page-second-bar px-8">
+          <v-row>
+            <v-col cols="12" xs="12" sm="12" md="4" xl="3">
+              <div class="pt-3 text-h7 font-weight-bold">员工管理V2
+                <!-- 帮助页按钮 -->
+                <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
+                </v-icon>
+              </div>
+              <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+            </v-col>
+          </v-row>
+        </div>
+        <!-- <<<<<<<<<<<<< 头部内容 -->
 
-<!-- 新增 -->
-<v-navigation-drawer v-if="isAddDrawerShow" v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.orgName}}】添加职员</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
-    </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-      <v-data-table 
-        fixed-header
-        :headers="nodeHeaders"
-        :items="memberData"
-        :search="searchInput"
-        :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-        :items-per-page="20"
-        mobile-breakpoint="0"
-        :loading="isTableLoading"
-        checkbox-color="success"
-        class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-      <template v-slot:item.action="{ item }">
-      <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', {item})">加入</v-btn>
-      <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
-      </template>
-      </v-data-table>
-    </v-row>
-  </v-form>
-</v-navigation-drawer>
+        <!-- 页面主要内容 -->
+        <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
+          <v-card>
+            <v-row class="ma-0 pa-0">
+              <v-col cols="12" xs="3" sm="4" md="3" xl="2" style="border-right: 1px solid #EEEEEE">
+                <v-treeview
+                    @update:active="onTreeChange"
+                    shaped
+                    hoverable
+                    activatable
+                    :open="openTree"
+                    :items="orgTree"
+                    dense
+                ></v-treeview>
+              </v-col>
+              <v-col cols="12" xs="9" sm="8" md="9" xl="10">
+                <v-expansion-panels multiple v-model="activePanel" accordion dense>
+                  <table-tree 
+                    :table-data="tableData" 
+                    :nodeHeaders="nodeHeaders"
+                    :isTableLoading="isTableLoading"
+                    :activePanel="activePanel"
+                    @doUiAction="doUiAction"
+                  /></table-tree>
+                </v-expansion-panels>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-container>
+
+        <!-- 新增 -->
+        <v-navigation-drawer v-if="isAddDrawerShow" v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
+          <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
+            <v-row class="pt-8">
+              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.orgName}}】添加职员</span>
+              <v-spacer></v-spacer>
+              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
+                <v-icon dark>mdi-close</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+              <v-data-table 
+                fixed-header
+                :headers="nodeHeaders"
+                :items="memberData"
+                :search="searchInput"
+                :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+                :items-per-page="20"
+                mobile-breakpoint="0"
+                :loading="isTableLoading"
+                checkbox-color="success"
+                class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+              <template v-slot:item.action="{ item }">
+              <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', {item})">加入</v-btn>
+              <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+              </template>
+              </v-data-table>
+            </v-row>
+          </v-form>
+        </v-navigation-drawer>
 
 
-<!-- 编辑抽屉 -->
-<v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
-    </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-        <span class="inputLabel">职员名</span>
-        <v-text-field class="cus-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
-      </v-col>
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-        <span class="inputLabel">组织</span>
-        <v-select class="cus-v-input mr-2" dense filled single-line clearable color="success"
-        v-model="editItem['orgId']" :items="constantCollection['org']"
-        :rules="requireRules">
-        <template v-slot:item="data">
-          {{data.item.textRender}}
-        </template>
-      </v-select>
-      </v-col>
-    </v-row>
-    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
-      <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
-    </v-row>
-  </v-form>
-</v-navigation-drawer>
+        <!-- 编辑抽屉 -->
+        <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
+          <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
+            <v-row class="pt-8">
+              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
+              <v-spacer></v-spacer>
+              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
+                <v-icon dark>mdi-close</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+              <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <span class="inputLabel">职员名</span>
+                <v-text-field class="cus-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <span class="inputLabel">组织</span>
+                <v-select class="cus-v-input mr-2" dense filled single-line clearable color="success"
+                v-model="editItem['orgId']" :items="constantCollection['org']"
+                :rules="requireRules">
+                <template v-slot:item="data">
+                  {{data.item.textRender}}
+                </template>
+              </v-select>
+              </v-col>
+            </v-row>
+            <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+              <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+              <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+            </v-row>
+          </v-form>
+        </v-navigation-drawer>        
+      </v-main>
+
 
 </v-app>
 <jh-toast />
@@ -121,6 +139,17 @@ new Vue({
   template: '#app-template',
   vuetify: new Vuetify(),
   data: () => ({
+    breadcrumbs: [
+      {
+        text: '首页',
+        disabled: true,
+      },
+      {
+        text: '员工管理',
+        disabled: true,
+      }
+    ],
+    isHelpPageDrawerShown: false,
     // 表格相关数据
     isFormValid: true,
     requireRules: [
