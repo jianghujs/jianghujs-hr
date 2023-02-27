@@ -1,9 +1,12 @@
-{% extends 'template/jhTemplateV3.html'%}
+{% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
+{% block vueTemplate %}
 
 
-<jh-layout-v3>
+<script type="text/html" id="app-template">
+  <div>
+    <v-app mobile-breakpoint="sm">
+      <jh-menu />
 
 <!--   <template slot="serverSearch">
     <v-row class="ma-0 align-center flex-none pa-0" :class="{'pa-2': !isMobile, 'pa-2': isMobile}" style="justify-content: end">
@@ -175,11 +178,19 @@
   </v-form>
 </v-navigation-drawer>
 
-</jh-layout-v3>
+</v-app>
+<jh-toast />
+<jh-mask />
+<jh-confirm-dialog />
+  </div>
+</script>
+
+<div id="app">
+</div>
 
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
 
 <script type="module">
 new Vue({

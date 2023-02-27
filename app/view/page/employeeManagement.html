@@ -1,7 +1,10 @@
 {% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
-<jh-layout-v4>
+{% block vueTemplate %}
+<script type="text/html" id="app-template">
+  <div>
+    <v-app mobile-breakpoint="sm">
+      <jh-menu />
   <v-row class="mb-2">
     <v-col cols="7" class="mt-1 py-0 pr-0 pl-0">
       <v-card class="d-flex flex-row flex-wrap ml-3" outlined style="border: thin solid #F4F5F6;border-radius: inherit;">
@@ -298,11 +301,19 @@ width="70%"
 </v-card>
 </v-dialog>
 
-</jh-layout-v4>
+</v-app>
+<jh-toast />
+<jh-mask />
+<jh-confirm-dialog />
+  </div>
+</script>
+
+<div id="app">
+</div>
 
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
 {% include 'common/constant.html' %}
 {% include 'component/drawerForm.html' %}
 {% include 'component/editForm.html' %}
@@ -642,10 +653,10 @@ new Vue({
     await this.doUiAction('getConstant');
   },
   async mounted() {
-    window.onresize = () => {
-      resetTableMaxHeight(220);
-    }
-    resetTableMaxHeight(220);
+    // window.onresize = () => {
+    //   resetTableMaxHeight(220);
+    // }
+    // resetTableMaxHeight(220);
   },
   methods: {
     dayjs,

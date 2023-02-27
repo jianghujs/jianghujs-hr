@@ -1,6 +1,6 @@
 {% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
+{% block vueTemplate %}
 
 <!-- 3 table 下  的单表 crud 页面 -->
 
@@ -16,7 +16,10 @@ INSERT INTO `_resource` (`accessControlTable`,`resourceHook`,`pageId`,`actionId`
 INSERT INTO `_resource` (`accessControlTable`,`resourceHook`,`pageId`,`actionId`,`desc`,`resourceType`,`appDataSchema`,`resourceData`,`requestDemo`,`responseDemo`,`operation`,`operationByUserId`,`operationByUser`,`operationAt`) SELECT NULL,NULL,'employeeManagement','deleteItem','✅查询-删除信息','sql','{}','{ \"table\": \"employee\", \"operation\": \"delete\" }','','','insert',NULL,NULL,NULL FROM DUAL WHERE NOT EXISTS (SELECT `pageId` FROM `_resource` WHERE `pageId`='employeeManagement' AND `actionId`='deleteItem');
 SQL END!-->
 
-<jh-layout-v4>
+<script type="text/html" id="app-template">
+  <div>
+    <v-app mobile-breakpoint="sm">
+      <jh-menu />
 
   <!--   <template slot="serverSearch">
     <v-row class="ma-0 align-center flex-none pa-0" :class="{'pa-2': !isMobile, 'pa-2': isMobile}" style="justify-content: end">
@@ -463,11 +466,19 @@ SQL END!-->
     </v-form>
   </v-navigation-drawer>
 
-</jh-layout-v4>
+</v-app>
+<jh-toast />
+<jh-mask />
+<jh-confirm-dialog />
+  </div>
+</script>
+
+<div id="app">
+</div>
 
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
 {% include 'common/constant.html' %}
 {% include 'component/globalHandler.html' %}
 
@@ -752,7 +763,6 @@ SQL END!-->
           }
         });
         const { rows, count } = result.data.appData.resultData;
-
         this.tableDataFromBackend = rows;
         this.isTableLoading = false;
         // this.setSearchConditions(rows, count);

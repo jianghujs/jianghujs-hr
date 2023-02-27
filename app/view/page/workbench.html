@@ -1,147 +1,158 @@
-{% extends 'template/jhTemplateV3.html'%}
+{% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
-<jh-layout-v3>
-  <v-row>
-    <v-col cols="8">
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>人事概况</h5>
-          <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
-        </div>
-        <v-row>
-          <v-col cols="12">
-            <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
-              <template v-for="(status, index) in constantCollection.status" :key="index">
-                <v-card
-                  elevation="0"
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{status.text}}</div>
-                  <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
-                </v-card>
-              </template>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card>
-
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>招聘动态</h5>
-          <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
-        </div>
-        <v-row>
-          <v-col cols="12">
-            <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
-              <template v-for="(status, index) in constantCollection.status1" :key="index">
-                <v-card
-                  elevation="0"
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{status.text}}</div>
-                  <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
-                </v-card>
-              </template>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card>
-
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>上月薪资概况</h5>
-        </div>
-        <v-row>
-          <v-col cols="8">
-            <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
-              <template v-for="(status, index) in constantCollection.status2" :key="index">
-                <v-card
-                  elevation="0"
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{status.text}}</div>
-                  <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
-                </v-card>
-              </template>
-            </v-card>
-          </v-col>
-          <v-col cols="4">
-            <div class="text-center">
-              <h4>部门薪资占比</h4>
-              <div class="text--secondary text-caption mt-3">暂无数据</div>
+{% block vueTemplate %}
+<script type="text/html" id="app-template">
+  <div>
+    <v-app mobile-breakpoint="sm">
+      <jh-menu />
+      <v-row>
+        <v-col cols="8">
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>人事概况</h5>
+              <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
             </div>
-          </v-col>
-        </v-row>
-      </v-card>
-
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>绩效考核</h5>
-          <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
-        </div>
-        <v-row>
-          <v-col cols="12">
-            <v-tabs dense v-model="actionTab" class="px-4 pb-4">
-              <v-tab v-for="(tab, index) in tabs" :key="index">{{tab.title}}</v-tab>
-            </v-tabs>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-col>
-    <v-col cols="4">
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>待办提醒</h5>
-        </div>
-        <v-row>
-          <v-col cols="12">
-            <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
-              <template v-for="(status, index) in constantCollection.status3" :key="index">
-                <v-card
-                  elevation="0"
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{status.text}}</div>
-                  <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+            <v-row>
+              <v-col cols="12">
+                <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
+                  <template v-for="(status, index) in constantCollection.status" :key="index">
+                    <v-card
+                      elevation="0"
+                      class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                      <div class="mb-2">{{status.text}}</div>
+                      <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+                    </v-card>
+                  </template>
                 </v-card>
-              </template>
-            </v-card>
-            <v-card class="d-flex flex-row flex-wrap ml-3 mt-2" elevation="0">
-              <template v-for="(status, index) in constantCollection.status4" :key="index">
-                <v-card
-                  elevation="0"
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{status.text}}</div>
-                  <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
-                </v-card>
-              </template>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card>
+              </v-col>
+            </v-row>
+          </v-card>
 
-      <v-card :class="{'px-2': isMobile}" class="mb-5">
-        <div class="d-flex pa-4">
-          <h5>日历</h5>
-        </div>
-        <div class="text-center">
-          <v-date-picker
-            v-model="picker"
-            color="green lighten-1"
-          ></v-date-picker>
-        </div>
-        <div class="pa-4">
-          <v-btn block color="primary">添加备忘录</v-btn>
-        </div>
-        <div class="pa-4">
-          <h4>当天事项</h4>
-          <div class="text--secondary text-caption mt-3 text-center">暂无数据</div>
-        </div>
-      </v-card>
-    </v-col>
-  </v-row>
-</jh-layout-v3>
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>招聘动态</h5>
+              <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
+            </div>
+            <v-row>
+              <v-col cols="12">
+                <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
+                  <template v-for="(status, index) in constantCollection.status1" :key="index">
+                    <v-card
+                      elevation="0"
+                      class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                      <div class="mb-2">{{status.text}}</div>
+                      <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+                    </v-card>
+                  </template>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card>
+
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>上月薪资概况</h5>
+            </div>
+            <v-row>
+              <v-col cols="8">
+                <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
+                  <template v-for="(status, index) in constantCollection.status2" :key="index">
+                    <v-card
+                      elevation="0"
+                      class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                      <div class="mb-2">{{status.text}}</div>
+                      <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+                    </v-card>
+                  </template>
+                </v-card>
+              </v-col>
+              <v-col cols="4">
+                <div class="text-center">
+                  <h4>部门薪资占比</h4>
+                  <div class="text--secondary text-caption mt-3">暂无数据</div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card>
+
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>绩效考核</h5>
+              <span class="text--secondary text-caption ml-2">（2022.11.01-2022.11.30）</span>
+            </div>
+            <v-row>
+              <v-col cols="12">
+                <v-tabs dense v-model="actionTab" class="px-4 pb-4">
+                  <v-tab v-for="(tab, index) in tabs" :key="index">{{tab.title}}</v-tab>
+                </v-tabs>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="4">
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>待办提醒</h5>
+            </div>
+            <v-row>
+              <v-col cols="12">
+                <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
+                  <template v-for="(status, index) in constantCollection.status3" :key="index">
+                    <v-card
+                      elevation="0"
+                      class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                      <div class="mb-2">{{status.text}}</div>
+                      <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+                    </v-card>
+                  </template>
+                </v-card>
+                <v-card class="d-flex flex-row flex-wrap ml-3 mt-2" elevation="0">
+                  <template v-for="(status, index) in constantCollection.status4" :key="index">
+                    <v-card
+                      elevation="0"
+                      class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                      <div class="mb-2">{{status.text}}</div>
+                      <div><span class="primary--text">{{status.num || 0}}</span> 人</div>
+                    </v-card>
+                  </template>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card>
+
+          <v-card :class="{'px-2': isMobile}" class="mb-5">
+            <div class="d-flex pa-4">
+              <h5>日历</h5>
+            </div>
+            <div class="text-center">
+              <v-date-picker
+                v-model="picker"
+                color="green lighten-1"
+              ></v-date-picker>
+            </div>
+            <div class="pa-4">
+              <v-btn block color="primary">添加备忘录</v-btn>
+            </div>
+            <div class="pa-4">
+              <h4>当天事项</h4>
+              <div class="text--secondary text-caption mt-3 text-center">暂无数据</div>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-app>
+  <jh-toast />
+  <jh-mask />
+  <jh-confirm-dialog />
+  </div>
+</script>
+
+<div id="app">
+</div>
 
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
 {% include 'component/drawerForm.html' %}
 {% include 'component/editForm.html' %}
 {% include 'component/globalHandler.html' %}
