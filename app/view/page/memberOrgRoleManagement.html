@@ -416,6 +416,7 @@ new Vue({
      */
     async clearItemData({ item }) {
       this.editItem = {...item};
+      this.addDrawerSearchInput = null,
       this.memberData = [];
     },
     async openCreateItemDialog() {
