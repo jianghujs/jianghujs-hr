@@ -209,6 +209,24 @@ SQL END!-->
                   <span class="inputLabel">备注</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
                 </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">员工状态</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']"
+                  :items="constantCollection.status"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">聘用形式</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']"
+                  :items="constantCollection.employmentForms"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">入职状态</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']"
+                  :items="constantCollection.entryStatus"></v-select>
+                </v-col>
               </v-row>
               <v-row class="justify-end pr-6">
                 <v-btn color="success" @click="doUiAction('createItem')"
@@ -375,6 +393,24 @@ SQL END!-->
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">员工状态</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['status']"
+                  :items="constantCollection.status"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">聘用形式</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
+                  :items="constantCollection.employmentForms"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <span class="inputLabel">入职状态</span>
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
+                  :items="constantCollection.entryStatus"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <span class="inputLabel">入职日期</span>
                   <v-menu class="cus-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
@@ -521,6 +557,9 @@ SQL END!-->
         v => !!v || '此项为必填项',
       ],
       constantCollection: {
+        status: ['全职', '兼职', '实习'],
+        employmentForms: ['正式', '试用'],
+        entryStatus: ['在职', '待入职', '待离职', '已离职'],
         sex: [
           { text: '男', value: '男' },
           { text: '女', value: '女' }
@@ -561,24 +600,6 @@ SQL END!-->
           { text: "美术", value: "美术" },
           { text: "音乐", value: "音乐" },
         ],
-        // 员工状态
-        status: [
-          { text: "全职", value: 1 },
-          { text: "兼职", value: 2 },
-          { text: "实习", value: 3 },
-        ],
-        // 聘用形式
-        employmentForms: [
-          { text: "正式", value: 1 },
-          { text: "试用", value: 2 },
-        ],
-        // 在职状态
-        entryStatus: [
-          { text: "在职", value: "在职" },
-          { text: "待入职", value: "待入职" },
-          { text: "待离职", value: "待离职" },
-          { text: "已离职", value: "已离职" }
-        ],
       },
       serverSearchForm: {
         employeeName: null,
@@ -612,7 +633,10 @@ SQL END!-->
         { text: "入职日期", value: "entryYear", width: 120 },
         { text: "合同到期", value: "contractExpirationYear", width: 120 },
         { text: "建设银行卡", value: "cardNumber", width: 120 },
-        { text: "员工状态", value: "state", width: 120 },
+        { text: "员工状态", value: "status", width: 120 },
+        { text: "聘用形式", value: "employmentForms", width: 120 },
+        { text: "入职状态", value: "entryStatus", width: 120 },
+
         { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       tabs: [
