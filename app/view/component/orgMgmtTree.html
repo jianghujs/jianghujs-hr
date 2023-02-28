@@ -10,17 +10,18 @@
             </v-col>
           </v-row>
           <v-treeview
-              @update:active="onTreeChange"
-              hoverable
-              activatable
-              :open="openIdList"
-              :items="tableDataTree"
-              dense
-              item-key="orgId"
-              item-text="orgName"
-              :search="searchInput"
-              class="jh-fixed-table-height"
-              style="overflow: hidden; overflow-y: auto;"
+            @update:active="onTreeChange"
+            hoverable
+            activatable
+            :open="openIdList"
+            :items="tableDataTree"
+            dense
+            item-key="orgId"
+            item-text="orgName"
+            :search="searchInput"
+            class="jh-fixed-table-height"
+            style="overflow: hidden; overflow-y: auto;"
+            :active="activeOrgId"
           >
 
             <template v-slot:append="{ item, open }">
@@ -156,6 +157,7 @@
       addItem: {},
       openIdList: [],
       tableDataTree: [],
+      activeOrgId: null,
     }),
     computed: {
     },
@@ -237,6 +239,9 @@
 
         this.tableDataFromBackend = rows;
         this.tableDataTree = this.buildTableTree(rows);
+        if (this.tableDataTree.length) {
+          this.activeOrgId = [this.tableDataTree[0].orgId];
+        }
         console.log('this.tableDataTree', this.tableDataTree);
         this.isTableLoading = false;
       },

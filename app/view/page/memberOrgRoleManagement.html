@@ -54,9 +54,38 @@
                   v-model="addDrawerSelectedList" 
                   class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
                 >
+                  <template v-slot:item.roleId="{ item }">
+                    <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
+                      v-model="item['roleId']" :items="constantCollection['roleList']">
+                    </v-select>
+                  </template>
                   <template v-slot:item.action="{ item }">
-                    <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
-                    <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+                    <span
+                      role="button" class="success--text font-weight-medium font-size-2 mr-2"
+                      @click="doUiAction('startUpdateItem', {item})">
+                      <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+                    </span>
+                    <span
+                      role="button" class="success--text font-weight-medium font-size-2"
+                      @click="doUiAction('deleteItem', {item})">
+                      <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+                    </span>
+                  </template>
+
+                  <!-- 没有数据 -->
+                  <template v-slot:loading>
+                    <div class="jh-no-data">数据加载中</div>
+                  </template>
+                  <template v-slot:no-data>
+                    <div class="jh-no-data">暂无数据</div>
+                  </template>
+                  <template v-slot:no-results>
+                    <div class="jh-no-data">暂无数据</div>
+                  </template>
+                  <!-- 表格分页 -->
+                  <template v-slot:footer.page-text="pagination">
+                    <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
+                    <span class="ml-1">共{{pagination.itemsLength}}条</span>
                   </template>
                 </v-data-table>
               </v-card>
@@ -68,41 +97,40 @@
         <v-navigation-drawer v-if="isCreateDrawerShown" v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
           <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
             <v-row>
-              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{editItem.orgName}}】添加职员</span>
-              <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isCreateDrawerShown = false">
-                <v-icon dark>mdi-close</v-icon>
-              </v-btn>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{currentOrgName}}】添加职员</span>
             </v-row>
 
-            <v-row class="mt-0 px-4">
+            <v-row class="ma-0 px-4">
               <v-col cols="7" xs="7" sm="7" md="9" xl="10" class="pa-0">
                 <v-btn small color="success" class="elevation-0 mr-2" @click="doUiAction('createItem', { itemList: addDrawerSelectedList })">批量添加</v-btn>
               </v-col>
               <v-spacer></v-spacer>
               <v-text-field v-model="addDrawerSearchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
             </v-row>  
-            <v-row class="mt-0 px-4">
-
-              <v-data-table 
-                fixed-header
-                :headers="nodeHeaders"
-                :items="memberData"
-                :search="addDrawerSearchInput"
-                :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-                :items-per-page="20"
-                mobile-breakpoint="0"
-                :loading="isTableLoading"
-                v-model="addDrawerSelectedList" show-select
-                checkbox-color="success"
-                class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-              <template v-slot:item.action="{ item }">
-              <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
-              <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
-              </template>
-              </v-data-table>
-            </v-row>
+            <v-data-table 
+              fixed-header
+              :headers="nodeHeaders"
+              :items="memberData"
+              :search="addDrawerSearchInput"
+              :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+              :items-per-page="20"
+              mobile-breakpoint="0"
+              :loading="isTableLoading"
+              v-model="addDrawerSelectedList" show-select
+              checkbox-color="success"
+              class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+            <template v-slot:item.action="{ item }">
+            <v-btn small class=" success" v-if="item.orgId !== currentOrgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
+            <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+            </template>
+            </v-data-table>
           </v-form>
+          <!-- 抽屉关闭按钮 -->
+          <v-btn
+            elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+            @click="isCreateDrawerShown = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-navigation-drawer>
 
 
@@ -181,7 +209,8 @@ new Vue({
       v => !!v || 'This is required',
     ],
     constantCollection: {
-      org: []
+      org: [],
+      roleList: [],
     },
     serverSearchInput: {
       studentId: null,
@@ -198,15 +227,16 @@ new Vue({
     orgBackend: [],
     openTree: [],
     nodeHeaders: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       { text: "姓名", value: "employeeName", required: true},
+      { text: "角色", value: "roleId", width: 150, required: true},
       { text: "手机", value: "mobile", required: true},
       { text: "邮箱", value: "email", required: true},
       { text: "证件类型", value: "idType", type: 'select' },
-      { text: "证件号码", value: "idNumber" },
+      // { text: "证件号码", value: "idNumber" },
       { text: "性别", value: "sex", type: 'select' },
-      {text: "操作者", value: "operationByUser", width: 120},
-      {text: "操作时间", value: "operationAt", width: 250},
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
+      // {text: "操作者", value: "operationByUser", width: 120},
+      // {text: "操作时间", value: "operationAt", width: 250},
     ],
     groupHeaders: [
       {text: "部门", value: "orgName", width: 120},
@@ -230,8 +260,8 @@ new Vue({
   watch: {
   },
   async created() {
-    await this.doUiAction('refreshMemberData');
     await this.getOrg();
+    await this.getRoleList();
   },
   mounted() {},
   methods: {
@@ -262,6 +292,11 @@ new Vue({
           await this.closeDrawerShow();
           await this.refreshMemberData();
           break;
+        case 'updateItemRole':
+          await this.prepareItemData(uiActionData);
+          await this.doUpdateItemRole();
+          await this.refreshMemberData();
+          break;
         case 'deleteItem':
           await this.confirmDeleteItemDialog();
           await this.doDeleteItem(uiActionData);
@@ -284,6 +319,20 @@ new Vue({
         }
       })).data.appData.resultData;
       this.setOrgConstant(rows)
+    },
+    async getRoleList(){;
+      const {rows} = (await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'memberOrgRoleManagement',
+            actionId: 'selectRoleList',
+            orderBy: [{ column: 'roleId', order: 'asc' }]
+          }
+        }
+      })).data.appData.resultData;
+      this.constantCollection.roleList = rows.map(item => {
+        return { text: item.roleName, value: item.roleId }
+      });
     },
     // 设置组织常量
     setOrgConstant(rows){
@@ -370,8 +419,8 @@ new Vue({
     /**
      * uiActionId:  startCreateItem
      */
-    async clearItemData({ item }) {
-      this.editItem = {...item};
+    async clearItemData() {
+      // this.editItem = {...item};
       this.addDrawerSearchInput = null,
       this.memberData = [];
     },
@@ -388,7 +437,6 @@ new Vue({
       }
     },
     async doCreateItem({ itemList }) {
-        const org = this.editItem
         const memberList = itemList.map(member => {
           return { memberId: member.employeeId };
         })
@@ -403,7 +451,7 @@ new Vue({
               pageId: 'memberOrgRoleManagement',
               actionId: 'batchAddMemberOrgRole',
               actionData: {
-                orgId: org.orgId,
+                orgId: this.currentOrgId,
                 memberList,
               }
             }
@@ -439,6 +487,21 @@ new Vue({
             actionId: 'updateItem',
             where: { id },
             actionData: { orgId }
+          }
+        }
+      })
+      await window.vtoast.success("修改数据成功");
+    },
+    async doUpdateItemRole() {
+      const { id, roleId } = this.editItem;
+      await window.vtoast.loading("修改数据");
+      await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'memberOrgRoleManagement',
+            actionId: 'updateItem',
+            where: { id },
+            actionData: { roleId }
           }
         }
       })
