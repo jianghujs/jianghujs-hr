@@ -24,17 +24,24 @@
           >
 
             <template v-slot:append="{ item, open }">
-              <v-icon size="20" v-if="!item.orgParentId" @click="doUiAction('startCreateItem', {})">
+              <v-icon size="20" v-if="!item.orgParentId" @click.stop="doUiAction('startCreateItem', {})">
                 mdi-new-box
               </v-icon>
-              <v-icon size="20" @click="doUiAction('startCreateItem', {item})">
+              <v-icon size="20" @click.stop="doUiAction('startCreateItem', {item})">
                 mdi-plus
               </v-icon>
-              <v-icon size="20" @click="doUiAction('startUpdateItem', {item})">
+              <v-icon size="20" @click.stop="doUiAction('startUpdateItem', {item})">
                 mdi-note-edit-outline
               </v-icon>
             </template>
           </v-treeview>
+          <v-overlay absolute :value="isTableLoading" color="#fff">
+            <v-progress-circular
+              color="success"
+              indeterminate
+              size="32"
+            ></v-progress-circular>
+          </v-overlay>
         </v-card>
       </v-container>
 
@@ -80,10 +87,6 @@
         <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
           <v-row>
             <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
-            <v-spacer></v-spacer>
-            <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isUpdateDrawerShown = false">
-              <v-icon dark>mdi-close</v-icon>
-            </v-btn>
           </v-row>
           <v-row class="mt-0 px-4">
             <v-col cols="12" sm="12" md="4">
@@ -101,7 +104,7 @@
               <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['remark']"></v-text-field>
             </v-col>
           </v-row>
-          <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+          <v-row class="justify-end mx-0 mt-8 px-6">
             <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
             <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
           </v-row>
