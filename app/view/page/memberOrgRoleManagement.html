@@ -10,7 +10,7 @@
         <div class="jh-page-second-bar px-8">
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="4" xl="3">
-              <div class="pt-3 text-h7 font-weight-bold">员工管理V2
+              <div class="pt-3 text-h7 font-weight-bold">员工组织管理
                 <!-- 帮助页按钮 -->
                 <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
                 </v-icon>
@@ -97,7 +97,7 @@
         <v-navigation-drawer v-if="isCreateDrawerShown" v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
           <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
             <v-row>
-              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{currentOrgName}}】添加职员</span>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{currentOrgName}}】添加员工</span>
             </v-row>
 
             <v-row class="ma-0 px-4">
@@ -146,7 +146,7 @@
             </v-row>
             <v-row class="mt-0 px-4">
               <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">职员名</span>
+                <span class="inputLabel">员工名</span>
                 <v-text-field class="cus-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="4">
@@ -198,7 +198,7 @@ new Vue({
         disabled: true,
       },
       {
-        text: '员工管理',
+        text: '员工组织管理',
         disabled: true,
       }
     ],
