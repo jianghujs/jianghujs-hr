@@ -267,7 +267,7 @@
         if (list.length && this.openIdList.includes(event[0])) {
           this.openIdList.push(event[0]);
         }
-        this.$emit('on-tree-active', event[0]);
+        this.$emit('on-tree-active', this.tableDataFromBackend.find(e => e.orgId === event[0]));
       },
 
       async clearItemData({ item }) {

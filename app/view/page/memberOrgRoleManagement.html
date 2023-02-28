@@ -27,27 +27,38 @@
           <v-row class="ma-0 pa-0">
             <v-col cols="12" xs="3" sm="4" md="3" xl="2" class="pa-0">
               <org-mgmt-tree @on-tree-active="onTreeChange"></org-mgmt-tree>
-              <!-- <v-treeview
-                  @update:active="onTreeChange"
-                  shaped
-                  hoverable
-                  activatable
-                  :open="openTree"
-                  :items="orgTree"
-                  dense
-              ></v-treeview> -->
             </v-col>
             <v-col cols="12" xs="9" sm="8" md="9" xl="10" class="py-0 pr-0">
-              <v-card class="rounded-lg bg-white">
-                <v-expansion-panels multiple v-model="activePanel" accordion dense>
-                  <table-tree 
-                    :table-data="tableData" 
-                    :nodeHeaders="nodeHeaders"
-                    :isTableLoading="isTableLoading"
-                    :activePanel="activePanel"
-                    @doUiAction="doUiAction"
-                  /></table-tree>
-                </v-expansion-panels>
+              <v-card class="rounded-lg">
+                <v-row class="ma-0 pa-4" >
+                  <!-- 新增按钮 -->
+                  <v-col cols="12" xs="8" sm="4" md="3" xl="2" class="pa-0">
+                    {{currentOrgName}}
+                    <v-btn v-if="currentOrgId" color="success" class="elevation-0 mr-2" @click="doUiAction('startCreateItem')" small>新增</v-btn>
+                    </v-col>
+                  <v-spacer></v-spacer>
+                  <!-- 搜索过滤 -->
+                  <v-col cols="12" xs="8" sm="4" md="3" xl="2" class="pa-0">
+                    <v-text-field color="success" v-model="searchInput" prefix="搜索：" class="jh-v-input" dense filled single-line></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-data-table 
+                  fixed-header
+                  :headers="nodeHeaders"
+                  :items="tableData"
+                  :search="searchInput"
+                  :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+                  :items-per-page="20"
+                  mobile-breakpoint="0"
+                  :loading="isTableLoading"
+                  v-model="addDrawerSelectedList" 
+                  class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
+                >
+                  <template v-slot:item.action="{ item }">
+                    <v-btn small class=" success" v-if="item.orgId !== editItem.orgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
+                    <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+                  </template>
+                </v-data-table>
               </v-card>
             </v-col>
           </v-row>
@@ -181,10 +192,10 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     expanded: [],
-    tableDataTree: [],
+    tableData: [],
     currentOrgId: null,
+    currentOrgName: null,
     orgBackend: [],
-    orgTree: [],
     openTree: [],
     nodeHeaders: [
       { text: "姓名", value: "employeeName", required: true},
@@ -219,20 +230,13 @@ new Vue({
   watch: {
   },
   async created() {
-    await this.doUiAction('refreshOrgData');
     await this.doUiAction('refreshMemberData');
     await this.getOrg();
-
-    // Tip: 测试代码
-    // await this.doUiAction('startCreateItem', {item: this.orgTree[0]});
   },
   mounted() {},
   methods: {
     async doUiAction(uiActionId, uiActionData) {
       switch (uiActionId) {
-        case 'refreshOrgData':
-          await this.refreshOrgData();
-          break;
         case 'refreshMemberData':
           await this.refreshMemberData();
           break;
@@ -299,48 +303,12 @@ new Vue({
         throw new Error("[prepareValidate] false");
       }
     },
-    onTreeChange(orgId) {
+    onTreeChange({orgId, orgName}) {
       this.currentOrgId = orgId;
+      this.currentOrgName = orgName;
       this.doUiAction("refreshMemberData");
     },
 
-    /**
-     * uiActionId:  refreshMemberData
-     * description: ✅获取表格数据
-     */
-    async refreshOrgData() {
-      const result = await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'orgManagement',
-            actionId: 'selectItemList',
-            orderBy: [{column: 'orgId', order: 'desc'}]
-          }
-        }
-      });
-      const {rows} = result.data.appData.resultData;
-      this.orgBackend = rows;
-      this.orgTree = rows.filter(item => !item.orgParentId);
-      const buildTree = (target, resource) => {
-        target = target.map(item => {
-          const children = rows.filter(child => child.orgParentId === item.orgId);
-          if(!_.isEmpty(children)) {
-            item.children = children;
-            item.children = buildTree(item.children, rows);
-          }
-          item.name = item.orgName;
-          return item;
-        })
-        target.name = target.orgName;
-        return target;
-      }
-
-      this.orgTree = buildTree(this.orgTree, rows);
-      if(!_.isEmpty(this.orgTree)) {
-        this.openTree = [this.orgTree[0].id];
-      }
-      console.log("this.orgBackend", this.orgTree);
-    },
     async refreshMemberData() {
       this.isTableLoading = true;
       const serverSearchInput = _.pickBy(this.serverSearchInput, value=> !!value);
@@ -361,20 +329,21 @@ new Vue({
       const { rows } = result.data.appData.resultData;
 
       this.tableDataFromBackend = rows;
-      const buildMemberList = (target) => {
-        return target.map(item => {
-          const memberList = rows.filter(row => row.orgId === item.orgId);
-          if(!_.isEmpty(memberList)) {
-            item.memberList = memberList;
-          }
-          if(!_.isEmpty(item.children)) {
-            this.expanded.push(item);
-            item.children = buildMemberList(item.children);
-          }
-          return item;
-        });
-      }
-      this.tableDataTree = Object.assign({}, this.tableDataTree, buildMemberList(this.orgTree));
+      // const buildMemberList = (target) => {
+      //   return target.map(item => {
+      //     const memberList = rows.filter(row => row.orgId === item.orgId);
+      //     if(!_.isEmpty(memberList)) {
+      //       item.memberList = memberList;
+      //     }
+      //     if(!_.isEmpty(item.children)) {
+      //       this.expanded.push(item);
+      //       item.children = buildMemberList(item.children);
+      //     }
+      //     return item;
+      //   });
+      // }
+      // this.tableDataTree = Object.assign({}, this.tableDataTree, buildMemberList(this.orgTree));
+      this.tableData = this.tableDataFromBackend;
       this.isTableLoading = false;
     },
     async refreshMemberList() {
