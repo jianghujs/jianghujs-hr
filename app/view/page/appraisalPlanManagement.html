@@ -77,7 +77,7 @@
           </v-data-table>
           </v-card>
 
-          <drawer-form v-model="isEditDrawerShow"
+          <drawer-form v-model="isUpdateDrawerShown"
           ref="form"
           :headers="detailHeaders"
           :editItem="editItem"
@@ -161,7 +161,7 @@ new Vue({
     tableDataBackups: [],
     headers: [],
     editItem: {},
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     currentClickButton: {},
     actionTab: 0,
     isDetailDrawerShow: false,

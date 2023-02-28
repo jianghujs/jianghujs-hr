@@ -144,9 +144,9 @@ new Vue({
       {text: "考勤地址", value: "address", width: 120}, 
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     editItem: {},
-    isAddDrawerShow: false,
+    isCreateDrawerShown: false,
     addItem: {}
   }),
   computed: {
@@ -247,7 +247,7 @@ new Vue({
       this.addItem = {};
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isCreateDrawerShown = true;
     },
 
     /**
@@ -274,8 +274,8 @@ new Vue({
       await window.vtoast.success("新增数据成功");
     },
     async closeDrawerShow() {
-      this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
+      this.isUpdateDrawerShown = false;
+      this.isCreateDrawerShown = false;
     },
 
     /**
@@ -286,7 +286,7 @@ new Vue({
       this.editItem = {...item};
     },
     async openUpdateDialog() {
-      this.isEditDrawerShow = true;
+      this.isUpdateDrawerShown = true;
     },
     /**
      * uiActionId:  updateItem

@@ -110,58 +110,58 @@ SQL END!-->
           </v-container>
 
           <!-- 新增 -->
-          <v-navigation-drawer v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%"
+          <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%"
             class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-              <v-row class="pt-8">
-                <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">新增信息</span>
+            <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
                 <v-spacer></v-spacer>
                 <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small
-                  @click="isAddDrawerShow = false">
+                  @click="isCreateDrawerShown = false">
                   <v-icon dark>mdi-close</v-icon>
                 </v-btn>
               </v-row>
-              <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+              <v-row class="mt-0 px-4">
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工姓名</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeName']" :rules="requireRules"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['sex']"
                     :items="constantCollection.sex"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工年龄</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['age']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">联系电话</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['contactNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">紧急联系电话</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="addItem['emergencyContactNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['post']"
                     :items="constantCollection.post"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">身份证号</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['icNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">出生日期</span>
                   <v-menu class="cus-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
@@ -172,79 +172,79 @@ SQL END!-->
                   </v-menu>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">毕业学校</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['institution']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">专业</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['major']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">最高学历</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="addItem['highestEducation']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">家庭住址</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="addItem['residentialAddress']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">建设银行卡</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['cardNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">车牌号</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="addItem['licensePlateNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">备注</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']" :rules="requireRules"
                   :items="constantCollection.status"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']" :rules="requireRules"
                   :items="constantCollection.employmentForms"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']" :rules="requireRules"
                   :items="constantCollection.entryStatus"></v-select>
                 </v-col>
               </v-row>
-              <v-row class="justify-end pr-6">
+              <v-row class="justify-end mx-0 mt-8 px-6">
                 <v-btn color="success" @click="doUiAction('createItem')"
                   :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
                   :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-                <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
+                <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
                   :class="{'mr-4': isMobile}">取消</v-btn>
               </v-row>
             </v-form>
           </v-navigation-drawer>
           
           <!-- 编辑抽屉 -->
-          <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%"
+          <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%"
             class="elevation-24">
             <v-row>
               <span class="title pa-6 pb-4" :class="{'pl-9': !isMobile, 'pl-6': isMobile}">{{editItem.employeeName}}</span>
               <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0 mr-8" fab x-small @click="isEditDrawerShow = false">
+              <v-btn class="mt-6 elevation-0 mr-8" fab x-small @click="isUpdateDrawerShown = false">
                 <v-icon dark>mdi-close</v-icon>
               </v-btn>
             </v-row>
@@ -255,46 +255,46 @@ SQL END!-->
               </v-tabs>
             </v-row>
             <v-form v-model="isFormValid" v-if="actionTab===0" ref="form" lazy-validation>
-              <v-row class="pt-8">
-                <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">基本信息</span>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">基本信息</span>
                 <v-spacer></v-spacer>
               </v-row>
-              <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+              <v-row class="mt-0 px-4">
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工姓名</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employeeName']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['sex']"
                   :items="constantCollection.sex"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工年龄</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">联系电话</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['contactNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">紧急联系电话</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['emergencyContactNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">身份证号</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['icNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">出生日期</span>
                   <v-menu class="cus-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
@@ -305,112 +305,112 @@ SQL END!-->
                   </v-menu>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">毕业学校</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['institution']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">专业</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['major']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">最高学历</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['highestEducation']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证类别</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['teacherQualification']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学段</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationLeaver']"
                   :items="constantCollection.level"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学科</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationSubject']"
                   :items="constantCollection.subject"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证编号</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['teacherCertificationNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">家庭住址</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['residentialAddress']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">建设银行卡</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['cardNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">车牌号</span>
                   <v-text-field class="cus-v-input " dense filled single-line
                     v-model="editItem['licensePlateNumber']"></v-text-field>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">备注</span>
                   <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['remarks']"></v-text-field>
                 </v-col>
               </v-row>
 
-              <v-row class="pt-8">
-                <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">岗位信息</span>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">岗位信息</span>
                 <v-spacer></v-spacer>
               </v-row>
 
-              <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+              <v-row class="mt-0 px-4">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['post']"
                   :items="constantCollection.post"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学段</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
                   :items="constantCollection.level"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学科</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
                   :items="constantCollection.subject"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['status']"
                   :items="constantCollection.status"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
                   :items="constantCollection.employmentForms"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
                   :items="constantCollection.entryStatus"></v-select>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职日期</span>
                   <v-menu class="cus-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
@@ -421,7 +421,7 @@ SQL END!-->
                   </v-menu>
                 </v-col>
 
-                <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">到期日期</span>
                   <v-menu class="cus-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
@@ -431,18 +431,18 @@ SQL END!-->
                     <v-date-picker color="success" elevation="20" v-model="editItem['dateOfContractExpiration']"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+                <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
                 <!--            <span class="inputLabel">学生ID</span>-->
                 <!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-                <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+                <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--            <span class="inputLabel">班级ID</span>-->
                 <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-                <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+                <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--        <span class="inputLabel">出生日期</span>-->
                 <!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
                 <!--          <template v-slot:activator="{ on, attrs }">-->
@@ -454,7 +454,7 @@ SQL END!-->
               </v-row>
               <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
                 <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-                <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+                <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
               </v-row>
             </v-form>
             <v-form v-model="isFormValid" v-if="actionTab===1" ref="form" lazy-validation>
@@ -675,9 +675,9 @@ SQL END!-->
           { title: '其他', action: 'documents', icon: 'mdi-file-document-multiple-outline' },
         ]
       },
-      isEditDrawerShow: false,
+      isUpdateDrawerShown: false,
       editItem: {},
-      isAddDrawerShow: false,
+      isCreateDrawerShown: false,
       addItem: {}
     }),
     computed: {
@@ -822,7 +822,7 @@ SQL END!-->
         this.addItem = {};
       },
       async openCreateItemDialog() {
-        this.isAddDrawerShow = true;
+        this.isCreateDrawerShown = true;
       },
 
       /**
@@ -861,8 +861,8 @@ SQL END!-->
         }
       },
       async closeDrawerShow() {
-        this.isEditDrawerShow = false;
-        this.isAddDrawerShow = false;
+        this.isUpdateDrawerShown = false;
+        this.isCreateDrawerShown = false;
       },
 
       /**
@@ -874,7 +874,7 @@ SQL END!-->
         this.editItem = { ...item };
       },
       async openUpdateDialog() {
-        this.isEditDrawerShow = true;
+        this.isUpdateDrawerShown = true;
       },
       /**
        * uiActionId:  updateItem

@@ -54,24 +54,24 @@
         </div>
 
         <!-- 新增 -->
-        <v-navigation-drawer v-if="isAddDrawerShow" v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
-          <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-            <v-row class="pt-8">
-              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.orgName}}】添加职员</span>
+        <v-navigation-drawer v-if="isCreateDrawerShown" v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+          <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+            <v-row>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{editItem.orgName}}】添加职员</span>
               <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
+              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isCreateDrawerShown = false">
                 <v-icon dark>mdi-close</v-icon>
               </v-btn>
             </v-row>
 
-            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+            <v-row class="mt-0 px-4">
               <v-col cols="7" xs="7" sm="7" md="9" xl="10" class="pa-0">
                 <v-btn small color="success" class="elevation-0 mr-2" @click="doUiAction('createItem', { itemList: addDrawerSelectedList })">批量添加</v-btn>
               </v-col>
               <v-spacer></v-spacer>
               <v-text-field v-model="addDrawerSearchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
             </v-row>  
-            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+            <v-row class="mt-0 px-4">
 
               <v-data-table 
                 fixed-header
@@ -96,21 +96,21 @@
 
 
         <!-- 编辑抽屉 -->
-        <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-          <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-            <v-row class="pt-8">
-              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
+        <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+          <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+            <v-row>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
               <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
+              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isUpdateDrawerShown = false">
                 <v-icon dark>mdi-close</v-icon>
               </v-btn>
             </v-row>
-            <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-              <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-row class="mt-0 px-4">
+              <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">职员名</span>
                 <v-text-field class="cus-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
               </v-col>
-              <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+              <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">组织</span>
                 <v-select class="cus-v-input mr-2" dense filled single-line clearable color="success"
                 v-model="editItem['orgId']" :items="constantCollection['org']"
@@ -123,7 +123,7 @@
             </v-row>
             <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
               <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-              <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+              <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
             </v-row>
           </v-form>
         </v-navigation-drawer>        
@@ -200,9 +200,9 @@ new Vue({
     groupHeaders: [
       {text: "部门", value: "orgName", width: 120},
     ],
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     editItem: {},
-    isAddDrawerShow: false,
+    isCreateDrawerShown: false,
     addItem: {},
     addDrawerSelectedList: [],
     activePanel: [0],
@@ -394,8 +394,8 @@ new Vue({
         this.isTableLoading = false;
     },
     async closeDrawerShow() {
-      this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
+      this.isUpdateDrawerShown = false;
+      this.isCreateDrawerShown = false;
     },
     // =================================uiAction 公共方法 end ======================================
     /**
@@ -407,7 +407,7 @@ new Vue({
       this.memberData = [];
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isCreateDrawerShown = true;
     },
     /**
    * uiActionId:  createItem
@@ -449,7 +449,7 @@ new Vue({
       this.editItem = {...item};
     },
     async openUpdateDialog() {
-      this.isEditDrawerShow = true;
+      this.isUpdateDrawerShown = true;
     },
     /**
      * uiActionId:  updateItem

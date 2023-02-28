@@ -72,7 +72,7 @@
             </v-data-table>
           </v-card>
 
-          <drawer-form v-model="isEditDrawerShow"
+          <drawer-form v-model="isUpdateDrawerShown"
             ref="form"
             :headers="detailHeaders"
             :editItem="editItem"
@@ -84,8 +84,8 @@
 
           <!-- 员工详情 -->
           <v-navigation-drawer v-if="isDetailDrawerShow" v-model="isDetailDrawerShow" :permanent="isDetailDrawerShow" fixed temporary right width="80%" class="elevation-24">
-            <v-row class="pt-8">
-              <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">【{{editItem.postName}}】详情</span>
+            <v-row>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{editItem.postName}}】详情</span>
               <v-spacer></v-spacer>
               <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isDetailDrawerShow = false">
                 <v-icon dark>mdi-close</v-icon>
@@ -186,7 +186,7 @@ new Vue({
     tableDataBackups: [],
     headers: [],
     editItem: {},
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     currentClickButton: {},
     actionTab: 0,
     isDetailDrawerShow: false,

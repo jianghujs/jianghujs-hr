@@ -39,93 +39,79 @@
       </v-container>
 
       <!-- 新增 -->
-      <v-navigation-drawer v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
-        <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-          <v-row class="pt-8">
-            <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">新增信息</span>
-            <v-spacer></v-spacer>
-            <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
-              <v-icon dark>mdi-close</v-icon>
-            </v-btn>
+      <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+        <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+          <v-row>
+            <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
           </v-row>
-          <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+          <v-row class="mt-0 px-4">
             
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">组织名</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['orgName']"></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">组织父节点</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['orgParentId']"></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">备注</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remark']"></v-text-field>
             </v-col>
-            
           </v-row>
-          <v-row class="justify-end pr-6">
-            <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-            <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+          <v-row class="justify-end mx-0 mt-8 px-6">
+            <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
+            <v-btn class="ml-2" @click="isCreateDrawerShown = false">取消</v-btn>
           </v-row>
         </v-form>
+        <!-- 抽屉关闭按钮 -->
+        <v-btn
+          elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+          @click="isCreateDrawerShown = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-navigation-drawer>
 
 
       <!-- 编辑抽屉 -->
-      <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-        <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-          <v-row class="pt-8">
-            <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
+      <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+        <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+          <v-row>
+            <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
             <v-spacer></v-spacer>
-            <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
+            <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isUpdateDrawerShown = false">
               <v-icon dark>mdi-close</v-icon>
             </v-btn>
           </v-row>
-          <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <v-row class="mt-0 px-4">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">组织名</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['orgName']"></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">组织父节点</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['orgParentId']"></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <v-col cols="12" sm="12" md="4">
               <span class="inputLabel">备注</span>
               <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['remark']"></v-text-field>
             </v-col>
-            
-      <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-      <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-      <!--            <span class="inputLabel">学生ID</span>-->
-      <!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-      <!--      </v-col>-->
-      <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-      <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-      <!--            <span class="inputLabel">班级ID</span>-->
-      <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
-      <!--      </v-col>-->
-      <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-      <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-      <!--        <span class="inputLabel">出生日期</span>-->
-      <!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
-      <!--          <template v-slot:activator="{ on, attrs }">-->
-      <!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-      <!--          </template>-->
-      <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-      <!--        </v-menu>-->
-      <!--      </v-col>-->
           </v-row>
           <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
             <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-            <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+            <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
           </v-row>
         </v-form>
+        <!-- 抽屉关闭按钮 -->
+        <v-btn
+          elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+          @click="isUpdateDrawerShown = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-navigation-drawer>
     </div>
 
@@ -161,30 +147,14 @@
       searchInput: null,
       isTableLoading: true,
       tableDataFromBackend: [],
-      headers: [
-        { text: "组织Id", value: "orgId", width: 120, class: 'fixed', cellClass: 'fixed' },
-        { text: "节点路径", value: "orgPath", width: 120, cellClass: 'fixed' },
-        { text: "组织父节点", value: "orgParentId", width: 120, cellClass: 'fixed' },
-        { text: "组织名", value: "orgName", width: 120, cellClass: 'fixed' },
-        { text: "备注", value: "remark", width: 120 },
-        { text: "操作者", value: "operationByUser", width: 120 },
-        { text: "操作时间", value: "operationAt", width: 250 },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed' },
-      ],
-      isEditDrawerShow: false,
+      isUpdateDrawerShown: false,
       editItem: {},
-      isAddDrawerShow: false,
+      isCreateDrawerShown: false,
       addItem: {},
       openIdList: [],
       tableDataTree: [],
     }),
     computed: {
-      isMobile() {
-        return window.innerWidth < 600;
-      },
-      tableData() {
-        return this.tableDataFromBackend;
-      }
     },
     watch: {},
     async created() {
@@ -297,10 +267,6 @@
         this.$emit('on-tree-active', event[0]);
       },
 
-      /**
-       * uiActionId:  startCreateItem
-       * description: ✅获取表格数据
-      */
       async clearItemData({ item }) {
         this.addItem = {};
         if (item && item.orgId) {
@@ -308,7 +274,7 @@
         }
       },
       async openCreateItemDialog() {
-        this.isAddDrawerShow = true;
+        this.isCreateDrawerShown = true;
       },
 
       /**
@@ -335,8 +301,8 @@
         await window.vtoast.success("新增数据成功");
       },
       async closeDrawerShow() {
-        this.isEditDrawerShow = false;
-        this.isAddDrawerShow = false;
+        this.isUpdateDrawerShown = false;
+        this.isCreateDrawerShown = false;
       },
 
       /**
@@ -347,7 +313,7 @@
         this.editItem = { ...item };
       },
       async openUpdateDialog() {
-        this.isEditDrawerShow = true;
+        this.isUpdateDrawerShown = true;
       },
       /**
        * uiActionId:  updateItem

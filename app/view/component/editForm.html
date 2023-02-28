@@ -7,7 +7,7 @@
           <v-col v-if="item.type === 'slot'" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
             <slot></slot>
           </v-col>
-          <v-col v-else-if="item.type !== 'textarea' && item.type !== 'searchMultiple'" cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+          <v-col v-else-if="item.type !== 'textarea' && item.type !== 'searchMultiple'" cols="12" sm="12" md="4">
             <span class="inputLabel">{{item.text}}</span>
             <!-- 下拉框 -->
             <v-select v-if="item.type === 'select'" :disabled="item.disabled" class="cus-v-input" dense filled single-line clearable color="success"
@@ -71,7 +71,7 @@
       requireRules: [v => !!v || 'This is required'],
     }),
     props: {
-      isEditDrawerShow: { type: Boolean, default: false },
+      isUpdateDrawerShown: { type: Boolean, default: false },
       currentClickButton: { type: Object, default: {} },
       headers: { type: Array, default: [] },
       editItem: { type: Object, default: {} },
