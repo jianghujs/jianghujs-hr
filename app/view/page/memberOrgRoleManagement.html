@@ -22,21 +22,23 @@
         <!-- <<<<<<<<<<<<< 头部内容 -->
 
         <!-- 页面主要内容 -->
-        <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-          <v-card>
-            <v-row class="ma-0 pa-0">
-              <v-col cols="12" xs="3" sm="4" md="3" xl="2" style="border-right: 1px solid #EEEEEE">
-                <v-treeview
-                    @update:active="onTreeChange"
-                    shaped
-                    hoverable
-                    activatable
-                    :open="openTree"
-                    :items="orgTree"
-                    dense
-                ></v-treeview>
-              </v-col>
-              <v-col cols="12" xs="9" sm="8" md="9" xl="10">
+        <div class="jh-page-body-container px-8">
+          <!-- 页面内容 >>>>>>>>>>>>> -->
+          <v-row class="ma-0 pa-0">
+            <v-col cols="12" xs="3" sm="4" md="3" xl="2" class="pa-0">
+              <org-mgmt-tree @on-tree-active="onTreeChange"></org-mgmt-tree>
+              <!-- <v-treeview
+                  @update:active="onTreeChange"
+                  shaped
+                  hoverable
+                  activatable
+                  :open="openTree"
+                  :items="orgTree"
+                  dense
+              ></v-treeview> -->
+            </v-col>
+            <v-col cols="12" xs="9" sm="8" md="9" xl="10" class="py-0 pr-0">
+              <v-card class="rounded-lg bg-white">
                 <v-expansion-panels multiple v-model="activePanel" accordion dense>
                   <table-tree 
                     :table-data="tableData" 
@@ -46,10 +48,10 @@
                     @doUiAction="doUiAction"
                   /></table-tree>
                 </v-expansion-panels>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-container>
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
 
         <!-- 新增 -->
         <v-navigation-drawer v-if="isAddDrawerShow" v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
@@ -141,7 +143,9 @@
 {% endblock %}
 
 {% block vueScript %}
+{% include 'component/orgMgmtTree.html' %}
 {% include 'component/tableTree.html' %}
+{% include 'common/jianghuJs/fixedTableHeightV4.html' %}
 
 <script type="module">
 new Vue({
@@ -295,25 +299,8 @@ new Vue({
         throw new Error("[prepareValidate] false");
       }
     },
-    onTreeChange(event) {
-      console.log("onTreeChange", event)
-      // 动态构建打开的层级ID
-      const insertId = (target, parentId) => {
-        target.forEach(item => {
-          if(item.id === event[0]) {
-            if(parentId) {
-              this.openTree.push(...parentId);
-            }
-            this.openTree.push(event[0]);
-          } else {
-            if(item.children) {
-              insertId(item.children, [...(parentId || []), item.id])
-            }
-          }
-        })
-      }
-      insertId(this.orgBackend, null);
-      this.currentOrgId = this.orgBackend.find(item => item.id === event[0]).orgId;
+    onTreeChange(orgId) {
+      this.currentOrgId = orgId;
       this.doUiAction("refreshMemberData");
     },
 
