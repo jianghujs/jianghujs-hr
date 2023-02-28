@@ -125,7 +125,7 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <span class="inputLabel">员工姓名</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeName']"></v-text-field>
+                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeName']" :rules="requireRules"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -212,19 +212,19 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <span class="inputLabel">员工状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']"
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']" :rules="requireRules"
                   :items="constantCollection.status"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <span class="inputLabel">聘用形式</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']"
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']" :rules="requireRules"
                   :items="constantCollection.employmentForms"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <span class="inputLabel">入职状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']"
+                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']" :rules="requireRules"
                   :items="constantCollection.entryStatus"></v-select>
                 </v-col>
               </v-row>
@@ -428,7 +428,7 @@ SQL END!-->
                       <v-text-field class="cus-v-input" dense filled single-line v-on="on"
                         :value="editItem['dateOfContractExpiration']"></v-text-field>
                     </template>
-                    <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
+                    <v-date-picker color="success" elevation="20" v-model="editItem['dateOfContractExpiration']"></v-date-picker>
                   </v-menu>
                 </v-col>
                 <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
