@@ -550,12 +550,12 @@ class InsuranceService extends Service {
     // 事务
     await jianghuKnex.transaction(async (trx) => {
       // 查询月薪资记录 + 月薪资人员记录 + 月薪资选项值
-      const monthRecord = await jianghuKnex(tableEnum.salary_month_record).where({year, month}).first();
-      const monthEmpRecordList = await jianghuKnex(tableEnum.salary_month_emp_record).where({sRecordId: monthRecord.sRecordId}).select();
-      const monthOptionValueList = await jianghuKnex(tableEnum.salary_month_option_value).whereIn("sEmpRecordId", monthEmpRecordList.map((item) => item.sEmpRecordId)).select();
+      const monthRecord = await trx(tableEnum.salary_month_record).where({year, month}).first();
+      const monthEmpRecordList = await trx(tableEnum.salary_month_emp_record).where({sRecordId: monthRecord.sRecordId}).select();
+      const monthOptionValueList = await trx(tableEnum.salary_month_option_value).whereIn("sEmpRecordId", monthEmpRecordList.map((item) => item.sEmpRecordId)).select();
       
       // 薪资项
-      const optionList = await jianghuKnex(tableEnum.salary_option).where('parentCode', '>', 0).select();
+      const optionList = await trx(tableEnum.salary_option).where('parentCode', '>', 0).select();
       const optionListByValue = _.keyBy(optionList, "code");
       // 写入主工资条
       const insertSlipRecord = {
@@ -567,7 +567,7 @@ class InsuranceService extends Service {
         createUserId: monthRecord.createUserId,
         createTime: new Date(),
       };
-      const [slipRecordId] = await jianghuKnex(tableEnum.salary_slip_record).insert(insertSlipRecord);
+      const [slipRecordId] = await trx(tableEnum.salary_slip_record).insert(insertSlipRecord);
       const insertSlipOption = [];
       for (const item of monthEmpRecordList) {
         const optionValueList = monthOptionValueList.filter((option) => option.sEmpRecordId == item.sEmpRecordId);
