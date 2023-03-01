@@ -25,14 +25,19 @@ module.exports.tableEnum = Object.freeze({
   employee: "employee",
   org: 'org',
   member_org_role: 'member_org_role',
+  insurance_project: "insurance_project",
+  insurance_scheme: "insurance_scheme",
+  insurance_month_emp_project_record: "insurance_month_emp_project_record",
+  insurance_month_emp_record: "insurance_month_emp_record",
+  insurance_month_record: "insurance_month_record",
   // ========================基础 View============================
   _view01_user: "_view01_user",
   view01_article: "view01_article",
   view01_employee: "view01_employee",
   view01_member_org_role: 'view01_member_org_role',
-  insurance_project: "insurance_project",
-  insurance_scheme: "insurance_scheme",
+  employee_social_security_info: "employee_social_security_info",
   // ========================高级 View============================
+  view01_employee_info: "view01_employee_info",
   view01_employee_info: "view01_employee_info",
 });
 

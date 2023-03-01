@@ -1,645 +1,506 @@
-{% extends 'template/jhTemplateV4.html'%}
+{% extends 'template/jhTemplateV3.html'%}
 
-{% block vueTemplate %}
-
-<script type="text/html" id="app-template">
-  <div>
-    <v-app mobile-breakpoint="sm">
-      <jh-menu />
-      <v-main class="d-flex flex-column" style="margin-top: 60px">
-        <!-- 头部内容 >>>>>>>>>>>>> -->
-        <div class="jh-page-second-bar px-8">
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="4" xl="3">
-              <div class="pt-3 text-h7 font-weight-bold">社保方案
-                <!-- 帮助页按钮 -->
-                <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
-                </v-icon>
-              </div>
-              <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
-            </v-col>
-          </v-row>
-        </div>
-
-        <!-- 页面主要内容 -->
-        <div class="pageBodyContainer px-8">
-          <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-            <v-card>
-              <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
-                :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
-
-                <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
-                  <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
-                  <span class="body-2">共{{ tableData.length }}条记录</span>
-                </v-col>
-
-                <v-spacer></v-spacer>
-
-                <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
-                  <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
-                </v-col>
-              </v-row>
-              <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput"
-                :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }" :items-per-page="-1" mobile-breakpoint="0"
-                :loading="isTableLoading" checkbox-color="success"
-                class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-
-                <template v-slot:item.scheme="{item}">
-                  {{ getConstantText('schemeType', item.schemeType) }}
-                </template>
-                <template v-slot:item.status="{item}">
-                  {{ getConstantText('isDel', item.isDel) }}
-                </template>
-                <template v-slot:item.action="{ item }">
-                  <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-                  <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-container>
-
-          <!-- 新增 -->
-          <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%"
-            class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
-              <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
-                <v-spacer></v-spacer>
-                <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small
-                  @click="isCreateDrawerShown = false">
-                  <v-icon dark>mdi-close</v-icon>
-                </v-btn>
-              </v-row>
-              <v-row class="mt-0 px-4">
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">社保方案id</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['schemeId']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">方案名称</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['schemeName']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">参保城市</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['city']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">户籍类型</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['houseType']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">参保类型 1 比例 2 金额</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['schemeType']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">1 删除 0 使用</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['isDel']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">创建人id</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['createUserId']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">创建时间</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['createTime']"></v-text-field>
-                </v-col>
-
-              </v-row>
-              <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn color="success" @click="doUiAction('createItem')"
-                 >新增
-                </v-btn>
-                <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
-                  :class="{'mr-4': isMobile}">取消</v-btn>
-              </v-row>
-            </v-form>
-          </v-navigation-drawer>
+{% block vue_template %}
 
 
-          <!-- 编辑抽屉 -->
-          <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%"
-            class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
-              <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
-                <v-spacer></v-spacer>
-                <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small
-                  @click="isUpdateDrawerShown = false">
-                  <v-icon dark>mdi-close</v-icon>
-                </v-btn>
-              </v-row>
-              <v-row class="mt-0 px-4">
+<jh-layout-v3>
+  <template slot="serverSearch">
+    <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
+      <v-col cols="4" sm="4" xs="3" md="3" xl="2" class="pb-3" :class="{'pt-0': isMobile}">
+        <v-select 
+          class="cus-v-input " 
+          dense filled 
+          single-line 
+          prefix="年度：" 
+          v-model="serverSearchInput.year" 
+          :items="constantCollection.year">
+        </v-select>
+      </v-col>
+      <v-col class="px-0" :class="{'pt-0': isMobile}" style="max-width: 56px">
+        <v-btn
+            class="elevation-0"
+            color="success"
+            dark
+            @click="doUiAction('refreshTableData')">
+          查询
+        </v-btn>
+      </v-col>
+    </v-row>
+  </template>
+<!-- 页面主要内容 -->
+<v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
+  <v-card>
+  <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 " :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
 
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">方案名称</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['schemeName']"></v-text-field>
-                </v-col>
+      <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
+        <v-btn
+          v-if="maxMonth < 12"
+            class="elevation-0"
+            color="success"
+            dark
+            @click="doUiAction('createItem')">
+          新建次月报表
+        </v-btn>
+        <span class="body-2">共{{ tableData.length }}条记录</span>
+      </v-col>
 
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">参保城市</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['city']"></v-text-field>
-                </v-col>
+      <v-spacer></v-spacer>
 
-                <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-                  <v-btn-toggle v-model="editItem['schemeType']" color="success" borderless>
-                    <v-btn :value="item.value" v-for="(item, index) in constantCollection.schemeType">
-                      <span class="hidden-sm-and-down">{{ item.text }}</span>
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-col>
+      <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
+        <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+      </v-col>
+    </v-row>
+    <v-data-table fixed-header
+                  :headers="headers"
+                  :items="tableData"
+                  :search="searchInput"
+                  :items-per-page="20"
+                  mobile-breakpoint="0"
+                  :loading="isTableLoading"
+                  checkbox-color="success"
+                  hide-default-footer
+                  class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+      <template v-slot:item.action="{ item }">
+        <v-btn small class=" success" @click="doUiAction('toDetail', {item})">查看详情</v-btn>
+        <v-btn v-if="item.isNew" small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+      </template>
+    </v-data-table>
+  </v-card>
+</v-container>
 
-                <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-                  <div class="d-flex justify-center align-center">
-                    <span class="inputLabel">参保城市</span>
-                    <v-spacer></v-spacer>
-                    <v-select style="max-width: 300px" v-model="editItem.typeList" :items="constantCollection.type"
-                      prefix="添加项目" multiple item-text="text" item-value="value">
-                      <template v-slot:selection="{ item, index }">
-                        <v-chip v-if="index === 0">
-                          <span>{{ item.text }}</span>
-                        </v-chip>
-                        <span v-if="index === 1" class="grey--text text-caption">
-                          (+{{ editItem.typeList.length - 1 }})
-                        </span>
-                      </template>
-                    </v-select>
-                  </div>
+<!-- 新增 -->
+<v-navigation-drawer v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
+    <v-row class="pt-8">
+      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">新增信息</span>
+      <v-spacer></v-spacer>
+      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
+        <v-icon dark>mdi-close</v-icon>
+      </v-btn>
+    </v-row>
+    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">i_emp_record_id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['i_emp_record_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">每月生成社保id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['iRecordId']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">员工id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employee_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">社保方案id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['scheme_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">年</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['year']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">月</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['month']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">个人社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['personal_insurance_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">个人公积金金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['personal_provident_fund_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">公司社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['corporate_insurance_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">公司社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['corporate_provident_fund_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">create_time</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['create_time']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">每月社保状态 0 停保 1 正常</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['status']"></v-text-field>
+      </v-col>
+       
+    </v-row>
+    <v-row class="justify-end pr-6">
+      <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
+      <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+    </v-row>
+  </v-form>
+</v-navigation-drawer>
 
-                  <v-simple-table>
-                    <template v-slot:default>
-                      <thead>
-                        <tr>
-                          <th class="text-left" style="width: 130px">
-                            社保项目
-                          </th>
-                          <th class="text-left" style="width: 120px">
-                            默认基数
-                          </th>
-                          <th v-if="editItem.schemeType == 1" class="text-left" style="width: 120px">
-                            公司缴纳比例
-                          </th>
-                          <th v-if="editItem.schemeType == 1" class="text-left" style="width: 120px">
-                            个人缴纳比例
-                          </th>
-                          <th class="text-left" style="width: 120px">
-                            公司金额
-                          </th>
-                          <th class="text-left" style="width: 120px">
-                            个人金额
-                          </th>
-                          <th class="text-center" style="width: 90px">
-                            操作
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(project, index) in editItem.projectList" :key="index">
-                          <td>{{ project.projectName }}</td>
-                          <td>
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)" 
-                            single-line v-model="project.defaultAmount"></v-text-field>
-                          </td>
-                          <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)"
-                              single-line v-model="project.corporateProportion"></v-text-field>
-                          </td>
-                          <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)"
-                              single-line v-model="project.personalProportion"></v-text-field>
-                          </td>
-                          <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" dense filled single-line
-                              v-model="project.corporateAmount"></v-text-field>
-                          </td>
-                          <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" dense filled single-line
-                              v-model="project.personalAmount"></v-text-field>
-                          </td>
-                          <td>
-                            <v-btn class="mx-2" fab dark x-small color="error" @click="deleteProjectLine(index)">
-                              <v-icon dark>
-                                mdi-trash-can
-                              </v-icon>
-                            </v-btn>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>合计</td>
-                          <td>{{ sumBy('defaultAmount') }}</td>
-                          <td v-if="editItem.schemeType == 1">{{ sumBy('corporateProportion') }}</td>
-                          <td v-if="editItem.schemeType == 1">{{ sumBy('personalProportion') }}</td>
-                          <td>{{ sumBy('corporateAmount') }}</td>
-                          <td>{{ sumBy('personalAmount') }}</td>
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-col>
 
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">状态</span>
-                  <v-select class="cus-v-input " dense filled single-line label="状态" v-model="editItem.isDel"
-                    :items="constantCollection.isDel" item-text="text" item-value="value"></v-select>
-                </v-col>
+<!-- 编辑抽屉 -->
+<v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
+    <v-row class="pt-8">
+      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
+      <v-spacer></v-spacer>
+      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
+        <v-icon dark>mdi-close</v-icon>
+      </v-btn>
+    </v-row>
+    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">i_emp_record_id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['i_emp_record_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">每月生成社保id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['iRecordId']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">员工id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employee_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">社保方案id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['scheme_id']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">年</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['year']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">月</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['month']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">个人社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['personal_insurance_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">个人公积金金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['personal_provident_fund_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">公司社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['corporate_insurance_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">公司社保金额</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['corporate_provident_fund_amount']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">create_time</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['create_time']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">每月社保状态 0 停保 1 正常</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['status']"></v-text-field>
+      </v-col>
+       
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
+<!--            <span class="inputLabel">学生ID</span>-->
+<!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
+<!--      </v-col>-->
+<!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--            <span class="inputLabel">班级ID</span>-->
+<!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+<!--      </v-col>-->
+<!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--        <span class="inputLabel">出生日期</span>-->
+<!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
+<!--          <template v-slot:activator="{ on, attrs }">-->
+<!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
+<!--          </template>-->
+<!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
+<!--        </v-menu>-->
+<!--      </v-col>-->
+    </v-row>
+    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+      <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+    </v-row>
+  </v-form>
+</v-navigation-drawer>
 
-                <!--      <v-col cols="12" sm="12" md="4">-->
-                <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-                <!--            <span class="inputLabel">学生ID</span>-->
-                <!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-                <!--      </v-col>-->
-                <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-                <!--      <v-col cols="12" sm="12" md="4">-->
-                <!--            <span class="inputLabel">班级ID</span>-->
-                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
-                <!--      </v-col>-->
-                <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-                <!--      <v-col cols="12" sm="12" md="4">-->
-                <!--        <span class="inputLabel">出生日期</span>-->
-                <!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
-                <!--          <template v-slot:activator="{ on, attrs }">-->
-                <!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-                <!--          </template>-->
-                <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-                <!--        </v-menu>-->
-                <!--      </v-col>-->
-              </v-row>
-              <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-                <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
-              </v-row>
-            </v-form>
-          </v-navigation-drawer>
-        </div>
-
-        <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
-        <v-navigation-drawer v-model="isHelpPageDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
-          <iframe style="border: 0" :src="`/${appInfo.appId}/pageDoc#waitting.md`" width="100%" height="100%"></iframe>
-          <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isHelpPageDrawerShown = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-navigation-drawer>
-        <!-- <<<<<<<<<<<<< 帮助页抽屉 -->
-      </v-main>
-    </v-app>
-<jh-toast />
-<jh-mask />
-<jh-confirm-dialog />
-  </div>
-</script>
-
-<div id="app">
-</div>
+</jh-layout-v3>
 
 {% endblock %}
 
-{% block vueScript %}
-{% include 'common/jianghuJs/fixedTableHeightV4.html' %}
+{% block vue_body %}
 
 <script type="module">
-  new Vue({
-    el: '#app',
-    template: '#app-template',
-    vuetify: new Vuetify(),
-    data: () => ({
-      breadcrumbs: [
-        {
-          text: '首页',
-          disabled: true,
-        },
-        {
-          text: '社保方案',
-          disabled: true,
-        }
-      ],
-      isHelpPageDrawerShown: false,
-      // 表格相关数据
-      isFormValid: true,
-      requireRules: [
-        v => !!v || 'This is required',
-      ],
-      constantCollection: {
-        // 1 比例 2 金额
-        schemeType: [
-          { text: '参保金额和比例', value: 1 },
-          { text: '仅设置金额', value: 2 },
-        ],
-        // 1 删除 0 使用
-        isDel: [
-          { text: '删除', value: 1 },
-          { text: '使用', value: 0 },
-        ],
-        // type 1 养老保险基数 2 医疗保险基数 3 失业保险基数 4 工伤保险基数 5 生育保险基数 6 补充大病医疗保险 7 补充养老保险 8 残保险
-        type: [
-          { text: '养老保险基数', value: 1 },
-          { text: '医疗保险基数', value: 2 },
-          { text: '失业保险基数', value: 3 },
-          { text: '工伤保险基数', value: 4 },
-          { text: '生育保险基数', value: 5 },
-          { text: '补充大病医疗保险', value: 6 },
-          { text: '补充养老保险', value: 7 },
-          { text: '残保险', value: 8 },
-          { text: '公积金', value: 10 },
-        ],
-      },
+new Vue({
+  el: '#app',
+  template: '#app-template',
+  vuetify: new Vuetify(),
+  data: () => ({
+    // 表格相关数据
+    isFormValid: true,
+    requireRules: [
+      v => !!v || 'This is required',
+    ],
+    constantCollection: {
+      year: []
+    },
 
-      serverSearchInput: {
-        studentId: null,
-        classId: null
-      },
-      searchInput: null,
-      isTableLoading: true,
-      tableDataFromBackend: [],
-      headers: [
-        { text: "ID", value: "id", width: 90, class: 'fixed', cellClass: 'fixed' },
-        { text: "方案名称", value: "schemeName", width: 120 },
-        { text: "参保城市", value: "city", width: 120 },
-        { text: "户籍类型", value: "houseType", width: 120 },
-        { text: "参保类型", value: "scheme", width: 140 },
-        { text: "状态", value: "status", width: 120 },
-        { text: "创建时间", value: "createTime", width: 180 },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
-      ],
-      isUpdateDrawerShown: false,
-      editItem: {},
-      isCreateDrawerShown: false,
-      addItem: {}
-    }),
-    computed: {
-      isMobile() {
-        return window.innerWidth < 600;
-      },
-      tableData() {
-        return this.tableDataFromBackend;
+    serverSearchInput: {
+      year: '',
+    },
+    searchInput: null,
+    isTableLoading: true,
+    tableDataFromBackend: [],
+    headers: [
+      {text: "月份", value: "title", width: 110}, 
+      {text: "参保人数", value: "num", width: 100}, 
+      {text: "个人社保", value: "personalInsuranceAmount", width: 100}, 
+      {text: "公司社保", value: "corporateInsuranceAmount", width: 100}, 
+      {text: "个人公积金", value: "personalProvidentFundAmount", width: 100}, 
+      {text: "公司公积金", value: "corporateProvidentFundAmount", width: 100}, 
+      {text: "停保人数", value: "stopCount", width: 100}, 
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
+    ],
+    isEditDrawerShow: false,
+    editItem: {},
+    isAddDrawerShow: false,
+    addItem: {},
+    yearDialog: false
+  }),
+  computed: {
+    isMobile() {
+      return window.innerWidth < 600;
+    },
+    tableData() {
+      return this.tableDataFromBackend;
+    },
+    maxMonth() {
+      if (!this.tableDataFromBackend.length) {
+        return 0;
       }
-    },
-    watch: {
-      'editItem.typeList': {
-        handler: function (val, oldVal) {
-          console.log(val);
-          const typeList = this.constantCollection.type.filter(item => {
-            return val.includes(item.value);
-          });
-          let projectList = this.editItem.projectList.filter(item => {
-            return val.includes(item.type);
-          });
-          const notExistTypeList = typeList.filter(item => {
-            return !projectList.map(e => e.type).includes(item.value);
-          });
-          projectList = projectList.concat(notExistTypeList.map(item => {
-            return {
-              schemeId: this.editItem.schemeId,
-              type: item.value,
-              projectName: item.text,
-              defaultAmount: 0,
-              corporateProportion: 0,
-              personalProportion: 0,
-              corporateAmount: 0,
-              personalAmount: 0,
-              isDel: 0,
-            };
-          }));
-          this.editItem.projectList = _.orderBy(projectList, ['type'], ['asc'])
-        },
-        deep: true
-      }
-    },
-    async created() {
-      await this.doUiAction('refreshTableData');
-    },
-    mounted() { },
-    methods: {
-      async doUiAction(uiActionId, uiActionData) {
-        switch (uiActionId) {
-          case 'refreshTableData':
-            await this.refreshTableData();
-            break;
-          case 'startCreateItem':
-            await this.clearItemData();
-            await this.openCreateItemDialog();
-            break;
-          case 'createItem':
-            await this.prepareValidate();
-            await this.confirmCreateItemDialog();
-            await this.doUpdateItem();
-            await this.closeDrawerShow();
-            await this.refreshTableData();
-            break;
-          case 'startUpdateItem':
-            await this.prepareItemData(uiActionData);
-            await this.openUpdateDialog();
-            break;
-          case 'updateItem':
-            await this.prepareValidate();
-            await this.confirmUpdateItemDialog();
-            await this.doUpdateItem();
-            await this.closeDrawerShow();
-            await this.refreshTableData();
-            break;
-          case 'deleteItem':
-            await this.confirmDeleteItemDialog();
-            await this.doDeleteItem(uiActionData);
-            await this.refreshTableData();
-            break;
-          default:
-            console.error("[doUiAction] uiActionId not find", { uiActionId });
-            break;
-        }
-      },
-      // =================================uiAction 公共方法 start ======================================
-      /**
-       * uiActionId:  prepareValidate
-       * description: ✅表单校验
-      */
-      async prepareValidate() {
-        if (this.$refs.form.validate() === false) {
-          window.vtoast.fail({ message: "输入有误, 请检查!" });
-          throw new Error("[prepareValidate] false");
-        }
-      },
-
-      /**
-       * uiActionId:  refreshTableData
-       * description: ✅获取表格数据
-      */
-      async refreshTableData() {
-        this.isTableLoading = true;
-        const serverSearchInput = _.pickBy(this.serverSearchInput, value => !!value);
-        const result = await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'insuranceSchemeManagement',
-              actionId: 'selectItemList',
-              actionData: {},
-              where: {},
-              whereLike: serverSearchInput,
-              orderBy: [{ column: 'operationAt', order: 'desc' }]
-            }
-          }
-        });
-        const { rows } = result.data.appData.resultData;
-        rows.forEach(item => {
-          item.createTime = item.createTime ? dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss') : '';
-        });
-        this.tableDataFromBackend = rows;
-        this.isTableLoading = false;
-      },
-      // =================================uiAction 公共方法 end ======================================
-
-
-      /**
-       * uiActionId:  startCreateItem
-       * description: ✅获取表格数据
-      */
-      async clearItemData() {
-        const defaultTypeList = [1,2,3,4,5,10];
-        this.editItem = { 
-          schemeName: '', 
-          city: '', 
-          houseType: '', 
-          schemeType: 1, 
-          isDel: 1, 
-          typeList: defaultTypeList,
-          projectList: defaultTypeList.map(item => {
-            return {
-              schemeId: '',
-              type: item,
-              projectName: this.constantCollection.type.find(e => e.value === item).text,
-              defaultAmount: 0,
-              corporateProportion: 0,
-              personalProportion: 0,
-              corporateAmount: 0,
-              personalAmount: 0,
-              isDel: 0,
-            };
-          })
-
-        };
-      },
-      async openCreateItemDialog() {
-        this.isUpdateDrawerShown = true;
-      },
-
-      /**
-       * uiActionId:  createItem
-       * description: ✅获取表格数据
-      */
-      async confirmCreateItemDialog() {
-        if (await window.confirmDialog({ title: "新增", content: "确定新增吗？" }) === false) {
-          throw new Error("取消");
-        }
-      },
-      async doCreateItem() {
-        const { id, ...data } = this.addItem;
-        await window.vtoast.loading("新增数据");
-        await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'insuranceSchemeManagement',
-              actionId: 'insertItem',
-              actionData: data
-            }
-          }
-        })
-        await window.vtoast.success("新增数据成功");
-      },
-      async closeDrawerShow() {
-        this.isUpdateDrawerShown = false;
-        this.isCreateDrawerShown = false;
-      },
-
-      /**
-       * uiActionId:  startUpdateItem
-       * description: ✅获取表格数据
-      */
-      async prepareItemData({ item }) {
-        this.editItem = { ...item, typeList: item.projectList.map(e => +e.type) };
-      },
-      async openUpdateDialog() {
-        this.isUpdateDrawerShown = true;
-      },
-      /**
-       * uiActionId:  updateItem
-       * description: ✅获取表格数据
-      */
-      async confirmUpdateItemDialog() {
-        if (await window.confirmDialog({ title: "修改", content: "确定修改吗？" }) === false) {
-          throw new Error("取消");
-        }
-      },
-      async doUpdateItem() {
-        const { id, schemeName, city, schemeType, projectList, isDel, schemeId } = this.editItem;
-        await window.vtoast.loading("修改数据");
-        await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'insuranceSchemeManagement',
-              actionId: 'updateItem',
-              actionData: { id, schemeName, city, schemeType, projectList, isDel, schemeId }
-            }
-          }
-        })
-        await window.vtoast.success("修改数据成功");
-      },
-
-      /**
-       * uiActionId:  deleteItem
-       * description: ✅获取表格数据
-      */
-      async confirmDeleteItemDialog() {
-        if (await window.confirmDialog({ title: "删除", content: "确定删除吗？" }) === false) {
-          throw new Error("取消");
-        }
-      },
-      async doDeleteItem({ item }) {
-        const { id } = item;
-        await window.vtoast.loading("删除数据");
-        await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'insuranceSchemeManagement',
-              actionId: 'deleteItem',
-              actionData: {},
-              where: { id: id }
-            }
-          }
-        });
-        await window.vtoast.success("删除数据成功");
-      },
-
-      getConstantText(constantName, constantValue) {
-        const constant = this.constantCollection[constantName];
-        if (!constant) {
-          console.error("[getConstantText] constantName not find", { constantName });
-          return constantValue;
-        }
-        const constantItem = constant.find(item => item.value == constantValue);
-        return constantItem ? constantItem.text : constantValue;
-      },
-      deleteProjectLine(index) {
-        this.editItem.projectList.splice(index, 1);
-        this.editItem.typeList.splice(index, 1);
-      },
-      sumBy(name) {
-        return parseFloat((_.sumBy(this.editItem.projectList, function (o) { return +o[name]; }) || 0).toFixed(2));
-      },
-      changeProjectLine(index) {
-        const item = this.editItem.projectList[index];
-        // defaultAmount
-        // corporateProportion
-        // personalProportion
-        item.corporateAmount = parseFloat((item.defaultAmount * item.corporateProportion / 100).toFixed(2));
-        item.personalAmount = parseFloat((item.defaultAmount * item.personalProportion / 100).toFixed(2));
-      },
+      return _.maxBy(this.tableDataFromBackend, 'month').month;
     }
-  })
+  },
+  watch: {
+    yearDialog(val) {
+      if (val){
+        val && this.$nextTick(() => (this.$refs.yearPicker.activePicker = 'YEAR'))
+      }
+    }
+  },
+  async created() {
+    this.setDefaultYearAndOptions();
+    await this.doUiAction('refreshTableData');
+  },
+  mounted() {},
+  methods: {
+    async doUiAction(uiActionId, uiActionData) {
+      switch (uiActionId) {
+        case 'refreshTableData':
+          await this.refreshTableData();
+          break;
+        case 'createItem':
+          await this.confirmCreateItemDialog();
+          await this.doCreateItem();
+          await this.refreshTableData();
+          break;
+        case 'startUpdateItem':
+          await this.prepareItemData(uiActionData);
+          await this.openUpdateDialog();
+          break;
+        case 'updateItem':
+          await this.prepareValidate();
+          await this.confirmUpdateItemDialog();
+          await this.doUpdateItem();
+          await this.closeDrawerShow();
+          await this.refreshTableData();
+          break;
+        case 'deleteItem':
+          await this.confirmDeleteItemDialog();
+          await this.doDeleteItem(uiActionData);
+          await this.refreshTableData();
+          break;
+        case 'toDetail':
+          await this.toDetail(uiActionData);
+          break;
+        default:
+          console.error("[doUiAction] uiActionId not find", { uiActionId });
+          break;
+      }
+    },
+    // =================================uiAction 公共方法 start ======================================
+    /**
+     * uiActionId:  prepareValidate
+     * description: ✅表单校验
+    */
+    async prepareValidate() {
+      if (this.$refs.form.validate() === false) {
+        window.vtoast.fail({ message: "输入有误, 请检查!" });
+        throw new Error("[prepareValidate] false");
+      }
+    },
+
+    /**
+     * uiActionId:  refreshTableData
+     * description: ✅获取表格数据
+    */
+    async refreshTableData() {
+      this.isTableLoading = true;
+      const serverSearchInput = _.pickBy(this.serverSearchInput, value=> !!value);
+      const result = await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'insuranceSchemeManagement',
+            actionId: 'selectItemList',
+            actionData: {},
+            whereLike: serverSearchInput,
+            orderBy: [{column: 'month', order: 'desc'}]
+          }
+        }
+      });
+      const { rows } = result.data.appData.resultData;
+      this.tableDataFromBackend = rows;
+      this.isTableLoading = false;
+    },
+    // =================================uiAction 公共方法 end ======================================
+    async saveYear(date) {
+      this.serverSearchInput.year = date + '';
+      this.$refs.yearPicker.activePicker = 'YEAR'
+      this.yearDialog = false;
+    },
+    async setDefaultYearAndOptions() {
+      this.serverSearchInput.year = new Date().getFullYear() + '';
+      for (let i = 1; i > -6; i--) {
+        this.constantCollection.year.push(new Date().getFullYear() + i + '');
+      }
+    },
+
+    /**
+     * uiActionId:  startCreateItem
+     * description: ✅获取表格数据
+    */
+    async clearItemData() {
+      this.addItem = {};
+    },
+    async openCreateItemDialog() {
+      this.isAddDrawerShow = true;
+    },
+
+    /**
+     * uiActionId:  createItem
+     * description: ✅获取表格数据
+    */
+    async confirmCreateItemDialog() {
+      if (await window.confirmDialog({title: "提示", content: "新建次月社保，本月数据将不可修改。请确认要新建次月社保吗？"}) === false) {
+        throw new Error("取消");
+      }
+    },
+    async doCreateItem() {
+      await window.vtoast.loading("新增数据");
+      await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'insuranceSchemeManagement',
+            actionId: 'insertMonthRecord'
+          }
+        }
+      })
+      await window.vtoast.success("新增数据成功");
+    },
+    async closeDrawerShow() {
+      this.isEditDrawerShow = false;
+      this.isAddDrawerShow = false;
+    },
+
+    /**
+     * uiActionId:  startUpdateItem
+     * description: ✅获取表格数据
+    */
+    async prepareItemData({item}) {
+      this.editItem = {...item};
+    },
+    async openUpdateDialog() {
+      this.isEditDrawerShow = true;
+    },
+    /**
+     * uiActionId:  updateItem
+     * description: ✅获取表格数据
+    */
+    async confirmUpdateItemDialog() {
+      if (await window.confirmDialog({title: "修改", content: "确定修改吗？"}) === false) {
+        throw new Error("取消");
+      }
+    },
+    async doUpdateItem() {
+      const { id, ...data } = this.editItem;
+      await window.vtoast.loading("修改数据");
+      await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'insuranceSchemeManagement',
+            actionId: 'updateItem',
+            actionData: data,
+            where: {id}
+          }
+        }
+      })
+      await window.vtoast.success("修改数据成功");
+    },
+
+    /**
+     * uiActionId:  deleteItem
+     * description: ✅获取表格数据
+    */
+    async confirmDeleteItemDialog() {
+      if (await window.confirmDialog({title: "删除", content: "确定删除吗？"}) === false) {
+        throw new Error("取消");
+      }
+    },
+    async doDeleteItem({item}) {
+      const { iRecordId } = item;
+      await window.vtoast.loading("删除数据");
+      await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'insuranceSchemeManagement',
+            actionId: 'deleteItem',
+            actionData: {},
+            where: { iRecordId: iRecordId }
+          }
+        }
+      });
+      await window.vtoast.success("删除数据成功");
+    },
+    async toDetail({item}) {
+      location.href = `/${window.appInfo.appId}/page/insuranceSchemeDetail?recordId=${item.iRecordId}`
+    },
+  }
+})
 </script>
 
 <style scoped>
