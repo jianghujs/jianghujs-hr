@@ -150,7 +150,7 @@
 
                 <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <v-btn-toggle v-model="editItem['schemeType']" color="success" borderless>
-                    <v-btn :value="item.value" v-for="(item, index) in constantCollection.schemeType">
+                    <v-btn small :value="item.value" v-for="(item, index) in constantCollection.schemeType">
                       <span class="hidden-sm-and-down">{{ item.text }}</span>
                     </v-btn>
                   </v-btn-toggle>
@@ -204,31 +204,29 @@
                         <tr v-for="(project, index) in editItem.projectList" :key="index">
                           <td>{{ project.projectName }}</td>
                           <td>
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)" 
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)" 
                             single-line v-model="project.defaultAmount"></v-text-field>
                           </td>
                           <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)"
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)"
                               single-line v-model="project.corporateProportion"></v-text-field>
                           </td>
                           <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled @change="changeProjectLine(index)"
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)"
                               single-line v-model="project.personalProportion"></v-text-field>
                           </td>
                           <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" dense filled single-line
+                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" hide-details dense filled single-line
                               v-model="project.corporateAmount"></v-text-field>
                           </td>
                           <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" dense filled single-line
+                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" hide-details dense filled single-line
                               v-model="project.personalAmount"></v-text-field>
                           </td>
                           <td>
-                            <v-btn class="mx-2" fab dark x-small color="error" @click="deleteProjectLine(index)">
-                              <v-icon dark>
-                                mdi-trash-can
-                              </v-icon>
-                            </v-btn>
+                            <v-icon dark @click="deleteProjectLine(index)" color="error">
+                              mdi-delete-circle
+                            </v-icon>
                           </td>
                         </tr>
                         <tr>
