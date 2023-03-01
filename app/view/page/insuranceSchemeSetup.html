@@ -140,12 +140,12 @@
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">方案名称</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['schemeName']"></v-text-field>
+                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['schemeName']" :rules="requireRules"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">参保城市</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['city']"></v-text-field>
+                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['city']" :rules="requireRules"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -204,23 +204,23 @@
                         <tr v-for="(project, index) in editItem.projectList" :key="index">
                           <td>{{ project.projectName }}</td>
                           <td>
-                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)" 
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details :rules="requireRules" @change="changeProjectLine(index)" 
                             single-line v-model="project.defaultAmount"></v-text-field>
                           </td>
                           <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)"
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details :rules="requireRules" @change="changeProjectLine(index)"
                               single-line v-model="project.corporateProportion"></v-text-field>
                           </td>
                           <td v-if="editItem.schemeType == 1">
-                            <v-text-field class="cus-v-input " type="number" dense filled hide-details @change="changeProjectLine(index)"
+                            <v-text-field class="cus-v-input " type="number" dense filled hide-details :rules="requireRules" @change="changeProjectLine(index)"
                               single-line v-model="project.personalProportion"></v-text-field>
                           </td>
                           <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" hide-details dense filled single-line
+                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" :rules="requireRules" hide-details dense filled single-line
                               v-model="project.corporateAmount"></v-text-field>
                           </td>
                           <td>
-                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" hide-details dense filled single-line
+                            <v-text-field :disabled="editItem.schemeType == 1" class="cus-v-input " type="number" :rules="requireRules" hide-details dense filled single-line
                               v-model="project.personalAmount"></v-text-field>
                           </td>
                           <td>
