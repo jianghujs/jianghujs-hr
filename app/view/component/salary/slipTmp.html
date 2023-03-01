@@ -1,31 +1,28 @@
-{% extends 'template/jhTemplateV3.html'%}
 
-{% block vue_template %}
+<template id="slip-template">
 
-
-<jh-layout-v3>
-
-  <template slot="serverSearch">
-    <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
-      <v-col cols="4" sm="4" xs="3" md="3" xl="2" class="pb-3" :class="{'pt-0': isMobile}">
-        <v-select 
-          @change="doUiAction('refreshTableData')"
-          class="cus-v-input " 
-          dense filled 
-          single-line 
-          prefix="年度：" 
-          v-model="serverSearchInput.year" 
-          :items="constantCollection.year">
-        </v-select>
+<!--   <template slot="serverSearch">
+    <v-row class="ma-0 align-center flex-none pa-0" :class="{'pa-2': !isMobile, 'pa-2': isMobile}" style="justify-content: end">
+      <v-col :class="{'pt-2': isMobile, 'pl-0': isMobile, 'pr-0': !isMobile}" style="max-width: 77px">
+        <v-btn
+          class="elevation-0"
+          color="success"
+          dark
+          @click="doUiAction('refreshTableData')"
+        >
+          查询
+        </v-btn>
       </v-col>
     </v-row>
-  </template>
+  </template>-->
+
 <!-- 页面主要内容 -->
 <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
   <v-card>
   <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 " :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
 
       <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
+        <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
         <span class="body-2">共{{ tableData.length }}条记录</span>
       </v-col>
 
@@ -45,19 +42,29 @@
                   :loading="isTableLoading"
                   checkbox-color="success"
                   class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+      <template v-slot:item.code="{ item }">
+        <v-chip
+          class="mr-1"
+          v-for="(code, index) in item.code"
+          color="primary"
+          :key="code"
+        >
+          
+          {{ getOptionText('code', code) }}
+        </v-chip>
+      </template>
       <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">查看详情</v-btn>
+        <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
+        <v-btn small v-if="item.defaultOption < 1" class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
       </template>
     </v-data-table>
   </v-card>
-</v-container>
-
 
 <!-- 编辑抽屉 -->
 <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
   <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
     <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">详情列表</span>
+      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">{{editItem.id ? '编辑' : '新增'}}模板</span>
       <v-spacer></v-spacer>
       <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
         <v-icon dark>mdi-close</v-icon>
@@ -66,25 +73,47 @@
     <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
        
       <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-        <month-emp-record :year="editItem.year" :month="editItem.month"></month-emp-record>
+        <span class="inputLabel">模板名称</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['templateName']"></v-text-field>
       </v-col>
        
+      <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-chip-group
+          v-model="editItem['code']"
+          center-active
+          column
+          multiple
+          show-arrows
+          active-class="primary--text"
+        >
+          <v-chip
+            filter
+            outlined
+            v-for="item in options"
+            :key="item.id"
+            :value="item.code"
+          >
+            {{item.name}}
+          </v-chip>
+        </v-chip-group>
+      </v-col>
+
+    </v-row>
+    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+      <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
     </v-row>
   </v-form>
 </v-navigation-drawer>
+</v-container>
 
-</jh-layout-v3>
 
-{% endblock %}
-
-{% block vue_body %}
-{% include 'component/salary/monthEmpRecord.html' %}
+</template>
 
 <script type="module">
-new Vue({
-  el: '#app',
-  template: '#app-template',
-  vuetify: new Vuetify(),
+Vue.component('slip-template', {
+  template: '#slip-template',
+  props: ['options'],
   data: () => ({
     // 表格相关数据
     isFormValid: true,
@@ -92,22 +121,21 @@ new Vue({
       v => !!v || 'This is required',
     ],
     constantCollection: {
-      year: []
     },
 
     serverSearchInput: {
-      year: '',
+      studentId: null,
+      classId: null
     },
     searchInput: null,
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
-      {text: "title", value: "title", width: 120}, 
-      {text: "计薪人数", value: "num", width: 120}, 
-      {text: "应发工资", value: "expectedPaySalary", width: 120}, 
-      {text: "实发工资", value: "realPaySalary", width: 120}, 
-      {text: "个税总额", value: "personalTax", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
+      {text: "模板名称", value: "templateName", width: 120}, 
+      {text: "包含", value: "code"}, 
+      // {text: "是否隐藏空的工资项 0 不隐藏 1 隐藏", value: "hideEmpty", width: 120}, 
+      // {text: "是否是默认模板项 0 否 1 是", value: "defaultOption", width: 120}, 
+      {text: '操作', value: 'action', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isEditDrawerShow: false,
     editItem: {},
@@ -124,7 +152,6 @@ new Vue({
   },
   watch: {},
   async created() {
-    this.setDefaultYearAndOptions();
     await this.doUiAction('refreshTableData');
   },
   mounted() {},
@@ -177,12 +204,6 @@ new Vue({
         throw new Error("[prepareValidate] false");
       }
     },
-    async setDefaultYearAndOptions() {
-      this.serverSearchInput.year = new Date().getFullYear() + '';
-      for (let i = 1; i > -6; i--) {
-        this.constantCollection.year.push(new Date().getFullYear() + i + '');
-      }
-    },
 
     /**
      * uiActionId:  refreshTableData
@@ -194,19 +215,22 @@ new Vue({
       const result = await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'slipTmp',
             actionId: 'selectItemList',
             actionData: {},
             where: {},
             whereLike: serverSearchInput,
-            orderBy: [{column: 'operationAt', order: 'desc'}]
+            orderBy: [{column: 'id', order: 'asc'}]
           }
         }
       });
       const { rows } = result.data.appData.resultData;
-
+      rows.forEach(item => {
+        item.code = (item.code || '10101,10102,10103').split(',').map(code => +code);
+      });
       this.tableDataFromBackend = rows;
       this.isTableLoading = false;
+      this.$emit('refresh-slip-tmp-list', rows);
     },
     // =================================uiAction 公共方法 end ======================================
 
@@ -216,10 +240,10 @@ new Vue({
      * description: ✅获取表格数据
     */
     async clearItemData() {
-      this.addItem = {};
+      this.editItem = {};
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isEditDrawerShow = true;
     },
 
     /**
@@ -232,14 +256,15 @@ new Vue({
       }
     },
     async doCreateItem() {
-      const { id, ...data } = this.addItem;
+      const { code, templateName } = this.editItem;
+      const codeList = this.options.filter(item => code.includes(item.code));
       await window.vtoast.loading("新增数据");
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'slipTmp',
             actionId: 'insertItem',
-            actionData: data
+            actionData: {codeList, templateName}
           }
         }
       })
@@ -247,7 +272,6 @@ new Vue({
     },
     async closeDrawerShow() {
       this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
     },
 
     /**
@@ -270,15 +294,15 @@ new Vue({
       }
     },
     async doUpdateItem() {
-      const { id, ...data } = this.editItem;
+      const { id, code, templateName } = this.editItem;
+      const codeList = this.options.filter(item => code.includes(item.code));
       await window.vtoast.loading("修改数据");
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'slipTmp',
             actionId: 'updateItem',
-            actionData: data,
-            where: {id}
+            actionData: {codeList, templateName, id}
           }
         }
       })
@@ -300,14 +324,16 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'slipTmp',
             actionId: 'deleteItem',
-            actionData: {},
-            where: { id: id }
+            actionData: {id}
           }
         }
       });
       await window.vtoast.success("删除数据成功");
+    },
+    getOptionText(code, value) {
+      return this.options.find(item => item[code] == value)?.name || '';
     },
   }
 })
@@ -315,4 +341,3 @@ new Vue({
 
 <style scoped>
 </style>
-{% endblock %}

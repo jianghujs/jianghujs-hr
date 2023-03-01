@@ -1,31 +1,11 @@
-{% extends 'template/jhTemplateV3.html'%}
 
-{% block vue_template %}
-
-
-<jh-layout-v3>
-
-  <template slot="serverSearch">
-    <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
-      <v-col cols="4" sm="4" xs="3" md="3" xl="2" class="pb-3" :class="{'pt-0': isMobile}">
-        <v-select 
-          @change="doUiAction('refreshTableData')"
-          class="cus-v-input " 
-          dense filled 
-          single-line 
-          prefix="年度：" 
-          v-model="serverSearchInput.year" 
-          :items="constantCollection.year">
-        </v-select>
-      </v-col>
-    </v-row>
-  </template>
+<template id="monthEmpRecord">
 <!-- 页面主要内容 -->
-<v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
+<v-container class="d-flex flex-column pa-xs-0 pa-0">
   <v-card>
   <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 " :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
 
-      <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
+      <v-col cols="12" xs="8" sm="8" md="8" xl="8" class="pl-0">
         <span class="body-2">共{{ tableData.length }}条记录</span>
       </v-col>
 
@@ -46,7 +26,8 @@
                   checkbox-color="success"
                   class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
       <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">查看详情</v-btn>
+        <!-- <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
+        <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn> -->
       </template>
     </v-data-table>
   </v-card>
@@ -57,7 +38,7 @@
 <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
   <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
     <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">详情列表</span>
+      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
       <v-spacer></v-spacer>
       <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
         <v-icon dark>mdi-close</v-icon>
@@ -65,26 +46,80 @@
     </v-row>
     <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
        
-      <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-        <month-emp-record :year="editItem.year" :month="editItem.month"></month-emp-record>
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">sEmpRecordId</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['sEmpRecordId']"></v-text-field>
       </v-col>
        
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">每月生成薪资id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['sRecordId']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">员工id</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employeeId']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">实际计薪时长</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['actualWorkDay']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">月计薪时长</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['needWorkDay']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">年</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['year']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">月</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['month']"></v-text-field>
+      </v-col>
+       
+      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <span class="inputLabel">createTime</span>
+        <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['createTime']"></v-text-field>
+      </v-col>
+       
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
+<!--            <span class="inputLabel">学生ID</span>-->
+<!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
+<!--      </v-col>-->
+<!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--            <span class="inputLabel">班级ID</span>-->
+<!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+<!--      </v-col>-->
+<!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
+<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+<!--        <span class="inputLabel">出生日期</span>-->
+<!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
+<!--          <template v-slot:activator="{ on, attrs }">-->
+<!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
+<!--          </template>-->
+<!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
+<!--        </v-menu>-->
+<!--      </v-col>-->
+    </v-row>
+    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+      <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
     </v-row>
   </v-form>
 </v-navigation-drawer>
 
-</jh-layout-v3>
-
-{% endblock %}
-
-{% block vue_body %}
-{% include 'component/salary/monthEmpRecord.html' %}
+</template>
 
 <script type="module">
-new Vue({
-  el: '#app',
-  template: '#app-template',
-  vuetify: new Vuetify(),
+Vue.component('monthEmpRecord', {
+  template: '#monthEmpRecord',
+  props: ['year', 'month'],
   data: () => ({
     // 表格相关数据
     isFormValid: true,
@@ -92,27 +127,24 @@ new Vue({
       v => !!v || 'This is required',
     ],
     constantCollection: {
-      year: []
     },
 
     serverSearchInput: {
-      year: '',
+      studentId: null,
+      classId: null
     },
     searchInput: null,
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
-      {text: "title", value: "title", width: 120}, 
-      {text: "计薪人数", value: "num", width: 120}, 
-      {text: "应发工资", value: "expectedPaySalary", width: 120}, 
-      {text: "实发工资", value: "realPaySalary", width: 120}, 
-      {text: "个税总额", value: "personalTax", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
+      {text: "ID", value: "id", width: 90, class: 'fixed', cellClass: 'fixed'},
+      {text: "员工", value: "employeeName", width: 120}, 
+      {text: "实际计薪时长", value: "actualWorkDay", width: 120}, 
+      {text: "月计薪时长", value: "needWorkDay", width: 120}, 
+      {text: "年", value: "year", width: 120}, 
+      {text: "月", value: "month", width: 120}, 
     ],
     isEditDrawerShow: false,
-    editItem: {},
-    isAddDrawerShow: false,
-    addItem: {}
   }),
   computed: {
     isMobile() {
@@ -124,7 +156,6 @@ new Vue({
   },
   watch: {},
   async created() {
-    this.setDefaultYearAndOptions();
     await this.doUiAction('refreshTableData');
   },
   mounted() {},
@@ -133,6 +164,9 @@ new Vue({
       switch (uiActionId) {
         case 'refreshTableData':
           await this.refreshTableData();
+          break;
+        case 'getLastConfig':
+          await this.getLastConfig();
           break;
         case 'startCreateItem':
           await this.clearItemData();
@@ -156,6 +190,15 @@ new Vue({
           await this.closeDrawerShow();
           await this.refreshTableData();
           break;
+        case 'createMonthRecord':
+          await this.confirmCreateMonthRecordDialog(uiActionData);
+          await this.doCreateMonthRecord(uiActionData);
+          await this.getLastConfig();
+          await this.refreshTableData();
+          break;
+        case 'createSlipRecord':
+          await this.doCreateSlipRecord(uiActionData);
+          break;
         case 'deleteItem':
           await this.confirmDeleteItemDialog();
           await this.doDeleteItem(uiActionData);
@@ -177,12 +220,6 @@ new Vue({
         throw new Error("[prepareValidate] false");
       }
     },
-    async setDefaultYearAndOptions() {
-      this.serverSearchInput.year = new Date().getFullYear() + '';
-      for (let i = 1; i > -6; i--) {
-        this.constantCollection.year.push(new Date().getFullYear() + i + '');
-      }
-    },
 
     /**
      * uiActionId:  refreshTableData
@@ -195,18 +232,25 @@ new Vue({
         data: {
           appData: {
             pageId: 'monthRecordManagement',
-            actionId: 'selectItemList',
-            actionData: {},
-            where: {},
+            actionId: 'monthEmpRecordByYearMonth',
+            actionData: {year: this.year, month: this.month},
             whereLike: serverSearchInput,
             orderBy: [{column: 'operationAt', order: 'desc'}]
           }
         }
       });
-      const { rows } = result.data.appData.resultData;
+      const { rows, salaryConfig } = result.data.appData.resultData;
 
       this.tableDataFromBackend = rows;
+      this.getLastConfig(salaryConfig)
       this.isTableLoading = false;
+    },
+
+    async getLastConfig(salaryConfig) {
+      salaryConfig.forEach(item => {
+        this.headers.push({text: item.name, value: item.code + '', width: 120});
+      });
+      this.headers.push({text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'});
     },
     // =================================uiAction 公共方法 end ======================================
 
@@ -226,6 +270,16 @@ new Vue({
      * uiActionId:  createItem
      * description: ✅获取表格数据
     */
+    async confirmCreateMonthRecordDialog({next}) {
+      if (next && await window.confirmDialog({title: "提示", content: "新建下月工资表，当前的工资表将归入历史工资表中，且历史工资表数据不可修改。请确认现在就开始做下月工资吗？"}) === false) {
+        throw new Error("取消");
+      }
+    },
+
+    /**
+     * uiActionId:  createItem
+     * description: ✅获取表格数据
+    */
     async confirmCreateItemDialog() {
       if (await window.confirmDialog({title: "新增", content: "确定新增吗？"}) === false) {
         throw new Error("取消");
@@ -237,7 +291,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'monthEmpRecord',
             actionId: 'insertItem',
             actionData: data
           }
@@ -275,7 +329,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'monthEmpRecord',
             actionId: 'updateItem',
             actionData: data,
             where: {id}
@@ -300,7 +354,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'monthRecordManagement',
+            pageId: 'monthEmpRecord',
             actionId: 'deleteItem',
             actionData: {},
             where: { id: id }
@@ -315,4 +369,3 @@ new Vue({
 
 <style scoped>
 </style>
-{% endblock %}
