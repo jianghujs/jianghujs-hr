@@ -25,11 +25,30 @@ module.exports.tableEnum = Object.freeze({
   employee: "employee",
   org: 'org',
   member_org_role: 'member_org_role',
+  // 社保
   insurance_project: "insurance_project",
   insurance_scheme: "insurance_scheme",
   insurance_month_emp_project_record: "insurance_month_emp_project_record",
   insurance_month_emp_record: "insurance_month_emp_record",
   insurance_month_record: "insurance_month_record",
+  // 薪资
+  salary_archives: "salary_archives",
+  salary_archives_option: "salary_archives_option",
+  salary_change_record: "salary_change_record",
+  salary_change_template: "salary_change_template",
+  salary_config: "salary_config",
+  salary_group: "salary_group",
+  salary_month_emp_record: "salary_month_emp_record",
+  salary_month_option_value: "salary_month_option_value",
+  salary_month_record: "salary_month_record",
+  salary_option: "salary_option",
+  salary_option_template: "salary_option_template",
+  salary_slip: "salary_slip",
+  salary_slip_option: "salary_slip_option",
+  salary_slip_record: "salary_slip_record",
+  salary_slip_template: "salary_slip_template",
+  salary_slip_template_option: "salary_slip_template_option",
+  salary_tax_rule: "salary_tax_rule",
   // ========================基础 View============================
   _view01_user: "_view01_user",
   view01_article: "view01_article",
@@ -38,6 +57,10 @@ module.exports.tableEnum = Object.freeze({
   employee_social_security_info: "employee_social_security_info",
   // ========================高级 View============================
   view01_employee_info: "view01_employee_info",
+  view01_archives_option_by_emp: "view01_archives_option_by_emp",
+  view01_employee_archives: "view01_employee_archives",
+  view01_salary_option: "view01_salary_option",
+  view01_salary_slip_template: "view01_salary_slip_template",
   view01_employee_info: "view01_employee_info",
 });
 
