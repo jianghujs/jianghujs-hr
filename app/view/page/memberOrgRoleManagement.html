@@ -55,9 +55,12 @@
                   class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
                 >
                   <template v-slot:item.roleId="{ item }">
-                    <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
+                    <!-- <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
                       v-model="item['roleId']" :items="constantCollection['roleList']">
-                    </v-select>
+                    </v-select> -->
+                    <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details @click:append="doUiAction('updateItemRole', {item})" 
+                    append-icon="mdi-check-circle">
+                    </v-text-field>
                   </template>
                   <template v-slot:item.action="{ item }">
                     <span
@@ -229,7 +232,7 @@ new Vue({
     nodeHeaders: [
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       { text: "姓名", value: "employeeName", required: true},
-      { text: "角色", value: "roleId", width: 150, required: true},
+      { text: "职位", value: "roleId", width: 150, required: true},
       { text: "手机", value: "mobile", required: true},
       { text: "邮箱", value: "email", required: true},
       { text: "证件类型", value: "idType", type: 'select' },
@@ -247,7 +250,8 @@ new Vue({
     addItem: {},
     addDrawerSelectedList: [],
     activePanel: [0],
-    memberData: []
+    memberData: [],
+    isUpdateItemRoleLoading: false,
   }),
   computed: {
     isMobile() {
@@ -261,7 +265,6 @@ new Vue({
   },
   async created() {
     await this.getOrg();
-    await this.getRoleList();
   },
   mounted() {},
   methods: {
@@ -319,20 +322,6 @@ new Vue({
         }
       })).data.appData.resultData;
       this.setOrgConstant(rows)
-    },
-    async getRoleList(){;
-      const {rows} = (await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'memberOrgRoleManagement',
-            actionId: 'selectRoleList',
-            orderBy: [{ column: 'roleId', order: 'asc' }]
-          }
-        }
-      })).data.appData.resultData;
-      this.constantCollection.roleList = rows.map(item => {
-        return { text: item.roleName, value: item.roleId }
-      });
     },
     // 设置组织常量
     setOrgConstant(rows){
@@ -493,6 +482,8 @@ new Vue({
       await window.vtoast.success("修改数据成功");
     },
     async doUpdateItemRole() {
+      if (this.isUpdateItemRoleLoading) return;
+      this.isUpdateItemRoleLoading = true;
       const { id, roleId } = this.editItem;
       await window.vtoast.loading("修改数据");
       await window.jianghuAxios({
@@ -506,6 +497,7 @@ new Vue({
         }
       })
       await window.vtoast.success("修改数据成功");
+      this.isUpdateItemRoleLoading = false;
     },
     /**
      * uiActionId:  deleteItem
