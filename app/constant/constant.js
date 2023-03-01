@@ -49,6 +49,9 @@ module.exports.tableEnum = Object.freeze({
   salary_slip_template: "salary_slip_template",
   salary_slip_template_option: "salary_slip_template_option",
   salary_tax_rule: "salary_tax_rule",
+  // 招聘
+  job_postings: 'job_postings',
+  job_resume: 'job_resume',
   // ========================基础 View============================
   _view01_user: "_view01_user",
   view01_article: "view01_article",
