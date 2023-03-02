@@ -40,19 +40,23 @@
                 <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
                 <v-spacer></v-spacer>
                 <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-                  <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="jh-v-input" dense filled
-                                single-line></v-text-field>
+                  <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="jh-v-input" dense filled single-line></v-text-field>
                 </v-col>
               </v-row>
-              <v-data-table fixed-header :headers="headers" :items="tableData" :search="tableFilterKeyword"
-                            mobile-breakpoint="0"
-                            :loading="isTableLoading " checkbox-color="success" class="jh-fixed-table-height elevation-0"
-                            :options="{
-                        itemsPerPage: -1
-                    }">
-                    <template v-slot:item.action="{ item }">
-                      <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">绩效</v-btn>
-                    </template>
+              <v-data-table
+                fixed-header
+                :headers="headers"
+                :items="tableData"
+                :search="tableFilterKeyword"
+                mobile-breakpoint="0"
+                :loading="isTableLoading"
+                checkbox-color="success"
+                class="jh-fixed-table-height elevation-0"
+                :options="{ itemsPerPage: -1 }"
+              >
+                <template v-slot:item.action="{ item }">
+                  <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">绩效</v-btn>
+                </template>
               </v-data-table>
             </v-card>
 
