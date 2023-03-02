@@ -21,11 +21,11 @@
           </v-row>
         </div>
         <!-- <<<<<<<<<<<<< 头部内容 -->
-        <div class="pageBodyContainer px-8">
-          <v-card :class="{'px-2': isMobile}" class="mb-5">
-          <v-row>
+        <div class="jh-page-body-container px-8">
+          <v-card class="mb-2 rounded-lg">
+          <v-row class="ma-0">
             <v-col cols="6">
-              <v-card class="d-flex flex-row flex-wrap ml-3" outlined>
+              <v-card class="d-flex flex-row flex-wrap" outlined>
                 <template v-for="(status, index) in constantCollection.status" :key="index">
                   <v-card
                     class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
@@ -36,7 +36,7 @@
               </v-card>
             </v-col>
             <v-col cols="6">
-              <v-card class="d-flex flex-row flex-wrap mr-3" outlined>
+              <v-card class="d-flex flex-row flex-wrap" outlined>
                 <template v-for="(status, index) in constantCollection.status2" :key="index">
                   <v-card
                     class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
@@ -50,7 +50,7 @@
           </v-card>
 
           <!-- 页面主要内容 -->
-          <v-card :class="{'px-2': isMobile}">
+          <v-card class="rounded-lg">
           <v-row class="ma-0 pa-4">
           <v-btn color="success" dark class="elevation-0 mr-2"
               @click.stop="doUiAction('handleTableButton', { title: '新建考核', action: 'add' })">新建考核

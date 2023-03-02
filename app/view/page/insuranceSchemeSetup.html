@@ -22,40 +22,39 @@
         </div>
 
         <!-- 页面主要内容 -->
-        <div class="pageBodyContainer px-8">
-          <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-            <v-card>
-              <v-row class="ma-0 pa-4">
+        <div class="jh-page-body-container px-8">
+          <!-- 页面内容 >>>>>>>>>>>>> -->
+          <v-card class="rounded-lg">
+            <v-row class="ma-0 pa-4">
 
-                <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-                  <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
-                  <span class="body-2">共{{ tableData.length }}条记录</span>
-                </v-col>
+              <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
+                <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
+                <span class="body-2">共{{ tableData.length }}条记录</span>
+              </v-col>
 
-                <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
 
-                <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-                  <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line hide-details></v-text-field>
-                </v-col>
-              </v-row>
-              <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput"
-                :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }" :items-per-page="-1" mobile-breakpoint="0"
-                :loading="isTableLoading" checkbox-color="success"
-                class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+              <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
+                <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line hide-details></v-text-field>
+              </v-col>
+            </v-row>
+            <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput"
+              :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }" :items-per-page="-1" mobile-breakpoint="0"
+              :loading="isTableLoading" checkbox-color="success"
+              class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
 
-                <template v-slot:item.scheme="{item}">
-                  {{ getConstantText('schemeType', item.schemeType) }}
-                </template>
-                <template v-slot:item.status="{item}">
-                  {{ getConstantText('isDel', item.isDel) }}
-                </template>
-                <template v-slot:item.action="{ item }">
-                  <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-                  <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-container>
+              <template v-slot:item.scheme="{item}">
+                {{ getConstantText('schemeType', item.schemeType) }}
+              </template>
+              <template v-slot:item.status="{item}">
+                {{ getConstantText('isDel', item.isDel) }}
+              </template>
+              <template v-slot:item.action="{ item }">
+                <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
+                <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+              </template>
+            </v-data-table>
+          </v-card>
 
           <!-- 新增 -->
           <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%"
