@@ -34,9 +34,8 @@
 
           <!-- 页面主要内容 -->
           <div class="jh-page-body-container px-8">
-            <v-card :class="{'px-2': isMobile}">
-              <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
-                    :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+            <v-card class="rounded-lg">
+              <v-row class="ma-0 pa-4">
                 <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
                 <v-spacer></v-spacer>
                 <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
