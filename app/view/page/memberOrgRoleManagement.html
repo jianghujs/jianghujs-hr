@@ -64,9 +64,11 @@
                     <!-- <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
                       v-model="item['roleId']" :items="constantCollection['roleList']">
                     </v-select> -->
-                    <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details @click:append="doUiAction('updateItemRole', {item})" 
-                    append-icon="mdi-check-circle">
-                    </v-text-field>
+                    <div class="d-flex">
+                      <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details>
+                      </v-text-field>
+                      <v-icon class="success--text" :disabled="item.roleIdCopy === item.roleId" @click="doUiAction('updateItemRole', {item})">mdi-check-circle</v-icon>
+                    </div>
                   </template>
                   <template v-slot:item.action="{ item }">
                     <span
@@ -374,21 +376,10 @@ new Vue({
       const { rows } = result.data.appData.resultData;
 
       this.tableDataFromBackend = rows;
-      // const buildMemberList = (target) => {
-      //   return target.map(item => {
-      //     const memberList = rows.filter(row => row.orgId === item.orgId);
-      //     if(!_.isEmpty(memberList)) {
-      //       item.memberList = memberList;
-      //     }
-      //     if(!_.isEmpty(item.children)) {
-      //       this.expanded.push(item);
-      //       item.children = buildMemberList(item.children);
-      //     }
-      //     return item;
-      //   });
-      // }
-      // this.tableDataTree = Object.assign({}, this.tableDataTree, buildMemberList(this.orgTree));
-      this.tableData = this.tableDataFromBackend;
+      rows.forEach(row => {
+        row.roleIdCopy = row.roleId;
+      })
+      this.tableData = rows;
       this.isTableLoading = false;
     },
     async refreshMemberList() {
