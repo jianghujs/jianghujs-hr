@@ -38,55 +38,53 @@ SQL END!-->
 
         <!-- 页面主要内容 -->
         <div class="jh-page-body-container px-8">
-          <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-            <v-card>
+          <v-card class="rounded-lg">
             <v-row class="ma-0 pa-4">
 
-                <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-                  <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem', {})">新增</v-btn>
-                  <span class="body-2">共{{ tableData.length }}条记录</span>
-                </v-col>
+              <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
+                <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem', {})">新增</v-btn>
+                <span class="body-2">共{{ tableData.length }}条记录</span>
+              </v-col>
 
-                <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
 
-                <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-                  <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
-                </v-col>
-              </v-row>
-              <v-data-table fixed-header
-                            :headers="headers"
-                            :items="tableData"
-                            :search="searchInput"
-                            :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-                            :items-per-page="-1"
-                            mobile-breakpoint="0"
-                            :loading="isTableLoading"
-                            checkbox-color="success"
-                            class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-                <template v-slot:item.action="{ item }">
-                  <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-                  <v-btn small class=" success" @click="doUiAction('startCreateItem', {item})">新增下属组织</v-btn>
-                  <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
-                </template>
-                
-                <!-- 没有数据 -->
-                <template v-slot:loading>
-                  <div class="jh-no-data">数据加载中</div>
-                </template>
-                <template v-slot:no-data>
-                  <div class="jh-no-data">暂无数据</div>
-                </template>
-                <template v-slot:no-results>
-                  <div class="jh-no-data">暂无数据</div>
-                </template>
-                <!-- 表格分页 -->
-                <template v-slot:footer.page-text="pagination">
-                  <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
-                  <span class="ml-1">共{{pagination.itemsLength}}条</span>
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-container>
+              <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
+                <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
+              </v-col>
+            </v-row>
+            <v-data-table fixed-header
+                          :headers="headers"
+                          :items="tableData"
+                          :search="searchInput"
+                          :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+                          :items-per-page="-1"
+                          mobile-breakpoint="0"
+                          :loading="isTableLoading"
+                          checkbox-color="success"
+                          class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+              <template v-slot:item.action="{ item }">
+                <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
+                <v-btn small class=" success" @click="doUiAction('startCreateItem', {item})">新增下属组织</v-btn>
+                <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+              </template>
+              
+              <!-- 没有数据 -->
+              <template v-slot:loading>
+                <div class="jh-no-data">数据加载中</div>
+              </template>
+              <template v-slot:no-data>
+                <div class="jh-no-data">暂无数据</div>
+              </template>
+              <template v-slot:no-results>
+                <div class="jh-no-data">暂无数据</div>
+              </template>
+              <!-- 表格分页 -->
+              <template v-slot:footer.page-text="pagination">
+                <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
+                <span class="ml-1">共{{pagination.itemsLength}}条</span>
+              </template>
+            </v-data-table>
+          </v-card>
 
           <!-- 新增 -->
           <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
