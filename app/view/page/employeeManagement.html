@@ -473,6 +473,85 @@ SQL END!-->
               </v-row>
             </v-form>
             <v-form v-model="isFormValid" v-if="actionTab===1" ref="form" lazy-validation>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">工资卡信息</span>
+                <v-spacer></v-spacer>
+              </v-row>
+              <v-row class="mt-0 px-4">
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">工资卡卡号</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['employeeName']"></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">工资卡开户城市</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['sex']"
+                  :items="constantObj.sex"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">银行名称</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">工资卡开户行</span>
+                  <v-text-field class="jh-v-input " dense filled single-line
+                    v-model="editItem['contactNumber']"></v-text-field>
+                </v-col>
+
+              </v-row>
+              
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">社保信息</span>
+                <v-spacer></v-spacer>
+              </v-row>
+
+              <v-row class="mt-0 px-4">
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">是否本地首次缴纳社保</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['post']"
+                  :items="constantObj.post"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">是否本地首次缴纳公积金</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
+                  :items="constantObj.level"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">个人社保账号</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
+                  :items="constantObj.subject"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">个人公积金账号</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['status']"
+                  :items="constantObj.status"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">参保起始月份</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
+                  :items="constantObj.employmentForms"></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">参保方案</span>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
+                  :items="constantObj.entryStatus"></v-select>
+                </v-col>
+
+              </v-row>
+              <v-row class="justify-end mx-0 mt-8 px-6">
+                <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+                <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
+              </v-row>
+            </v-form>
+            <v-form v-model="isFormValid" v-if="actionTab===2" ref="form" lazy-validation>
               <div class="mx-6 py-5">
                 <v-row>
                   <v-col cols="3">
@@ -681,7 +760,7 @@ SQL END!-->
         // { title: '基本信息', action: 'basic' },
         { title: '信息详细', action: 'basic' },
         // { title: '员工合同', action: 'contract' },
-        // { title: '工资社保', action: 'insurance' },
+        { title: '工资社保', action: 'insurance' },
         { title: '材料附件', action: 'material' },
         // { title: '操作记录', action: 'record' },
       ],
