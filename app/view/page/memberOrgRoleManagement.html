@@ -54,13 +54,21 @@
                   v-model="addDrawerSelectedList" 
                   class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
                 >
+                  <template v-slot:item.orgName="{ item }">
+                    <span v-for="(item, index) in ((item.orgPath || '').split('-').length - 1)">
+                      &nbsp;&nbsp;
+                    </span>
+                    {{item.orgName}}
+                  </template>
                   <template v-slot:item.roleId="{ item }">
                     <!-- <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
                       v-model="item['roleId']" :items="constantCollection['roleList']">
                     </v-select> -->
-                    <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details @click:append="doUiAction('updateItemRole', {item})" 
-                    append-icon="mdi-check-circle">
-                    </v-text-field>
+                    <div class="d-flex">
+                      <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details>
+                      </v-text-field>
+                      <v-icon class="success--text" :disabled="item.roleIdCopy === item.roleId" @click="doUiAction('updateItemRole', {item})">mdi-check-circle</v-icon>
+                    </div>
                   </template>
                   <template v-slot:item.action="{ item }">
                     <span
@@ -231,13 +239,14 @@ new Vue({
     openTree: [],
     nodeHeaders: [
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
-      { text: "姓名", value: "employeeName", required: true},
-      { text: "职位", value: "roleId", width: 150, required: true},
-      { text: "手机", value: "mobile", required: true},
-      { text: "邮箱", value: "email", required: true},
-      { text: "证件类型", value: "idType", type: 'select' },
+      { text: "姓名", value: "employeeName", sortable: false, required: true},
+      { text: "组织", value: "orgName", sortable: false, width: 150, required: true},
+      { text: "职位", value: "roleId", sortable: false, width: 150, required: true},
+      { text: "手机", value: "mobile", sortable: false, required: true},
+      { text: "邮箱", value: "email", sortable: false, required: true},
+      { text: "证件类型", value: "idType", sortable: false, type: 'select' },
       // { text: "证件号码", value: "idNumber" },
-      { text: "性别", value: "sex", type: 'select' },
+      { text: "性别", value: "sex", sortable: false, type: 'select' },
       // {text: "操作者", value: "operationByUser", width: 120},
       // {text: "操作时间", value: "operationAt", width: 250},
     ],
@@ -367,21 +376,10 @@ new Vue({
       const { rows } = result.data.appData.resultData;
 
       this.tableDataFromBackend = rows;
-      // const buildMemberList = (target) => {
-      //   return target.map(item => {
-      //     const memberList = rows.filter(row => row.orgId === item.orgId);
-      //     if(!_.isEmpty(memberList)) {
-      //       item.memberList = memberList;
-      //     }
-      //     if(!_.isEmpty(item.children)) {
-      //       this.expanded.push(item);
-      //       item.children = buildMemberList(item.children);
-      //     }
-      //     return item;
-      //   });
-      // }
-      // this.tableDataTree = Object.assign({}, this.tableDataTree, buildMemberList(this.orgTree));
-      this.tableData = this.tableDataFromBackend;
+      rows.forEach(row => {
+        row.roleIdCopy = row.roleId;
+      })
+      this.tableData = rows;
       this.isTableLoading = false;
     },
     async refreshMemberList() {
