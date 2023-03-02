@@ -130,10 +130,26 @@
               v-model="addDrawerSelectedList" show-select
               checkbox-color="success"
               class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-            <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" v-if="item.orgId !== currentOrgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
-            <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
-            </template>
+              <template v-slot:item.action="{ item }">
+                <v-btn small class=" success" v-if="item.orgId !== currentOrgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
+              <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+              </template>
+                
+              <!-- 没有数据 -->
+              <template v-slot:loading>
+                <div class="jh-no-data">数据加载中</div>
+              </template>
+              <template v-slot:no-data>
+                <div class="jh-no-data">暂无数据</div>
+              </template>
+              <template v-slot:no-results>
+                <div class="jh-no-data">暂无数据</div>
+              </template>
+              <!-- 表格分页 -->
+              <template v-slot:footer.page-text="pagination">
+                <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
+                <span class="ml-1">共{{pagination.itemsLength}}条</span>
+              </template>
             </v-data-table>
           </v-form>
           <!-- 抽屉关闭按钮 -->
