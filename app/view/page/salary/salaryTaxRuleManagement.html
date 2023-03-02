@@ -25,7 +25,7 @@ SQL END!-->
           <div class="jh-page-second-bar px-8">
             <v-row>
               <v-col cols="12" xs="12" sm="12" md="4" xl="3">
-                <div class="pt-3 text-h7 font-weight-bold">记薪规则
+                <div class="pt-3 text-h7 font-weight-bold">计薪规则
                   <!-- 帮助页按钮 -->
                   <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
                   </v-icon>
@@ -52,16 +52,18 @@ SQL END!-->
                   <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
                 </v-col>
               </v-row>
-              <v-data-table fixed-header
-                            :headers="headers"
-                            :items="tableData"
-                            :search="searchInput"
-                            :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-                            :items-per-page="-1"
-                            mobile-breakpoint="0"
-                            :loading="isTableLoading"
-                            checkbox-color="success"
-                            class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+              <v-data-table 
+                fixed-header
+                :headers="headers"
+                :items="tableData"
+                :search="searchInput"
+                :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+                :items-per-page="-1"
+                mobile-breakpoint="0"
+                :loading="isTableLoading"
+                checkbox-color="success"
+                class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
+              >
                 <template v-slot:item.action="{ item }">
                   <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
                   <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
@@ -249,7 +251,7 @@ new Vue({
           disabled: true,
         },
         {
-          text: '记薪规则',
+          text: '计薪规则',
           disabled: true,
         }
       ],
