@@ -113,7 +113,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       // 打卡类型 1 上班打卡 2 下班打卡
       clockType: [
         { text: '上班打卡', value: 1 },
@@ -338,7 +338,7 @@ new Vue({
       await window.vtoast.success("删除数据成功");
     },
     getConstValue(key, value) {
-      const constValue = this.constantCollection[key];
+      const constValue = this.constantObj[key];
       if (constValue) {
         const result = constValue.find(item => item.value === value);
         return result ? result.text : value;

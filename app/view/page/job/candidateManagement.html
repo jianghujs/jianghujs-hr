@@ -44,7 +44,7 @@
               <v-row>
                 <v-col cols="12">
                   <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
-                    <template v-for="(status, index) in constantCollection.status" :key="index">
+                    <template v-for="(status, index) in constantObj.status" :key="index">
                       <v-card
                         class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
                         <div class="mb-2">{{status.text}}</div>
@@ -86,7 +86,7 @@
               :headers="detailHeaders"
               :editItem="editItem"
               :currentClickButton="currentClickButton"
-              :constantCollection="constantCollection"
+              :constantObj="constantObj"
               @save="doUiAction('saveInfo')"
             >
             </drawer-form>
@@ -111,7 +111,7 @@
                     :headers="drawerHeaders"
                     :editItem="editItem"
                     :currentClickButton="currentClickButton"
-                    :constantCollection="constantCollection"
+                    :constantObj="constantObj"
                     @save="doUiAction('saveInfo')">
                   </edit-form>
                 </template>
@@ -180,7 +180,7 @@
       requireRules: [
         v => !!v || '此项为必填项',
       ],
-      constantCollection: {
+      constantObj: {
         status: [
           { text: "全部", value: 1 },
           { text: "新候选人", value: 2 },
@@ -261,7 +261,7 @@
     watch: {
       searchText(value) {
         value = value && value.toLowerCase();
-        const { constantCollection: { status = [] } } = this;
+        const { constantObj: { status = [] } } = this;
         if (value) {
           this.statusFilter = status.slice()
             .filter((v) => v.text && (v.text.toLowerCase().includes(value) || v.text.includes(value)))

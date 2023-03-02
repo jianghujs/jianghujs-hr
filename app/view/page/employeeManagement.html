@@ -42,9 +42,9 @@ SQL END!-->
             <v-col cols="7" class="mt-1 py-0 pr-0 pl-0">
               <v-card class="d-flex flex-row flex-wrap ml-3" outlined
                 style="border: thin solid #F4F5F6;border-radius: inherit;">
-                <template v-for="(status, index) in constantCollection.status" :key="index">
+                <template v-for="(status, index) in constantObj.status" :key="index">
                   <v-card class="pa-2 text-center"
-                    :style="{ borderRight: index ===  constantCollection.status.length - 1 ? 'none' : '1px solid #F4F5F6'}"
+                    :style="{ borderRight: index ===  constantObj.status.length - 1 ? 'none' : '1px solid #F4F5F6'}"
                     style="flex: 1;border-radius: 0;" @click="changeStatus('status', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
@@ -54,9 +54,9 @@ SQL END!-->
             </v-col>
             <v-col cols="2" class="mt-1 py-0 pr-0">
               <v-card class="d-flex flex-row flex-wrap" outlined style="border: thin solid #F4F5F6;border-radius: inherit;">
-                <template v-for="(status, index) in constantCollection.employmentForms" :key="index">
+                <template v-for="(status, index) in constantObj.employmentForms" :key="index">
                   <v-card class="pa-2 text-center"
-                    :style="{ borderRight: index ===  constantCollection.employmentForms.length - 1 ? 'none' : '1px solid #F4F5F6'}"
+                    :style="{ borderRight: index ===  constantObj.employmentForms.length - 1 ? 'none' : '1px solid #F4F5F6'}"
                     style="flex: 1;border-radius: 0;" @click="changeStatus('employmentForms', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
@@ -67,9 +67,9 @@ SQL END!-->
             <v-col cols="3" class="mt-1 py-0 pr-0">
               <v-card class="d-flex flex-row flex-wrap mr-3" outlined
                 style="border: thin solid #F4F5F6;border-radius: inherit;">
-                <template v-for="(status, index) in constantCollection.entryStatus" :key="index" v-if="">
+                <template v-for="(status, index) in constantObj.entryStatus" :key="index" v-if="">
                   <v-card class="pa-2 text-center"
-                    :style="{ borderRight: index ===  constantCollection.entryStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
+                    :style="{ borderRight: index ===  constantObj.entryStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
                     style="flex: 1;border-radius: 0;" @click="changeStatus('entryStatus', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
@@ -96,7 +96,7 @@ SQL END!-->
                 :loading="isTableLoading" checkbox-color="success" class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
                 :class="{'zebraLine': showTableZebraLine }">
                 <template v-slot:item.status="{ item }">
-                  {{ globalHandler.parseConstantValue('status', item.status, constantCollection) }}
+                  {{ globalHandler.parseConstantValue('status', item.status, constantObj) }}
                 </template>
                 <template v-slot:item.action="{ item }">
                   <span role="button" class="success--text mr-2" style="font-size: 12px;font-weight: 500;"
@@ -130,7 +130,7 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['sex']"
-                    :items="constantCollection.sex"></v-select>
+                    :items="constantObj.sex"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
@@ -152,7 +152,7 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['post']"
-                    :items="constantCollection.post"></v-select>
+                    :items="constantObj.post"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
@@ -212,19 +212,19 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']" :rules="requireRules"
-                  :items="constantCollection.status"></v-select>
+                  :items="constantObj.status"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']" :rules="requireRules"
-                  :items="constantCollection.employmentForms"></v-select>
+                  :items="constantObj.employmentForms"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']" :rules="requireRules"
-                  :items="constantCollection.entryStatus"></v-select>
+                  :items="constantObj.entryStatus"></v-select>
                 </v-col>
               </v-row>
               <v-row class="justify-end mx-0 mt-8 px-6">
@@ -268,7 +268,7 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['sex']"
-                  :items="constantCollection.sex"></v-select>
+                  :items="constantObj.sex"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
@@ -329,13 +329,13 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学段</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationLeaver']"
-                  :items="constantCollection.level"></v-select>
+                  :items="constantObj.level"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学科</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationSubject']"
-                  :items="constantCollection.subject"></v-select>
+                  :items="constantObj.subject"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
@@ -376,37 +376,37 @@ SQL END!-->
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['post']"
-                  :items="constantCollection.post"></v-select>
+                  :items="constantObj.post"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学段</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
-                  :items="constantCollection.level"></v-select>
+                  :items="constantObj.level"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学科</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
-                  :items="constantCollection.subject"></v-select>
+                  :items="constantObj.subject"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['status']"
-                  :items="constantCollection.status"></v-select>
+                  :items="constantObj.status"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
-                  :items="constantCollection.employmentForms"></v-select>
+                  :items="constantObj.employmentForms"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
                   <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
-                  :items="constantCollection.entryStatus"></v-select>
+                  :items="constantObj.entryStatus"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
@@ -438,7 +438,7 @@ SQL END!-->
                 <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--            <span class="inputLabel">班级ID</span>-->
-                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
@@ -555,7 +555,7 @@ SQL END!-->
       requireRules: [
         v => !!v || '此项为必填项',
       ],
-      constantCollection: {
+      constantObj: {
         // 员工状态
         status: [
           { text: "全职", value: "全职" },
@@ -789,7 +789,7 @@ SQL END!-->
       setSelectOptionList(rows) {
         _.forIn(rows, (value, key) => {
           const obj = _.keyBy(value, key)
-          _.forEach(this.constantCollection[key], o => {
+          _.forEach(this.constantObj[key], o => {
             o.num = obj[o.value] ? obj[o.value].count : 0
           })
         });

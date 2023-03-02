@@ -28,7 +28,7 @@
             </v-col>
             <v-col cols="12" sm="12" xs="5" md="3" xl="3" class="pb-3" :class="{'pt-0': isMobile}">
               <v-select class="cus-v-input mr-2" v-model="serverSearchForm.select.status"
-                        :items="constantCollection.status"
+                        :items="constantObj.status"
                         prefix="状态：" item-text="text" item-value="value" dense filled single-line clearable>
               </v-select>
             </v-col>
@@ -77,7 +77,7 @@
             :headers="detailHeaders"
             :editItem="editItem"
             :currentClickButton="currentClickButton"
-            :constantCollection="constantCollection"
+            :constantObj="constantObj"
             @save="doUiAction('saveInfo')"
           >
           </drawer-form>
@@ -102,7 +102,7 @@
                   :headers="drawerHeaders"
                   :editItem="editItem"
                   :currentClickButton="currentClickButton"
-                  :constantCollection="constantCollection"
+                  :constantObj="constantObj"
                   @save="doUiAction('saveInfo')">
                 </edit-form>
               </template>
@@ -171,7 +171,7 @@ new Vue({
     requireRules: [
       v => !!v || '此项为必填项',
     ],
-    constantCollection: {
+    constantObj: {
       status: [
           {text: "招聘中", value: 1},
           {text: "停止招聘", value: 2},
@@ -239,7 +239,7 @@ new Vue({
   watch: {
     searchText(value) {
       value = value && value.toLowerCase();
-      const {constantCollection: {status = []}} = this;
+      const {constantObj: {status = []}} = this;
       if (value) {
         this.statusFilter = status.slice()
             .filter((v) => v.text && (v.text.toLowerCase().includes(value) || v.text.includes(value)))

@@ -29,7 +29,7 @@
                 single-line 
                 prefix="年度：" 
                 v-model="serverSearchInput.year" 
-                :items="constantCollection.year">
+                :items="constantObj.year">
               </v-select>
             </v-col>
           </v-row>
@@ -152,7 +152,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       year: []
     },
 
@@ -241,7 +241,7 @@ new Vue({
     async setDefaultYearAndOptions() {
       this.serverSearchInput.year = new Date().getFullYear() + '';
       for (let i = 1; i > -6; i--) {
-        this.constantCollection.year.push(new Date().getFullYear() + i + '');
+        this.constantObj.year.push(new Date().getFullYear() + i + '');
       }
     },
 

@@ -91,7 +91,7 @@
 <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
 <!--      <v-col cols="12" sm="12" md="4">-->
 <!--            <span class="inputLabel">班级ID</span>-->
-<!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+<!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
 <!--      </v-col>-->
 <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
 <!--      <v-col cols="12" sm="12" md="4">-->
@@ -127,7 +127,7 @@ Vue.component('monthEmpRecord', {
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
     },
 
     serverSearchInput: {

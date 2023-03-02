@@ -94,12 +94,12 @@ SQL END!-->
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">个税类型</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.taxType" :items="constantCollection.taxType"></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.taxType" :items="constantObj.taxType"></v-select>
                 </v-col>
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">是否计税</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.isTax" :items="constantCollection.isTax"></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.isTax" :items="constantObj.isTax"></v-select>
                 </v-col>
                 
                 <v-col cols="12" sm="12" md="4">
@@ -114,7 +114,7 @@ SQL END!-->
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">计税周期类型</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.cycleType" :items="constantCollection.cycleType"></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="addItem.cycleType" :items="constantObj.cycleType"></v-select>
                 </v-col>
                 
               </v-row>
@@ -145,12 +145,12 @@ SQL END!-->
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">个税类型</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.taxType" :items="constantCollection.taxType" disabled></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.taxType" :items="constantObj.taxType" disabled></v-select>
                 </v-col>
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">是否计税</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.isTax" :items="constantCollection.isTax" disabled></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.isTax" :items="constantObj.isTax" disabled></v-select>
                 </v-col>
                 
                 <v-col cols="12" sm="12" md="4">
@@ -165,7 +165,7 @@ SQL END!-->
                 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">计税周期类型</span>
-                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.cycleType" :items="constantCollection.cycleType"></v-select>
+                  <v-select class="cus-v-input " dense filled single-line v-model="editItem.cycleType" :items="constantObj.cycleType"></v-select>
                 </v-col>
                 
           <!--      <v-col cols="12" sm="12" md="4">-->
@@ -176,7 +176,7 @@ SQL END!-->
           <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
           <!--      <v-col cols="12" sm="12" md="4">-->
           <!--            <span class="inputLabel">班级ID</span>-->
-          <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+          <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
           <!--      </v-col>-->
           <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
           <!--      <v-col cols="12" sm="12" md="4">-->
@@ -243,7 +243,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       // 是否计税 0 否 1 是
       isTax: [
         { text: '否', value: 0 },

@@ -148,7 +148,7 @@
 
                 <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
                   <v-btn-toggle v-model="editItem['schemeType']" color="success" borderless>
-                    <v-btn small :value="item.value" v-for="(item, index) in constantCollection.schemeType">
+                    <v-btn small :value="item.value" v-for="(item, index) in constantObj.schemeType">
                       <span class="hidden-sm-and-down">{{ item.text }}</span>
                     </v-btn>
                   </v-btn-toggle>
@@ -158,7 +158,7 @@
                   <div class="d-flex justify-center align-center">
                     <span class="inputLabel">参保城市</span>
                     <v-spacer></v-spacer>
-                    <v-select style="max-width: 300px" v-model="editItem.typeList" :items="constantCollection.type"
+                    <v-select style="max-width: 300px" v-model="editItem.typeList" :items="constantObj.type"
                       prefix="添加项目" multiple item-text="text" item-value="value">
                       <template v-slot:selection="{ item, index }">
                         <v-chip v-if="index === 0">
@@ -243,7 +243,7 @@
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">状态</span>
                   <v-select class="cus-v-input " dense filled single-line label="状态" v-model="editItem.isDel"
-                    :items="constantCollection.isDel" item-text="text" item-value="value"></v-select>
+                    :items="constantObj.isDel" item-text="text" item-value="value"></v-select>
                 </v-col>
 
                 <!--      <v-col cols="12" sm="12" md="4">-->
@@ -254,7 +254,7 @@
                 <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--            <span class="inputLabel">班级ID</span>-->
-                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
@@ -321,7 +321,7 @@
       requireRules: [
         v => !!v || 'This is required',
       ],
-      constantCollection: {
+      constantObj: {
         // 1 比例 2 金额
         schemeType: [
           { text: '参保金额和比例', value: 1 },
@@ -380,7 +380,7 @@
       'editItem.typeList': {
         handler: function (val, oldVal) {
           console.log(val);
-          const typeList = this.constantCollection.type.filter(item => {
+          const typeList = this.constantObj.type.filter(item => {
             return val.includes(item.value);
           });
           let projectList = this.editItem.projectList.filter(item => {
@@ -507,7 +507,7 @@
             return {
               schemeId: '',
               type: item,
-              projectName: this.constantCollection.type.find(e => e.value === item).text,
+              projectName: this.constantObj.type.find(e => e.value === item).text,
               defaultAmount: 0,
               corporateProportion: 0,
               personalProportion: 0,
@@ -611,7 +611,7 @@
       },
 
       getConstantText(constantName, constantValue) {
-        const constant = this.constantCollection[constantName];
+        const constant = this.constantObj[constantName];
         if (!constant) {
           console.error("[getConstantText] constantName not find", { constantName });
           return constantValue;

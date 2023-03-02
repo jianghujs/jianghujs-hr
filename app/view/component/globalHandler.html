@@ -23,10 +23,10 @@ class GlobalHandler {
   /**
    * 常量解析
    */
-  parseConstantValue(key, _value, constantCollection) {
-    const constantCollectionItemFind = constantCollection[key].find(({ value }) => value === _value);
-    if (constantCollectionItemFind) {
-      return constantCollectionItemFind.text;
+  parseConstantValue(key, _value, constantObj) {
+    const constantObjItemFind = constantObj[key].find(({ value }) => value === _value);
+    if (constantObjItemFind) {
+      return constantObjItemFind.text;
     }
     return _value;
   }

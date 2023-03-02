@@ -62,7 +62,7 @@
                   </template>
                   <template v-slot:item.roleId="{ item }">
                     <!-- <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
-                      v-model="item['roleId']" :items="constantCollection['roleList']">
+                      v-model="item['roleId']" :items="constantObj['roleList']">
                     </v-select> -->
                     <div class="d-flex">
                       <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details>
@@ -163,7 +163,7 @@
               <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">组织</span>
                 <v-select class="cus-v-input mr-2" dense filled single-line clearable color="success"
-                v-model="editItem['orgId']" :items="constantCollection['org']"
+                v-model="editItem['orgId']" :items="constantObj['org']"
                 :rules="requireRules">
                 <template v-slot:item="data">
                   {{data.item.textRender}}
@@ -219,7 +219,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       org: [],
       roleList: [],
     },
@@ -338,7 +338,7 @@ new Vue({
         const level = item.orgPath.split('-').length;
         return { text: item.orgName, value: item.orgId, textRender: _.repeat('- ', level - 1) + item.orgName }
       })
-      this.$set(this.constantCollection, 'org', org) 
+      this.$set(this.constantObj, 'org', org) 
     },
     /**
      * uiActionId:  prepareValidate

@@ -26,7 +26,7 @@
           <v-row class="ma-0">
             <v-col cols="6">
               <v-card class="d-flex flex-row flex-wrap" outlined>
-                <template v-for="(status, index) in constantCollection.status" :key="index">
+                <template v-for="(status, index) in constantObj.status" :key="index">
                   <v-card
                     class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
                     <div class="mb-2">{{status.text}}</div>
@@ -37,7 +37,7 @@
             </v-col>
             <v-col cols="6">
               <v-card class="d-flex flex-row flex-wrap" outlined>
-                <template v-for="(status, index) in constantCollection.status2" :key="index">
+                <template v-for="(status, index) in constantObj.status2" :key="index">
                   <v-card
                     class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
                     <div class="mb-2">{{status.text}}</div>
@@ -81,7 +81,7 @@
           :headers="detailHeaders"
           :editItem="editItem"
           :currentClickButton="currentClickButton"
-          :constantCollection="constantCollection"
+          :constantObj="constantObj"
           @save="doUiAction('saveInfo')"
           >
           </drawer-form>
@@ -139,7 +139,7 @@ new Vue({
     requireRules: [
       v => !!v || '此项为必填项',
     ],
-    constantCollection: {
+    constantObj: {
       status: [
           {text: "未开始考核", value: 1},
           {text: "进行中考核", value: 2},
@@ -204,9 +204,6 @@ new Vue({
     ],
   }),
   computed: {
-    isMobile() {
-      return window.innerWidth < 600;
-    },
     tableData() {
       return this.tableDataBackups;
     },
@@ -217,7 +214,7 @@ new Vue({
   watch: {
     searchText(value) {
       value = value && value.toLowerCase();
-      const {constantCollection: {status = []}} = this;
+      const {constantObj: {status = []}} = this;
       if (value) {
         this.statusFilter = status.slice()
             .filter((v) => v.text && (v.text.toLowerCase().includes(value) || v.text.includes(value)))

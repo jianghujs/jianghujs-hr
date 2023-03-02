@@ -13,7 +13,7 @@
           single-line 
           prefix="年度：" 
           v-model="serverSearchInput.year" 
-          :items="constantCollection.year">
+          :items="constantObj.year">
         </v-select>
       </v-col>
       <v-col class="px-0" :class="{'pt-0': isMobile}" style="max-width: 56px">
@@ -61,7 +61,7 @@
       <v-card-title>选择参保员工</v-card-title>
       <v-divider></v-divider>
       <v-card-text style="height: 100px;" class="d-flex aligin-center justify-center">
-        <v-autocomplete v-if="isSelectEmployeeListDialogLoading === false" :items="constantCollection.employeeList"
+        <v-autocomplete v-if="isSelectEmployeeListDialogLoading === false" :items="constantObj.employeeList"
           v-model="selectedEmployeeList" auto-select-first chips dense filled multiple rounded small-chips
           item-text="employeeName" item-value="employeeId"></v-autocomplete>
         <v-progress-circular v-else indeterminate color="primary" class="mx-auto"></v-progress-circular>
@@ -152,7 +152,7 @@
         <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">参保方案</span>
           <v-select class="cus-v-input " dense filled single-line label="班级ID" v-model="editItem.schemeId"
-            :items="constantCollection.schemeList" item-text="schemeName" item-value="schemeId"></v-select>
+            :items="constantObj.schemeList" item-text="schemeName" item-value="schemeId"></v-select>
         </v-col>
         <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">社保各项基数</span>
@@ -170,7 +170,7 @@
         <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
         <!--      <v-col cols="12" sm="12" md="4">-->
         <!--            <span class="inputLabel">班级ID</span>-->
-        <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+        <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
         <!--      </v-col>-->
         <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
         <!--      <v-col cols="12" sm="12" md="4">-->
@@ -208,7 +208,7 @@
       requireRules: [
         v => !!v || 'This is required',
       ],
-      constantCollection: {
+      constantObj: {
         year: [],
         employeeList: [],
         schemeList: [],
@@ -269,7 +269,7 @@
         }
       },
       'editItem.schemeId'(val) {
-        this.editItem.projectList = [...this.constantCollection.projectListBySchemeId[val]];
+        this.editItem.projectList = [...this.constantObj.projectListBySchemeId[val]];
       }
     },
     async created() {
@@ -397,7 +397,7 @@
           }
         });
         const { rows } = result.data.appData.resultData;
-        this.constantCollection.schemeList = rows;
+        this.constantObj.schemeList = rows;
       },
       async getSchemeProjectList() {
         const result = await window.jianghuAxios({
@@ -410,7 +410,7 @@
           }
         });
         const { rows } = result.data.appData.resultData;
-        this.constantCollection.projectListBySchemeId = _.groupBy(rows, 'schemeId');
+        this.constantObj.projectListBySchemeId = _.groupBy(rows, 'schemeId');
       },
       // =================================uiAction 公共方法 end ======================================
       async saveYear(date) {
@@ -421,7 +421,7 @@
       async setDefaultYearAndOptions() {
         this.serverSearchInput.year = new Date().getFullYear() + '';
         for (let i = 1; i > -6; i--) {
-          this.constantCollection.year.push(new Date().getFullYear() + i + '');
+          this.constantObj.year.push(new Date().getFullYear() + i + '');
         }
       },
       async openSelectEmployeeListDialog() {
@@ -440,7 +440,7 @@
         });
         const { rows } = result.data.appData.resultData;
         // 不在列表内的员工并且离职没有超过半年的员工
-        this.constantCollection.employeeList = rows.filter(item => {
+        this.constantObj.employeeList = rows.filter(item => {
           return !this.tableDataFromBackend.some(item2 => item2.employeeId === item.employeeId) &&
             (item.entryStatus != 4 || item.entryStatus == 4 && (dayjs().diff(dayjs(item.planQuitTime), 'month') < 6));
         });
@@ -508,7 +508,7 @@
       */
       async prepareItemData({ item }) {
         this.editItem = { ...item };
-        this.editItem['projectList'] = [...this.constantCollection.projectListBySchemeId[this.editItem.schemeId]];
+        this.editItem['projectList'] = [...this.constantObj.projectListBySchemeId[this.editItem.schemeId]];
       },
       /**
        * uiActionId:  startUpdateItem

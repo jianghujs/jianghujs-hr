@@ -11,7 +11,7 @@
             <span class="inputLabel">{{item.text}}</span>
             <!-- 下拉框 -->
             <v-select v-if="item.type === 'select'" :disabled="item.disabled" class="cus-v-input" dense filled single-line clearable color="success"
-                      v-model="editItem[item.value]" :items="constantCollection[item.constant ? item.constant : item.value]"
+                      v-model="editItem[item.value]" :items="constantObj[item.constant ? item.constant : item.value]"
                       :rules="item.required && requireRules"></v-select>
             <!-- 时间选择器 -->
             <v-menu v-else-if="item.type === 'date'" class="cus-v-input" offset-y max-width="290">
@@ -23,7 +23,7 @@
             </v-menu>
             <!-- 单选搜索框 -->
             <v-autocomplete v-else-if="item.type === 'searchOne'" :disabled="item.disabled" class="cus-v-input" dense filled single-line
-                            v-model="editItem[item.value]" :items="constantCollection[item.constant ? item.constant : item.value]" :filter="customFilter"
+                            v-model="editItem[item.value]" :items="constantObj[item.constant ? item.constant : item.value]" :filter="customFilter"
             ></v-autocomplete>
 
             <!-- 数字文本框 -->
@@ -41,7 +41,7 @@
                         :rules="item.required && requireRules" v-model="editItem[item.value]"></v-textarea>
             <!-- 多选搜索框 -->
             <v-autocomplete v-else-if="item.type === 'searchMultiple'" class="cus-v-input"
-                            v-model="editItem[item.value]" :items="constantCollection[item.constant ? item.constant : item.value]" dense chips filled single-line
+                            v-model="editItem[item.value]" :items="constantObj[item.constant ? item.constant : item.value]" dense chips filled single-line
                             :disabled="item.disabled"
                             multiple>
               <template v-slot:selection="data">
@@ -75,7 +75,7 @@
       currentClickButton: { type: Object, default: {} },
       headers: { type: Array, default: [] },
       editItem: { type: Object, default: {} },
-      constantCollection: { type: Object, default: {} },
+      constantObj: { type: Object, default: {} },
       showCancel: { type: Boolean, default: true },
       showSave: { type: Boolean, default: true }
     },

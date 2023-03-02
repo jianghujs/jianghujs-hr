@@ -65,7 +65,7 @@
     </v-row>
     <v-row class="mt-0 px-4">
       <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-        <change-record :employeeId="editItem.employeeId" :changeReasonList="constantCollection.changeReason" :employeeName="editItem.employeeName"></change-record>
+        <change-record :employeeId="editItem.employeeId" :changeReasonList="constantObj.changeReason" :employeeName="editItem.employeeName"></change-record>
       </v-col>
     </v-row>
   </v-card>
@@ -153,7 +153,7 @@
       <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">管理定薪模板</span>
     </v-row>
     <v-row class="mt-0 px-4">
-      <change-template ref="changeTmp" :options="constantCollection.salaryOption" @refresh-change-tmp-list="setChangeTmpList"></change-template>
+      <change-template ref="changeTmp" :options="constantObj.salaryOption" @refresh-change-tmp-list="setChangeTmpList"></change-template>
     </v-row>
     <v-row class="justify-end pr-6">
       <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
@@ -179,7 +179,7 @@
       <v-col cols="12" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">定薪模板</span>
         <v-select @change="buildEditItem" class="cus-v-input " dense filled single-line label="班级ID" v-model="editItem.templateId"
-        :items="constantCollection.changeTmpList" item-text="templateName" item-value="templateId"></v-select>
+        :items="constantObj.changeTmpList" item-text="templateName" item-value="templateId"></v-select>
       </v-col>
        
       <v-col v-if="editItem.recordType == 1" cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
@@ -306,7 +306,7 @@
       <v-col v-if="editItem.recordType > 1" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">调薪原因</span>
         <v-select class="cus-v-input " dense filled single-line label="班级ID" v-model="editItem.changeReason"
-        :items="constantCollection.changeReason" item-text="text" item-value="value"></v-select>
+        :items="constantObj.changeReason" item-text="text" item-value="value"></v-select>
       </v-col>
       <v-col v-if="editItem.recordType > 1" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">调薪生效日期</span>
@@ -395,7 +395,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       // changeReason 1 入职核定 2 转正 3 晋升 4 调动 5 年中调薪 6 年度调薪 7 特别调薪 8 其他
       changeReason: [
         { text: '入职定薪', value: 0 },
@@ -580,10 +580,10 @@ new Vue({
         }
       });
       const { rows } = result.data.appData.resultData;
-      this.constantCollection.salaryOption = rows;
+      this.constantObj.salaryOption = rows;
     },
     setChangeTmpList(rows) {
-      this.constantCollection.changeTmpList = rows.map(item => {
+      this.constantObj.changeTmpList = rows.map(item => {
         return {
           templateId: item.id,
           templateName: item.templateName,
@@ -684,7 +684,7 @@ new Vue({
      * description: ✅获取表格数据
     */
     async prepareItemData({item}) {
-      this.defaultChangeTmp = this.constantCollection.changeTmpList.find(item => item.isDefault == 1);
+      this.defaultChangeTmp = this.constantObj.changeTmpList.find(item => item.isDefault == 1);
       const { employeeId, changeType, status, changeRecordList } = item;
       this.editItem = {
         employeeId,
@@ -753,7 +753,7 @@ new Vue({
       await window.vtoast.success("删除数据成功");
     },
     getConstText(constName, constValue) {
-      const constData = this.constantCollection[constName];
+      const constData = this.constantObj[constName];
       if (!constData) {
         return constValue;
       }
@@ -765,7 +765,7 @@ new Vue({
     },
     buildEditItem() {
       const { templateId } = this.editItem;
-      const changeTmp = this.constantCollection.changeTmpList.find(item => item.templateId == templateId);
+      const changeTmp = this.constantObj.changeTmpList.find(item => item.templateId == templateId);
       this.defaultChangeTmp = changeTmp;
       const codeList = changeTmp.code || [];
       // 定薪默认
@@ -815,7 +815,7 @@ new Vue({
     buildEmployeeDetail({item}) {
       // 组装信息详情显示
       this.editItem.employeeName = item.employeeName;
-      const salaryList = this.constantCollection.salaryOption.filter(e => e.parentCode < 100);
+      const salaryList = this.constantObj.salaryOption.filter(e => e.parentCode < 100);
       salaryList.forEach(e => {
         const salaryItem = this.editItem.salary.newSalary.find(s => s.code == e.code);
         if (salaryItem) {

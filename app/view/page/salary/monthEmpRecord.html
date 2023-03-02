@@ -172,7 +172,7 @@
       <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
       <!--      <v-col cols="12" sm="12" md="4">-->
       <!--            <span class="inputLabel">班级ID</span>-->
-      <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
+      <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
       <!--      </v-col>-->
       <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
       <!--      <v-col cols="12" sm="12" md="4">-->
@@ -212,7 +212,7 @@
           :loading="isTableLoading"
           checkbox-color="success"
           class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-          <template :slot="'item.' + key" slot-scope="{item}" v-for="(key, index) in constantCollection.salaryCodeList" >
+          <template :slot="'item.' + key" slot-scope="{item}" v-for="(key, index) in constantObj.salaryCodeList" >
             <v-text-field v-model="item[key]" filled single-line hide-details></v-text-field>
           </template>
           
@@ -364,7 +364,7 @@ new Vue({
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       // table data 动态列
       salaryCodeList: [
       10101, 10102, 10103, 20101, 20102, 20103, 20104, 30101, 40101, 40102, 40103, 50101, 60101, 70101, 80101, 80102, 90101, 90102, 90103, 100101, 100102, 110101, 120101, 130101, 140101, 150101, 160101, 160102, 160103, 170101, 180101, 190101, 190102, 190103, 190104, 190105, 190106, 200101, 210101, 220101, 230101, 240101

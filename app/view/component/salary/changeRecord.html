@@ -171,7 +171,7 @@
         <v-col v-if="!editItem.isMake" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">调薪原因</span>
           <v-select class="cus-v-input " dense filled single-line label="班级ID" v-model="editItem.changeReason"
-          :items="constantCollection.changeReason" item-text="text" item-value="value"></v-select>
+          :items="constantObj.changeReason" item-text="text" item-value="value"></v-select>
         </v-col>
         <v-col v-if="!editItem.isMake" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">调薪生效日期</span>
@@ -212,7 +212,7 @@ Vue.component('change-record', {
     requireRules: [
       v => !!v || 'This is required',
     ],
-    constantCollection: {
+    constantObj: {
       // 状态 0 未生效 1 已生效 2 已取消
       status: [
         { text: '未生效', value: 0 },
@@ -288,7 +288,7 @@ Vue.component('change-record', {
     },
   },
   async created() {
-    this.constantCollection.changeReason = this.changeReasonList;
+    this.constantObj.changeReason = this.changeReasonList;
     await this.doUiAction('refreshTableData');
   },
   mounted() {},
@@ -500,7 +500,7 @@ Vue.component('change-record', {
     },
     getConstText(constName, constValue) {
       console.log(constName, constValue);
-      const constData = this.constantCollection[constName];
+      const constData = this.constantObj[constName];
       if (!constData) {
         return constValue;
       }
