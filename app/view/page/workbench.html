@@ -21,7 +21,8 @@
         </div>
         <!-- <<<<<<<<<<<<< 头部内容 -->
 
-        <v-row class="jh-page-body-container px-8">
+      <div class="jh-page-body-container px-8">
+        <v-row>
           <v-col cols="8">
             <v-card class="rounded-lg mb-5">
               <div class="d-flex pa-4">
@@ -110,7 +111,7 @@
               <div class="d-flex pa-4">
                 <h5>待办提醒</h5>
               </div>
-              <v-row>
+              <v-row class="">
                 <v-col cols="12">
                   <v-card class="d-flex flex-row flex-wrap ml-3" elevation="0">
                     <template v-for="(status, index) in constantObj.status3" :key="index">
@@ -156,6 +157,7 @@
             </v-card>
           </v-col>
         </v-row>   
+      </div>
         
         <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
         <v-navigation-drawer v-model="isHelpPageDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
