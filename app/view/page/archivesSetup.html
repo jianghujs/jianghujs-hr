@@ -20,11 +20,8 @@
               <!-- pc端的搜索条件表单 >>>>>>>> -->
               <v-col cols="12" xs="12" sm="12" md="8" xl="9">
                 <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
-                  <v-col cols="12" xs="6" sm="6" md="4" xl="3" class="pa-xs-0 pb-2 pr-1 pr-xs-1">
-                    <v-text-field v-model="serverSearchForm.employeeId" prefix="员工姓名：" color="success" class="cus-v-input" dense filled single-line></v-text-field>
-                  </v-col>
                   <v-col cols="12" xs="6" sm="6" md="4" xl="3" class="pa-xs-0 pb-2 pl-1 pl-xs-1">
-                    <v-select v-model="serverSearchInput.gender" color="success" prefix="性别：" class="jh-v-input bg-white" :items="constantObj.gender" dense filled single-line></v-select>
+                    <v-text-field v-model="serverSearchForm.employeeId" prefix="员工姓名：" color="success" class="jh-v-input bg-white" hide-details dense filled single-line></v-text-field>
                   </v-col>
                   <v-btn class="jh-backend-search-btn elevation-0 ml-0 mt-3" color="success" small @click="doUiAction('getTableData')">
                     查询
@@ -43,7 +40,7 @@
                 <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
                 <v-spacer></v-spacer>
                 <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-                  <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="cus-v-input" dense filled
+                  <v-text-field v-model="tableFilterKeyword" color="success" prefix="表格过滤：" class="jh-v-input" dense filled
                                 single-line></v-text-field>
                 </v-col>
               </v-row>

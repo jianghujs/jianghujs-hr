@@ -61,11 +61,11 @@
                     {{item.orgName}}
                   </template>
                   <template v-slot:item.roleId="{ item }">
-                    <!-- <v-select class="cus-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
+                    <!-- <v-select class="jh-v-input mr-2" dense filled single-line color="success" hide-details @change="doUiAction('updateItemRole', {item})"
                       v-model="item['roleId']" :items="constantObj['roleList']">
                     </v-select> -->
                     <div class="d-flex">
-                      <v-text-field v-model="item['roleId']" class="cus-v-input" dense filled single-line hide-details>
+                      <v-text-field v-model="item['roleId']" class="jh-v-input" dense filled single-line hide-details>
                       </v-text-field>
                       <v-icon class="success--text" :disabled="item.roleIdCopy === item.roleId" @click="doUiAction('updateItemRole', {item})">mdi-check-circle</v-icon>
                     </div>
@@ -116,7 +116,7 @@
                 <v-btn small color="success" class="elevation-0 mr-2" @click="doUiAction('createItem', { itemList: addDrawerSelectedList })">批量添加</v-btn>
               </v-col>
               <v-spacer></v-spacer>
-              <v-text-field v-model="addDrawerSearchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+              <v-text-field v-model="addDrawerSearchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
             </v-row>  
             <v-data-table 
               fixed-header
@@ -158,11 +158,11 @@
             <v-row class="mt-0 px-4">
               <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">员工名</span>
-                <v-text-field class="cus-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
+                <v-text-field class="jh-v-input " disabled dense filled single-line v-model="editItem['employeeName']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">组织</span>
-                <v-select class="cus-v-input mr-2" dense filled single-line clearable color="success"
+                <v-select class="jh-v-input mr-2" dense filled single-line clearable color="success"
                 v-model="editItem['orgId']" :items="constantObj['org']"
                 :rules="requireRules">
                 <template v-slot:item="data">

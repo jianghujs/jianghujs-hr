@@ -88,7 +88,7 @@ SQL END!-->
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-                  <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+                  <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
                 </v-col>
               </v-row>
               <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput"
@@ -124,47 +124,47 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工姓名</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeName']" :rules="requireRules"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['employeeName']" :rules="requireRules"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['sex']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="addItem['sex']"
                     :items="constantObj.sex"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工年龄</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['age']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['age']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">联系电话</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['contactNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['contactNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">紧急联系电话</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="addItem['emergencyContactNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['post']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="addItem['post']"
                     :items="constantObj.post"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">身份证号</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['icNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['icNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">出生日期</span>
-                  <v-menu class="cus-v-input" offset-y max-width="290">
+                  <v-menu class="jh-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                      <v-text-field class="jh-v-input" dense filled single-line v-on="on"
                         :value="addItem['dateOfBirth']"></v-text-field>
                     </template>
                     <v-date-picker color="success" elevation="20" v-model="addItem['dateOfBirth']"></v-date-picker>
@@ -173,57 +173,57 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">毕业学校</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['institution']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['institution']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">专业</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['major']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['major']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">最高学历</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="addItem['highestEducation']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">家庭住址</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="addItem['residentialAddress']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">建设银行卡</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['cardNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['cardNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">车牌号</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="addItem['licensePlateNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">备注</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['status']" :rules="requireRules"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="addItem['status']" :rules="requireRules"
                   :items="constantObj.status"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']" :rules="requireRules"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="addItem['employmentForms']" :rules="requireRules"
                   :items="constantObj.employmentForms"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']" :rules="requireRules"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="addItem['entryStatus']" :rules="requireRules"
                   :items="constantObj.entryStatus"></v-select>
                 </v-col>
               </v-row>
@@ -262,42 +262,42 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工姓名</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employeeName']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['employeeName']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['sex']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['sex']"
                   :items="constantObj.sex"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工年龄</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">联系电话</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['contactNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">紧急联系电话</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['emergencyContactNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">身份证号</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['icNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['icNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">出生日期</span>
-                  <v-menu class="cus-v-input" offset-y max-width="290">
+                  <v-menu class="jh-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                      <v-text-field class="jh-v-input" dense filled single-line v-on="on"
                         :value="editItem['dateOfBirth']"></v-text-field>
                     </template>
                     <v-date-picker color="success" elevation="20" v-model="editItem['dateOfBirth']"></v-date-picker>
@@ -306,64 +306,64 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">毕业学校</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['institution']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['institution']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">专业</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['major']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['major']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">最高学历</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['highestEducation']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证类别</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['teacherQualification']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学段</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationLeaver']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationLeaver']"
                   :items="constantObj.level"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证学科</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationSubject']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teacherQualificationSubject']"
                   :items="constantObj.subject"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">教师资格证编号</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['teacherCertificationNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">家庭住址</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['residentialAddress']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">建设银行卡</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['cardNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['cardNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">车牌号</span>
-                  <v-text-field class="cus-v-input " dense filled single-line
+                  <v-text-field class="jh-v-input " dense filled single-line
                     v-model="editItem['licensePlateNumber']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">备注</span>
-                  <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['remarks']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['remarks']"></v-text-field>
                 </v-col>
               </v-row>
 
@@ -375,45 +375,45 @@ SQL END!-->
               <v-row class="mt-0 px-4">
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['post']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['post']"
                   :items="constantObj.post"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学段</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
                   :items="constantObj.level"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学科</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
                   :items="constantObj.subject"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['status']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['status']"
                   :items="constantObj.status"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
                   :items="constantObj.employmentForms"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
-                  <v-select class="cus-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
                   :items="constantObj.entryStatus"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职日期</span>
-                  <v-menu class="cus-v-input" offset-y max-width="290">
+                  <v-menu class="jh-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                      <v-text-field class="jh-v-input" dense filled single-line v-on="on"
                         :value="editItem['dateOfEntry']"></v-text-field>
                     </template>
                     <v-date-picker color="success" elevation="20" v-model="editItem['dateOfEntry']"></v-date-picker>
@@ -422,9 +422,9 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">到期日期</span>
-                  <v-menu class="cus-v-input" offset-y max-width="290">
+                  <v-menu class="jh-v-input" offset-y max-width="290">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-text-field class="cus-v-input" dense filled single-line v-on="on"
+                      <v-text-field class="jh-v-input" dense filled single-line v-on="on"
                         :value="editItem['dateOfContractExpiration']"></v-text-field>
                     </template>
                     <v-date-picker color="success" elevation="20" v-model="editItem['dateOfContractExpiration']"></v-date-picker>
@@ -433,19 +433,19 @@ SQL END!-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
                 <!--            <span class="inputLabel">学生ID</span>-->
-                <!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
+                <!--        <v-text-field class="jh-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--            <span class="inputLabel">班级ID</span>-->
-                <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
+                <!--        <v-select class="jh-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
                 <!--      </v-col>-->
                 <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--        <span class="inputLabel">出生日期</span>-->
-                <!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
+                <!--        <v-menu class="jh-v-input " offset-y max-width="290">-->
                 <!--          <template v-slot:activator="{ on, attrs }">-->
-                <!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
+                <!--            <v-text-field class="jh-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
                 <!--          </template>-->
                 <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
                 <!--        </v-menu>-->
