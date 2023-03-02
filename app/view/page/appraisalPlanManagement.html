@@ -51,8 +51,7 @@
 
           <!-- 页面主要内容 -->
           <v-card :class="{'px-2': isMobile}">
-          <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
-                :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+          <v-row class="ma-0 pa-4">
           <v-btn color="success" dark class="elevation-0 mr-2"
               @click.stop="doUiAction('handleTableButton', { title: '新建考核', action: 'add' })">新建考核
           </v-btn>
