@@ -70,7 +70,7 @@ SQL END!-->
                 <template v-for="(status, index) in constantCollection.entryStatus" :key="index" v-if="">
                   <v-card class="pa-2 text-center"
                     :style="{ borderRight: index ===  constantCollection.entryStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-                    style="flex: 1;border-radius: 0;" @click="changeStatus('state', status.value)">
+                    style="flex: 1;border-radius: 0;" @click="changeStatus('entryStatus', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
                   </v-card>
@@ -557,9 +557,27 @@ SQL END!-->
         v => !!v || '此项为必填项',
       ],
       constantCollection: {
-        status: ['全职', '兼职', '实习'],
-        employmentForms: ['正式', '试用'],
-        entryStatus: ['在职', '待入职', '待离职', '已离职'],
+           // 员工状态
+           status: [
+          { text: "全职", value: 1 },
+          { text: "兼职", value: 2 },
+          { text: "实习", value: 3 },
+        ],
+        // 聘用形式
+        employmentForms: [
+          { text: "正式", value: 1 },
+          { text: "试用", value: 2 },
+        ],
+        // 在职状态
+        entryStatus: [
+          { text: "在职", value: "在职" },
+          { text: "待入职", value: "待入职" },
+          { text: "待离职", value: "待离职" },
+          { text: "已离职", value: "已离职" }
+        ],
+        // status: ['全职', '兼职', '实习'],
+        // employmentForms: ['正式', '试用'],
+        // entryStatus: ['在职', '待入职', '待离职', '已离职'],
         sex: [
           { text: '男', value: '男' },
           { text: '女', value: '女' }
