@@ -40,16 +40,13 @@
     </v-data-table>
   </v-card>
   <!-- 编辑抽屉 -->
-  <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-    <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-      <v-row class="pt-8">
-        <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">单个调薪</span>
-        <v-spacer></v-spacer>
-        <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
-          <v-icon dark>mdi-close</v-icon>
-        </v-btn>
+  <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+    <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+      <!-- 抽屉标题 -->
+      <v-row>
+        <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">单个调薪</span>
       </v-row>
-      <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+      <v-row class="mt-0 px-4">
         <v-col v-if="editItem.isMake" cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">定薪细则</span>
           <!-- 定薪 -->
@@ -190,12 +187,16 @@
           <v-textarea :readonly="!editItem.isAccess" class="cus-v-input " dense filled single-line v-model="editItem['remarks']" filled single-line auto-grow rows="4"></v-textarea>
         </v-col>
       </v-row>
-      <v-row v-if="editItem.isAccess" class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+      <v-row v-if="editItem.isAccess" class="justify-end mx-0 mt-8 px-6">
         <v-btn v-if="editItem.isMake" color="success" @click="doUiAction('updateItem', {type: 'makeEmployeeArchives'})">定薪提交</v-btn>
         <v-btn v-else color="success" @click="doUiAction('updateItem', {type: 'updateEmployeeArchives'})">调薪提交</v-btn>
-        <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+        <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
       </v-row>
     </v-form>
+    <!-- 抽屉关闭按钮 -->
+    <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isUpdateDrawerShown = false">
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
   </v-navigation-drawer>
 </v-container>
 
@@ -239,9 +240,9 @@ Vue.component('change-record', {
       {text: "正式调整后工资", value: "afterSum", width: 120}, 
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     editItem: {},
-    isAddDrawerShow: false,
+    isCreateDrawerShown: false,
     addItem: {}
   }),
   computed: {
@@ -382,7 +383,7 @@ Vue.component('change-record', {
       this.addItem = {};
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isCreateDrawerShown = true;
     },
 
     /**
@@ -409,8 +410,8 @@ Vue.component('change-record', {
       await window.vtoast.success("新增数据成功");
     },
     async closeDrawerShow() {
-      this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
+      this.isUpdateDrawerShown = false;
+      this.isCreateDrawerShown = false;
     },
 
     /**
@@ -447,7 +448,7 @@ Vue.component('change-record', {
       };
     },
     async openUpdateDialog() {
-      this.isEditDrawerShow = true;
+      this.isUpdateDrawerShown = true;
     },
     /**
      * uiActionId:  updateItem

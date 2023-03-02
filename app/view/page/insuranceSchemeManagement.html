@@ -1,141 +1,152 @@
-{% extends 'template/jhTemplateV3.html'%}
+{% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
+{% block vueTemplate %}
 
+<script type="text/html" id="app-template">
+<div>
+<v-app mobile-breakpoint="sm">
+  <jh-menu />
+  <v-main class="mt-15">
+    <!-- 头部内容 >>>>>>>>>>>>> -->
+    <div class="jh-page-second-bar px-8">
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="3">
+          <div class="pt-3 text-h7 font-weight-bold">服务端搜索
+            <!-- 帮助页按钮 -->
+            <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
+            </v-icon>
+          </div>
+          <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+        </v-col>
+        <!-- pc端的搜索条件表单 >>>>>>>> -->
+        <v-col cols="12" xs="12" sm="12" md="8" xl="9">
+          <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
+            <v-col cols="12" xs="6" sm="6" md="4" xl="3" class="pa-xs-0 pb-2 pl-1 pl-xs-1">
+              <v-select 
+                class="cus-v-input " 
+                dense filled 
+                single-line 
+                prefix="年度：" 
+                v-model="serverSearchInput.year" 
+                :items="constantCollection.year">
+              </v-select>
+            </v-col>
+            <v-btn class="jh-backend-search-btn elevation-0 ml-0 mt-3" color="success" small @click="doUiAction('refreshTableData')">
+              查询
+            </v-btn>
+          </v-row>
+        </v-col>
+        <!-- <<<<<<<< pc端的搜索条件表单 -->
+      </v-row>
+    </div>
+    <!-- <<<<<<<<<<<<< 头部内容 -->
 
-<jh-layout-v3>
-  <template slot="serverSearch">
-    <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
-      <v-col cols="4" sm="4" xs="3" md="3" xl="2" class="pb-3" :class="{'pt-0': isMobile}">
-        <v-select 
-          class="cus-v-input " 
-          dense filled 
-          single-line 
-          prefix="年度：" 
-          v-model="serverSearchInput.year" 
-          :items="constantCollection.year">
-        </v-select>
-      </v-col>
-      <v-col class="px-0" :class="{'pt-0': isMobile}" style="max-width: 56px">
-        <v-btn
-            class="elevation-0"
-            color="success"
-            dark
-            @click="doUiAction('refreshTableData')">
-          查询
-        </v-btn>
-      </v-col>
-    </v-row>
-  </template>
-<!-- 页面主要内容 -->
-<v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-  <v-card>
-  <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 " :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+    <div class="jh-page-body-container px-8">
+      <!-- 页面内容 >>>>>>>>>>>>> -->
+      <v-card class="rounded-lg">
+        <v-row class="ma-0 pa-4">
 
-      <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
-        <v-btn
-          v-if="maxMonth < 12"
-            class="elevation-0"
-            color="success"
-            dark
-            @click="doUiAction('createItem')">
-          新建次月报表
-        </v-btn>
-        <span class="body-2">共{{ tableData.length }}条记录</span>
-      </v-col>
+          <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
+            <v-btn
+              v-if="maxMonth < 12"
+                class="elevation-0"
+                color="success"
+                dark
+                @click="doUiAction('createItem')">
+              新建次月报表
+            </v-btn>
+            <span class="body-2">共{{ tableData.length }}条记录</span>
+          </v-col>
 
-      <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-      <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
-        <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
-      </v-col>
-    </v-row>
-    <v-data-table fixed-header
-                  :headers="headers"
-                  :items="tableData"
-                  :search="searchInput"
-                  :items-per-page="20"
-                  mobile-breakpoint="0"
-                  :loading="isTableLoading"
-                  checkbox-color="success"
-                  hide-default-footer
-                  class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-      <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" @click="doUiAction('toDetail', {item})">查看详情</v-btn>
-        <v-btn v-if="item.isNew" small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
-      </template>
-    </v-data-table>
-  </v-card>
-</v-container>
+          <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
+            <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+          </v-col>
+        </v-row>
+        <v-data-table fixed-header
+                      :headers="headers"
+                      :items="tableData"
+                      :search="searchInput"
+                      :items-per-page="20"
+                      mobile-breakpoint="0"
+                      :loading="isTableLoading"
+                      checkbox-color="success"
+                      hide-default-footer
+                      class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+          <template v-slot:item.action="{ item }">
+            <v-btn small class=" success" @click="doUiAction('toDetail', {item})">查看详情</v-btn>
+            <v-btn v-if="item.isNew" small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+          </template>
+        </v-data-table>
+      </v-card>
+    </div>
 
 <!-- 新增 -->
-<v-navigation-drawer v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">新增信息</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+<v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">i_emp_record_id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['i_emp_record_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">每月生成社保id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['iRecordId']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">员工id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employee_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">社保方案id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['scheme_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">年</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['year']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">月</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['month']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">个人社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['personal_insurance_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">个人公积金金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['personal_provident_fund_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">公司社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['corporate_insurance_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">公司社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['corporate_provident_fund_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">create_time</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['create_time']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">每月社保状态 0 停保 1 正常</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['status']"></v-text-field>
       </v-col>
@@ -143,110 +154,95 @@
     </v-row>
     <v-row class="justify-end pr-6">
       <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-      <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+      <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
     </v-row>
   </v-form>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isCreateDrawerShown = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 
 <!-- 编辑抽屉 -->
-<v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">编辑信息</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+<v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">i_emp_record_id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['i_emp_record_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">每月生成社保id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['iRecordId']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">员工id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['employee_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">社保方案id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['scheme_id']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">年</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['year']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">月</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['month']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">个人社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['personal_insurance_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">个人公积金金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['personal_provident_fund_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">公司社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['corporate_insurance_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">公司社保金额</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['corporate_provident_fund_amount']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">create_time</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['create_time']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">每月社保状态 0 停保 1 正常</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="editItem['status']"></v-text-field>
       </v-col>
        
-<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-<!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-<!--            <span class="inputLabel">学生ID</span>-->
-<!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-<!--      </v-col>-->
-<!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-<!--            <span class="inputLabel">班级ID</span>-->
-<!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
-<!--      </v-col>-->
-<!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-<!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
-<!--        <span class="inputLabel">出生日期</span>-->
-<!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
-<!--          <template v-slot:activator="{ on, attrs }">-->
-<!--            <v-text-field class="cus-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-<!--          </template>-->
-<!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-<!--        </v-menu>-->
-<!--      </v-col>-->
     </v-row>
-    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+    <v-row class="justify-end mx-0 mt-8 px-6">
       <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+      <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
     </v-row>
   </v-form>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isUpdateDrawerShown = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 </jh-layout-v3>
@@ -286,9 +282,9 @@ new Vue({
       {text: "停保人数", value: "stopCount", width: 100}, 
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     editItem: {},
-    isAddDrawerShow: false,
+    isCreateDrawerShown: false,
     addItem: {},
     yearDialog: false
   }),
@@ -408,7 +404,7 @@ new Vue({
       this.addItem = {};
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isCreateDrawerShown = true;
     },
 
     /**
@@ -433,8 +429,8 @@ new Vue({
       await window.vtoast.success("新增数据成功");
     },
     async closeDrawerShow() {
-      this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
+      this.isUpdateDrawerShown = false;
+      this.isCreateDrawerShown = false;
     },
 
     /**
@@ -445,7 +441,7 @@ new Vue({
       this.editItem = {...item};
     },
     async openUpdateDialog() {
-      this.isEditDrawerShow = true;
+      this.isUpdateDrawerShown = true;
     },
     /**
      * uiActionId:  updateItem

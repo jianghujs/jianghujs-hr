@@ -1,95 +1,88 @@
-{% extends 'template/jhTemplateV3.html'%}
+{% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
+{% block vueTemplate %}
 
+<script type="text/html" id="app-template">
+<div>
+<v-app mobile-breakpoint="sm">
+  <jh-menu />
+  <v-main class="mt-15">
+    <!-- 头部内容 >>>>>>>>>>>>> -->
+    <div class="jh-page-second-bar px-8">
+      <div class="pt-3 text-h7 font-weight-bold">薪资档案
+        <!-- 帮助页按钮 -->
+        <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline</v-icon>
+      </div>
+      <v-breadcrumbs class="pb-3 pt-0 px-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+    </div>
+    <!-- <<<<<<<<<<<<< 头部内容 -->
 
-<jh-layout-v3>
+    <div class="jh-page-body-container px-8">
+      <!-- 页面内容 >>>>>>>>>>>>> -->
+      <v-card class="rounded-lg">
+        <v-row class="ma-0 pa-4">
 
-<!--   <template slot="serverSearch">
-    <v-row class="ma-0 align-center flex-none pa-0" :class="{'pa-2': !isMobile, 'pa-2': isMobile}" style="justify-content: end">
-      <v-col :class="{'pt-2': isMobile, 'pl-0': isMobile, 'pr-0': !isMobile}" style="max-width: 77px">
-        <v-btn
-          class="elevation-0"
-          color="success"
-          dark
-          @click="doUiAction('refreshTableData')"
-        >
-          查询
-        </v-btn>
-      </v-col>
-    </v-row>
-  </template>-->
+          <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
+            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">批量调薪</v-btn>
+            <v-btn class="elevation-0 mr-2" @click="showChangeTmpDrawer">管理调薪模板</v-btn>
+            <span class="body-2">共{{ tableData.length }}条记录</span>
+          </v-col>
 
-<!-- 页面主要内容 -->
-<v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-  <v-card>
-  <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 " :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+          <v-spacer></v-spacer>
 
-      <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
-        <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">批量调薪</v-btn>
-        <v-btn class="elevation-0 mr-2" @click="showChangeTmpDrawer">管理调薪模板</v-btn>
-        <span class="body-2">共{{ tableData.length }}条记录</span>
-      </v-col>
-
-      <v-spacer></v-spacer>
-
-      <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
-        <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
-      </v-col>
-    </v-row>
-    <v-data-table fixed-header
-                  :headers="headers"
-                  :items="tableData"
-                  :search="searchInput"
-                  :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-                  :items-per-page="20"
-                  mobile-breakpoint="0"
-                  :loading="isTableLoading"
-                  checkbox-color="success"
-                  class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-      <template v-slot:item.status="{item}">
-        {{getConstText('status', item.status)}}
-      </template>
-      <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('showEmployeeDetail', {item})">薪资明细</v-btn>
-        <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('startUpdateItem', {item})">{{ item.changeType > 0 ? '调薪' : '定薪'}}</v-btn>
-        <v-btn small class=" success" v-if="item.changeType > 0" :disabled="!isEdit" @click="doUiAction('showEmployeeChangeRecord', {item})">调薪记录</v-btn>
-      </template>
-    </v-data-table>
-  </v-card>
-</v-container>
+          <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
+            <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
+          </v-col>
+        </v-row>
+        <v-data-table fixed-header
+                      :headers="headers"
+                      :items="tableData"
+                      :search="searchInput"
+                      :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+                      :items-per-page="20"
+                      mobile-breakpoint="0"
+                      :loading="isTableLoading"
+                      checkbox-color="success"
+                      class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+          <template v-slot:item.status="{item}">
+            {{getConstText('status', item.status)}}
+          </template>
+          <template v-slot:item.action="{ item }">
+            <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('showEmployeeDetail', {item})">薪资明细</v-btn>
+            <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('startUpdateItem', {item})">{{ item.changeType > 0 ? '调薪' : '定薪'}}</v-btn>
+            <v-btn small class=" success" v-if="item.changeType > 0" :disabled="!isEdit" @click="doUiAction('showEmployeeChangeRecord', {item})">调薪记录</v-btn>
+          </template>
+        </v-data-table>
+      </v-card>
+    </div>
 
 <!-- 调薪记录抽屉 -->
 <v-navigation-drawer v-model="isEmployeeChangeRecordShow" :permanent="isEmployeeChangeRecordShow" fixed temporary right width="80%" class="elevation-24">
   <v-card v-if="isEmployeeChangeRecordShow">
-    <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
-      :class="{'px-4': isMobile, 'px-12': !isMobile}">
-      <span class="title">{{editItem.employeeName}}-调薪记录</span>
-      <v-spacer></v-spacer>
-      <v-btn class="elevation-0" fab x-small @click="isEmployeeChangeRecordShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">{{editItem.employeeName}}-调薪记录</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
       <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <change-record :employeeId="editItem.employeeId" :changeReasonList="constantCollection.changeReason" :employeeName="editItem.employeeName"></change-record>
       </v-col>
     </v-row>
   </v-card>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isEmployeeChangeRecordShow = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 <!-- 个人详情抽屉 -->
 <v-navigation-drawer v-model="isEmployeeDetailShow" :permanent="isEmployeeDetailShow" fixed temporary right width="80%" class="elevation-24">
   <v-card>
-    <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
-      :class="{'px-4': isMobile, 'px-12': !isMobile}">
-      <span class="title">{{editItem.employeeName}}</span>
-      <v-spacer></v-spacer>
-      <v-btn class="elevation-0" fab x-small @click="isEmployeeDetailShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">{{editItem.employeeName}}</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
       <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">薪资信息合计</span>
         <div>{{newSalarySum}}</div>
@@ -100,41 +93,42 @@
       </v-col>
     </v-row>
   </v-card>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isEmployeeDetailShow = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 <!-- 新增 -->
-<v-navigation-drawer v-model="isAddDrawerShow" :permanent="isAddDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isAddDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">新增信息</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isAddDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+<v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">调薪原因 1 入职核定 2 转正 3 晋升 4 调动 5 年中调薪 6 年度调薪 7 特别调薪 8 其他</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['changeReason']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">最近调整日期</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['changeDate']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">员工id</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['employeeId']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">0 未定薪 1 已定薪 2 已调薪</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['changeType']"></v-text-field>
       </v-col>
        
-      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col cols="12" sm="12" md="4">
         <span class="inputLabel">备注</span>
         <v-text-field class="cus-v-input " dense filled single-line v-model="addItem['remarks']"></v-text-field>
       </v-col>
@@ -142,22 +136,23 @@
     </v-row>
     <v-row class="justify-end pr-6">
       <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-      <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+      <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
     </v-row>
   </v-form>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isCreateDrawerShown = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 <!-- 定薪模板 -->
 <v-navigation-drawer v-model="isChangeTmpDrawerShow" :permanent="isChangeTmpDrawerShow" fixed temporary right width="80%" class="elevation-24">
   <v-form v-model="isFormValid" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">管理定薪模板</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isChangeTmpDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">管理定薪模板</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
       <change-template ref="changeTmp" :options="constantCollection.salaryOption" @refresh-change-tmp-list="setChangeTmpList"></change-template>
     </v-row>
     <v-row class="justify-end pr-6">
@@ -165,20 +160,21 @@
       <v-btn class="ml-2" @click="isChangeTmpDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
     </v-row>
   </v-form>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isChangeTmpDrawerShow = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
 
 <!-- 定薪、调薪抽屉 -->
-<v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="80%" class="elevation-24">
-  <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
-    <v-row class="pt-8">
-      <span class="title pa-6" :class="{'pl-12': !isMobile, 'pl-6': isMobile}">单个调薪</span>
-      <v-spacer></v-spacer>
-      <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isEditDrawerShow = false">
-        <v-icon dark>mdi-close</v-icon>
-      </v-btn>
+<v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
+  <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+    <!-- 抽屉标题 -->
+    <v-row>
+      <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">单个调薪</span>
     </v-row>
-    <v-row :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+    <v-row class="mt-0 px-4">
        
       <v-col cols="12" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">定薪模板</span>
@@ -326,19 +322,51 @@
         <v-textarea class="cus-v-input " dense filled single-line v-model="editItem['remarks']" filled single-line auto-grow rows="4"></v-textarea>
       </v-col>
     </v-row>
-    <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+    <v-row class="justify-end mx-0 mt-8 px-6">
       <v-btn v-if="editItem.recordType == 1" color="success" @click="doUiAction('updateItem', {type: 'makeEmployeeArchives'})">定薪提交</v-btn>
       <v-btn v-else color="success" @click="doUiAction('updateItem', {type: 'updateEmployeeArchives'})">调薪提交</v-btn>
-      <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+      <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
     </v-row>
   </v-form>
+  <!-- 抽屉关闭按钮 -->
+  <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isUpdateDrawerShown = false">
+    <v-icon>mdi-close</v-icon>
+  </v-btn>
 </v-navigation-drawer>
 
-</jh-layout-v3>
+    <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
+    <v-navigation-drawer v-model="isHelpPageDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+      <iframe
+        style="border: 0" :src="`/${appInfo.appId}/pageDoc#3.doUiAction.md`" width="100%"
+        height="100%"></iframe>
 
+      <v-btn
+        elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+        @click="isHelpPageDrawerShown = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-navigation-drawer>
+    <!-- <<<<<<<<<<<<< 帮助页抽屉 -->
+
+  </v-main>
+</v-app>
+
+<jh-toast />
+<jh-mask />
+<jh-confirm-dialog />
+
+</div>
+</script>
+
+<div id="app">
+</div>
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
+
+<!-- 加载页面组件 >>>>>>>>>>>>> -->
+{% include 'common/jianghuJs/fixedTableHeightV4.html' %}
+<!-- <<<<<<<<<<<<< 加载页面组件 -->
 {% include 'component/salary/changeTmp.html' %}
 {% include 'component/salary/changeRecord.html' %}
 
@@ -348,6 +376,20 @@ new Vue({
   template: '#app-template',
   vuetify: new Vuetify(),
   data: () => ({
+    // 面包屑
+    breadcrumbs: [
+      {
+        text: '首页',
+        disabled: true,
+      },
+      {
+        text: '薪资档案',
+        disabled: true,
+      }
+    ],
+    isHelpPageDrawerShown: false,
+    // 表格相关数据
+    isTableZebraLineShown: true,
     // 表格相关数据
     isFormValid: true,
     requireRules: [
@@ -408,11 +450,11 @@ new Vue({
       // {text: "备注", value: "remarks", width: 120}, 
       {text: '操作', value: 'action', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
     ],
-    isEditDrawerShow: false,
+    isUpdateDrawerShown: false,
     editItem: {
       templateId: '',
     },
-    isAddDrawerShow: false,
+    isCreateDrawerShown: false,
     addItem: {},
     isChangeTmpDrawerShow: false,
     isEdit: false,
@@ -606,7 +648,7 @@ new Vue({
       this.addItem = {};
     },
     async openCreateItemDialog() {
-      this.isAddDrawerShow = true;
+      this.isCreateDrawerShown = true;
     },
 
     /**
@@ -633,8 +675,8 @@ new Vue({
       await window.vtoast.success("新增数据成功");
     },
     async closeDrawerShow() {
-      this.isEditDrawerShow = false;
-      this.isAddDrawerShow = false;
+      this.isUpdateDrawerShown = false;
+      this.isCreateDrawerShown = false;
     },
 
     /**
@@ -660,7 +702,7 @@ new Vue({
       this.buildEditItem();
     },
     async openUpdateDialog() {
-      this.isEditDrawerShow = true;
+      this.isUpdateDrawerShown = true;
     },
     /**
      * uiActionId:  updateItem

@@ -33,7 +33,7 @@
       <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
         :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
 
-        <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pl-0">
+        <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
           <v-btn v-if="maxMonth < 12" class="elevation-0" color="success" dark
             @click="doUiAction('startCreateInsurance')">
             添加参保人员
@@ -43,7 +43,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-xs-0 pa-xs-2 col-sm-8-flex">
+        <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
           <v-text-field v-model="searchInput" label="表格过滤" class="cus-v-input" dense filled single-line></v-text-field>
         </v-col>
       </v-row>
@@ -94,27 +94,27 @@
       </v-row>
       <v-row class="ma-0 px-8" :class="{'px-3': isMobile, 'pb-7': isMobile}">
 
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-col cols="12" sm="12" md="4">
           <span class="inputLabel">参保城市</span>
           <v-text-field class="cus-v-input " dense filled single-line readonly v-model="viewItem['city']">
           </v-text-field>
         </v-col>
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-col cols="12" sm="12" md="4">
           <span class="inputLabel">身份证号</span>
           <v-text-field class="cus-v-input " dense filled single-line readonly v-model="viewItem['idNumber']">
           </v-text-field>
         </v-col>
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-col cols="12" sm="12" md="4">
           <span class="inputLabel">个人社保号</span>
           <v-text-field class="cus-v-input " dense filled single-line readonly v-model="viewItem['socialSecurityNum']">
           </v-text-field>
         </v-col>
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-col cols="12" sm="12" md="4">
           <span class="inputLabel">个人公积金号</span>
           <v-text-field class="cus-v-input " dense filled single-line readonly
             v-model="viewItem['accumulationFundNum']"></v-text-field>
         </v-col>
-        <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        <v-col cols="12" sm="12" md="4">
           <span class="inputLabel">参保方案</span>
           <v-text-field class="cus-v-input " dense filled single-line readonly v-model="viewItem['schemeName']">
           </v-text-field>
@@ -128,7 +128,7 @@
         <v-btn color="success" @click="doUiAction('createItem')"
           :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增
         </v-btn>
-        <v-btn class="ml-2" @click="isAddDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
+        <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
           :class="{'mr-4': isMobile}">取消</v-btn>
       </v-row>
     </v-form>
@@ -136,18 +136,18 @@
 
 
   <!-- 编辑抽屉 -->
-  <v-navigation-drawer v-model="isEditDrawerShow" :permanent="isEditDrawerShow" fixed temporary right width="70%"
+  <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="70%"
     class="elevation-24">
-    <v-form v-model="isFormValid" v-if="isEditDrawerShow" ref="form" lazy-validation>
+    <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
       <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
         :class="{'px-4': isMobile, 'px-12': !isMobile}">
         <span class="title">编辑参保信息</span>
         <v-spacer></v-spacer>
-        <v-btn class="elevation-0" fab x-small @click="isEditDrawerShow = false">
+        <v-btn class="elevation-0" fab x-small @click="isUpdateDrawerShown = false">
           <v-icon dark>mdi-close</v-icon>
         </v-btn>
       </v-row>
-      <v-row class="ma-0" :class="{'px-10': !isMobile, 'px-3': isMobile, 'pb-7': isMobile}">
+      <v-row class="ma-0" class="mt-0 px-4">
 
         <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
           <span class="inputLabel">参保方案</span>
@@ -162,18 +162,18 @@
           <v-text-field class="cus-v-input " dense filled single-line v-model="project.defaultAmount"></v-text-field>
         </v-col>
 
-        <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+        <!--      <v-col cols="12" sm="12" md="4">-->
         <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
         <!--            <span class="inputLabel">学生ID</span>-->
         <!--        <v-text-field class="cus-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
         <!--      </v-col>-->
         <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-        <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+        <!--      <v-col cols="12" sm="12" md="4">-->
         <!--            <span class="inputLabel">班级ID</span>-->
         <!--        <v-select class="cus-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantCollection.classId"></v-select>-->
         <!--      </v-col>-->
         <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-        <!--      <v-col cols="12" sm="12" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">-->
+        <!--      <v-col cols="12" sm="12" md="4">-->
         <!--        <span class="inputLabel">出生日期</span>-->
         <!--        <v-menu class="cus-v-input " offset-y max-width="290">-->
         <!--          <template v-slot:activator="{ on, attrs }">-->
@@ -183,9 +183,9 @@
         <!--        </v-menu>-->
         <!--      </v-col>-->
       </v-row>
-      <v-row class="justify-end mx-0 mt-8" :class="{'px-10': !isMobile, 'px-4': isMobile, 'mb-8': isMobile}">
+      <v-row class="justify-end mx-0 mt-8 px-6">
         <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-        <v-btn class="ml-2" @click="isEditDrawerShow = false">取消</v-btn>
+        <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
       </v-row>
     </v-form>
   </v-navigation-drawer>
@@ -235,9 +235,9 @@
         { text: "公司公积金", value: "corporateProvidentFundAmount", width: 110 },
         { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
-      isEditDrawerShow: false,
+      isUpdateDrawerShown: false,
       editItem: {},
-      isAddDrawerShow: false,
+      isCreateDrawerShown: false,
       viewItem: {},
       yearDialog: false,
       recordId: '',
@@ -473,7 +473,7 @@
         this.addItem = {};
       },
       async openCreateItemDialog() {
-        this.isAddDrawerShow = true;
+        this.isCreateDrawerShown = true;
       },
 
       /**
@@ -498,8 +498,8 @@
         await window.vtoast.success("新增数据成功");
       },
       async closeDrawerShow() {
-        this.isEditDrawerShow = false;
-        this.isAddDrawerShow = false;
+        this.isUpdateDrawerShown = false;
+        this.isCreateDrawerShown = false;
       },
 
       /**
@@ -519,7 +519,7 @@
         this.isEmpProjectRecordListDialogShow = true;
       },
       async openUpdateDialog() {
-        this.isEditDrawerShow = true;
+        this.isUpdateDrawerShown = true;
       },
       /**
        * uiActionId:  updateItem
