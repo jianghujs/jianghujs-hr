@@ -23,10 +23,10 @@
         <v-row class="ma-0 pa-4">
 
           <v-col cols="12" xs="8" sm="8" md="8" xl="8" class="pl-0">
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: false})">核算工资</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createSlipRecord')">发送工资条</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: true})">创建下月工资表</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('editOnline')">在线编辑</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: false})">核算工资</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createSlipRecord')">发送工资条</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: true})">创建下月工资表</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('editOnline')">在线编辑</v-btn>
             <span class="body-2">共{{ tableData.length }}条记录</span>
           </v-col>
 
@@ -47,8 +47,12 @@
                       checkbox-color="success"
                       class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
           <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-            <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+            </span>
+            <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+            </span>
           </template>
                 
           <!-- 没有数据 -->
@@ -411,6 +415,7 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       {text: "ID", value: "id", width: 90, class: 'fixed', cellClass: 'fixed'},
       {text: "员工", value: "employeeName", width: 120}, 
       {text: "实际计薪时长", value: "actualWorkDay", width: 120}, 
@@ -550,7 +555,6 @@ new Vue({
       salaryOption.forEach(item => {
         this.headers.push({text: item.name, value: item.code + '', width: 120});
       });
-      this.headers.push({text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'});
     },
     // =================================uiAction 公共方法 end ======================================
 

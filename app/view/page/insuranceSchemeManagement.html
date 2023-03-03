@@ -48,7 +48,7 @@
         <v-row class="ma-0 pa-4">
 
           <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-            <v-btn
+            <v-btn small
               v-if="maxMonth < 12"
                 class="elevation-0"
                 color="success"
@@ -65,19 +65,25 @@
             <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line hide-details></v-text-field>
           </v-col>
         </v-row>
-        <v-data-table fixed-header
-                      :headers="headers"
-                      :items="tableData"
-                      :search="searchInput"
-                      :items-per-page="20"
-                      mobile-breakpoint="0"
-                      :loading="isTableLoading"
-                      checkbox-color="success"
-                      hide-default-footer
-                      class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+        <v-data-table 
+          fixed-header
+          :headers="headers"
+          :items="tableData"
+          :search="searchInput"
+          :items-per-page="20"
+          mobile-breakpoint="0"
+          :loading="isTableLoading"
+          checkbox-color="success"
+          hide-default-footer
+          class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
+        >
           <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" @click="doUiAction('toDetail', {item})">查看详情</v-btn>
-            <v-btn v-if="item.isNew" small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('toDetail', {item})">
+              <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>查看详情
+            </span>
+            <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+            </span>
           </template>
                 
           <!-- 没有数据 -->
@@ -328,6 +334,7 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       {text: "月份", value: "title", width: 110}, 
       {text: "参保人数", value: "num", width: 100}, 
       {text: "个人社保", value: "personalInsuranceAmount", width: 100}, 
@@ -335,7 +342,6 @@ new Vue({
       {text: "个人公积金", value: "personalProvidentFundAmount", width: 100}, 
       {text: "公司公积金", value: "corporateProvidentFundAmount", width: 100}, 
       {text: "停保人数", value: "stopCount", width: 100}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

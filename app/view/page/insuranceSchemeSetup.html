@@ -28,7 +28,7 @@
             <v-row class="ma-0 pa-4">
 
               <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-                <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
+                <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')" small>新增</v-btn>
                 <span class="body-2">共{{ tableData.length }}条记录</span>
               </v-col>
 
@@ -50,8 +50,12 @@
                 {{ getConstantText('isDel', item.isDel) }}
               </template>
               <template v-slot:item.action="{ item }">
-                <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-                <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+                <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+                  <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+                </span>
+                <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+                  <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+                </span>
               </template>
                 
               <!-- 没有数据 -->
@@ -370,6 +374,7 @@
       isTableLoading: true,
       tableDataFromBackend: [],
       headers: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "ID", value: "id", width: 90, class: 'fixed', cellClass: 'fixed' },
         { text: "方案名称", value: "schemeName", width: 120 },
         { text: "参保城市", value: "city", width: 120 },
@@ -377,7 +382,6 @@
         { text: "参保类型", value: "scheme", width: 140 },
         { text: "状态", value: "status", width: 120 },
         { text: "创建时间", value: "createTime", width: 180 },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       isUpdateDrawerShown: false,
       editItem: {},

@@ -69,9 +69,15 @@
                   itemsPerPage: -1
               }">
             <template v-slot:item.action="{ item }">
-              <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'edit', item })">查看考核设置</v-btn>
-              <v-btn small class="mr-2 success" @click.stop="doUiAction('stopRecruiting')">删除考核</v-btn>
-              <v-btn small class="mr-2 success" @click.stop="doUiAction('stopRecruiting')">开启考核</v-btn>
+              <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('handleTableButton', { title: '详情', action: 'edit', item })">
+                <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>查看考核设置
+              </span>
+              <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('stopRecruiting', {item})">
+                <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>删除考核
+              </span>
+              <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('stopRecruiting', {item})">
+                <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>开启考核
+              </span>
             </template>
 
             <!-- 没有数据 -->
@@ -190,6 +196,7 @@ new Vue({
       {time: '2022-11-11 20:53', content: 'admin 新建了员工'}
     ],
     headers: [
+      { text: '操作', value: 'action', align: 'center', sortable: false, width: 350, class: 'fixed', cellClass: 'fixed', edit: false, },
       { text: "考核名称", value: "appraisalName" },
       { text: "当前阶段", value: "applyQuitTime" },
       { text: "考核时间", value: "salarySettlementTime" },
@@ -200,7 +207,6 @@ new Vue({
       { text: "目标待确认", value: "planQuitTime" },
       { text: "结果待评定", value: "applyQuitTime" },
       { text: "结果待确认", value: "salarySettlementTime"},
-      { text: '操作', value: 'action', align: 'center', sortable: false, width: 350, class: 'fixed', cellClass: 'fixed', edit: false, }
     ],
     detailHeaders: [
       { text: "考核名称", value: "appraisalName" },

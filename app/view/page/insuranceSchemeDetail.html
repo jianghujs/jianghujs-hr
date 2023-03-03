@@ -34,7 +34,7 @@
         :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
 
         <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-          <v-btn v-if="maxMonth < 12" class="elevation-0" color="success" dark
+          <v-btn v-if="maxMonth < 12" class="elevation-0" color="success" dark small
             @click="doUiAction('startCreateInsurance')">
             添加参保人员
           </v-btn>
@@ -50,8 +50,11 @@
       <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput" :items-per-page="20"
         mobile-breakpoint="0" :loading="isTableLoading" checkbox-color="success" hide-default-footer
         class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+        <!-- 操作列 -->
         <template v-slot:item.action="{ item }">
-          <v-btn small class="mr-2" color="success" @click="doUiAction('getEmpProjectRecordList', {item})">查看详情</v-btn>
+          <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('getEmpProjectRecordList', {item})">
+            <v-icon size="16" class="success--text">mdi-file-document-outlinee</v-icon>查看详情
+          </span>
         </template>
                 
         <!-- 没有数据 -->
@@ -238,6 +241,7 @@
       isTableLoading: true,
       tableDataFromBackend: [],
       headers: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "姓名", value: "employeeName", width: 110 },
         { text: "工号", value: "", width: 80 },
         { text: "部门", value: "name", width: 100 },
@@ -249,7 +253,6 @@
         { text: "公司社保费", value: "corporateInsuranceAmount", width: 110 },
         { text: "个人公积金", value: "personalProvidentFundAmount", width: 110 },
         { text: "公司公积金", value: "corporateProvidentFundAmount", width: 110 },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       isUpdateDrawerShown: false,
       editItem: {},

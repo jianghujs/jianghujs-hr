@@ -65,8 +65,12 @@ SQL END!-->
                 class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
               >
                 <template v-slot:item.action="{ item }">
-                  <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-                  <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+                  <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+                    <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+                  </span>
+                  <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+                    <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+                  </span>
                 </template>
                 
                 <!-- 没有数据 -->
@@ -288,6 +292,7 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       {text: "ID", value: "id", width: 120, class: 'fixed', cellClass: 'fixed'},
        
       {text: "ruleId", value: "ruleId", width: 120}, 
@@ -297,7 +302,6 @@ new Vue({
       {text: "起征点", value: "markingPoint", width: 120}, 
       {text: "个税结果(保留小数点)", value: "decimalPoint", width: 120}, 
       {text: "计税周期类型", value: "cycleType", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

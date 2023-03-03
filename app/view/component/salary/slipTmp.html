@@ -54,8 +54,12 @@
         </v-chip>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-        <v-btn small v-if="item.defaultOption < 1" class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+        <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+          <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+        </span>
+        <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+          <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+        </span>
       </template>
 
       <!-- 没有数据 -->
@@ -148,11 +152,11 @@ Vue.component('slip-template', {
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       {text: "模板名称", value: "templateName", width: 120}, 
       {text: "包含", value: "code"}, 
       // {text: "是否隐藏空的工资项 0 不隐藏 1 隐藏", value: "hideEmpty", width: 120}, 
       // {text: "是否是默认模板项 0 否 1 是", value: "defaultOption", width: 120}, 
-      {text: '操作', value: 'action', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

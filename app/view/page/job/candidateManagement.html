@@ -58,7 +58,7 @@
             
             <v-card :class="{'px-2': isMobile}">
               <v-row class="ma-0 pa-4">
-                <v-btn color="success" dark class="elevation-0 mr-2"
+                <v-btn color="success" dark small class="elevation-0 mr-2"
                     @click.stop="doUiAction('handleTableButton', { title: '新建候选人', action: 'add' })">新建候选人
                 </v-btn>
                 <span style="margin-right: 10px;">{{ serverSearchForm.searchSummary }}</span>
@@ -75,7 +75,9 @@
                         itemsPerPage: -1
                     }">
                 <template v-slot:item.action="{ item }">
-                  <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">详情</v-btn>
+                  <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">
+                    <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>详情
+                  </span>
                 </template>
                 
                 <!-- 没有数据 -->
@@ -232,6 +234,7 @@
         { time: '2022-11-11 20:53', content: 'admin 新建了员工' }
       ],
       detailHeaders: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 80, class: 'fixed', cellClass: 'fixed', edit: false, },
         { text: "姓名", value: "candidateName" },
         { text: "应聘职位", value: "positionApplication" },
         { text: "用人部门", value: "employingDepartment", edit: false, },
@@ -253,7 +256,6 @@
         { text: "备注", value: "remarks", edit: false, },//待确定
         // { text: "其他面试官", value: "quitReason", edit: false, },
         { text: "创建时间", value: "operationAt", edit: false, },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed', edit: false, }
       ],
       materialHeaders: [
         { text: "上传材料附件", value: "planQuitTime", type: 'file' },

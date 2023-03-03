@@ -35,7 +35,9 @@
         {{getConstText('status', item.status)}}
       </template>
       <template v-slot:item.action="{ item }">
-        <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">详情</v-btn>
+        <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+          <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>详情
+        </span>
       </template>
       
       <!-- 没有数据 -->
@@ -246,6 +248,7 @@ Vue.component('change-record', {
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 100, class: 'fixed', cellClass: 'fixed'},
       {text: "记录类型", value: "recordType", width: 120}, 
       {text: "调薪原因", value: "change", width: 120}, 
       {text: "生效日期", value: "enableDate", width: 120}, 
@@ -254,7 +257,6 @@ Vue.component('change-record', {
       {text: "试用期调整后工资", value: "proAfterSum", width: 120}, 
       {text: "正式调整前工资 json", value: "beforeSum", width: 120}, 
       {text: "正式调整后工资", value: "afterSum", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

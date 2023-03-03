@@ -131,8 +131,9 @@
               checkbox-color="success"
               class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
               <template v-slot:item.action="{ item }">
-                <v-btn small class=" success" v-if="item.orgId !== currentOrgId" @click="doUiAction('createItem', { itemList: [item] })">添加</v-btn>
-              <!-- <v-btn small class=" error" v-else @click="doUiAction('deleteItem', {item})">移出</v-btn> -->
+                <span role="button" v-if="item.orgId !== currentOrgId" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('createItem', { itemList: [item] })">
+                  <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>添加
+                </span>
               </template>
                 
               <!-- 没有数据 -->
