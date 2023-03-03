@@ -54,9 +54,11 @@
                 :options="{ itemsPerPage: -1 }"
               >
                 <template v-slot:item.action="{ item }">
-                  <v-btn small class="mr-2 success" @click.stop="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">绩效</v-btn>
+                  <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('handleTableButton', { title: '详情', action: 'detail', item })">
+                    <v-icon size="16" class="success--text">mdi-file-document-outlinee</v-icon>绩效
+                  </span>
                 </template>
-                
+
                 <!-- 没有数据 -->
                 <template v-slot:loading>
                   <div class="jh-no-data">数据加载中</div>
@@ -172,6 +174,7 @@ new Vue({
     actionTab: 0,
     isDetailDrawerShow: false,
     headers: [
+      { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed', edit: false, },
       { text: "姓名", value: "employeeId" },
       { text: "手机", value: "applyQuitTime" },
       { text: "部门", value: "salarySettlementTime" },
@@ -181,7 +184,6 @@ new Vue({
       { text: "进行中绩效", value: "remarks" },
       { text: "最近考核计划", value: "planQuitTime" },
       { text: "最忌绩效等级及评分", value: "applyQuitTime" },
-      { text: '操作', value: 'action', align: 'center', sortable: false, width: 150, class: 'fixed', cellClass: 'fixed', edit: false, }
     ],
     detailHeaders: [
       { text: "序号", value: "employeeId" },
