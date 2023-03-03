@@ -8,6 +8,24 @@ const { tableEnum } = require('../constant/constant');
 
 class JobService extends Service {
 
+  async beforHookForGenerateJobResumeId() {
+    const maxJobResumeResult = await this.app
+      .jianghuKnex("job_resume")
+      .max("jobResumeId", { as: "maxJobResumeId" })
+      .first();
+
+    let newJobResumeId;
+    if (!maxJobResumeResult.maxJobResumeId) {
+      newJobResumeId = "J10001";
+    } else {
+      const maxJobResumeId = parseInt(maxJobResumeResult.maxJobResumeId.replace("J", ""))
+      newJobResumeId = `J${maxJobResumeId + 1}`;
+    }
+    this.ctx.request.body.appData.actionData.jobResumeId = newJobResumeId;
+  }
+
+
+
    // 状态统计
    async getStatusCount() {
     const { jianghuKnex, knex } = this.app;
