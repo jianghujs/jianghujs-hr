@@ -111,7 +111,7 @@ SQL END!-->
             <span
             role="button" class="success--text font-weight-medium font-size-2 mr-2"
             @click="doUiAction('startUpdateItem', item)">
-            <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+            <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改候选人状态
           </span>
             <!-- <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
@@ -277,7 +277,7 @@ new Vue({
     isTableLoading: true,
     tableData: [],
     headers: [
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 160, class: 'fixed', cellClass: 'fixed'},
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
       // {text: "ID", value: "id", width: 120},
        
       {text: "简历ID", value: "jobResumeId", width: 120}, 
