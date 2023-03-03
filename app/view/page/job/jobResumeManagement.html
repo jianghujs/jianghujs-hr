@@ -47,6 +47,36 @@ SQL END!-->
     <!-- <<<<<<<<<<<<< 头部内容 -->
 
     <div class="jh-page-body-container px-8">
+
+      <v-card :class="{'px-2': isMobile}" class="mb-5">
+        <v-row>
+          <!-- <v-col cols="12">
+            <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
+              <template v-for="(resumeStatus, index) in constantObj.resumeStatus" :key="index">
+                <v-card
+                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
+                  <div class="mb-2">{{resumeStatus.text}}</div>
+                  <div>{{resumeStatus.num || 0}}</div>
+                </v-card>
+              </template>
+            </v-card>
+          </v-col> -->
+          <v-col cols="12">
+            <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
+              <template v-for="(resumeStatus, index) in constantObj.resumeStatus" :key="index">
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: index ===  constantObj.resumeStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', resumeStatus.value)">
+                  <div class="mb-2">{{resumeStatus.text}}</div>
+                  <div>{{resumeStatus.num || 0}}</div>
+                </v-card>
+              </template>
+            </v-card>
+          </v-col>
+
+        </v-row>
+      </v-card>
+
       <!-- 页面内容 >>>>>>>>>>>>> -->
       <v-card class="rounded-lg">
         <v-row class="ma-0 pa-4">
@@ -77,6 +107,12 @@ SQL END!-->
             <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('jumpToResumePreview', item)">
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
             </span>
+
+            <span
+            role="button" class="success--text font-weight-medium font-size-2 mr-2"
+            @click="doUiAction('startUpdateItem', item)">
+            <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+          </span>
             <!-- <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
             </span> -->
@@ -101,19 +137,59 @@ SQL END!-->
           </template>
         </v-data-table>
       </v-card>
-      <!-- 编辑抽屉 -->
-      <v-navigation-drawer v-model="isUpdateDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+
+        <!-- 编辑抽屉 -->
+        <v-navigation-drawer v-model="isUpdateDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+          <v-form ref="updateForm" lazy-validation>
+            <!-- 抽屉标题 -->
+            <v-row>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">修改信息</span>
+            </v-row>
+            <!-- 抽屉表单 -->
+            <v-row class="mt-0 px-4">
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">候选人姓名</span>
+                <v-text-field class="jh-v-input" disabled dense single-line filled label="候选人姓名" v-model="updateItem.user" :rules="validationRules.requireRules"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">简历ID</span>
+                <v-select class="jh-v-input" dense single-line filled clearable label="简历ID" v-model="updateItem.jobResumeId" :items="constantObj.classId"></v-select>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">候选人状态</span>
+                <v-select class="jh-v-input" dense single-line filled clearable label="候选人状态" v-model="updateItem.resumeStatus" :items="constantObj.resumeStatus"></v-select>
+              </v-col>
+            </v-row>
+            <!-- 抽屉操作按钮 -->
+            <v-row class="justify-end mx-0 mt-8 px-6">
+              <v-btn color="success" small @click="doUiAction('updateItem')">保存</v-btn>
+              <v-btn class="ml-2" small @click="isUpdateDrawerShown = false">取消
+              </v-btn>
+            </v-row>
+          </v-form>
+  
+          <!-- 抽屉关闭按钮 -->
+          <v-btn
+            elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+            @click="isUpdateDrawerShown = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-navigation-drawer>
+
+      <!-- pdf预览抽屉 -->
+      <v-navigation-drawer v-model="isResumePreviewShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
         <v-row class="ma-0 pa-4">
           <v-col col="12" class="pa-0">
             <v-btn color="success" class="elevation-0 mr-2" @click="doUiAction('exportPdf')" small>导出pdf
             </v-btn>
           </v-col>
+       
         </v-row>
         <v-row class="ma-0 pa-4" id="resume-preview-box">
-          <resume-preview v-if="isUpdateDrawerShown" :id="updateItem.id"></resume-preview>
+          <resume-preview v-if="isResumePreviewShown" :id="updateItem.id"></resume-preview>
         </v-row>
         <!-- 抽屉关闭按钮 -->
-        <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isUpdateDrawerShown = false">
+        <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isResumePreviewShown = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-navigation-drawer>
@@ -175,20 +251,39 @@ new Vue({
     },
     // 下拉选项
     constantObj: {
+      resumeStatus: [
+          { text: "全部", value: "全部" },
+          { text: "新候选人", value: "新候选人" },
+          { text: "初选通过", value: "初选通过"},
+          { text: "安排面试", value: "安排面试"},
+          { text: "面试通过", value: "面试通过"},
+          { text: "已发offer", value: "已发offer" },
+          { text: "待入职", value:  "待入职" },
+          { text: "已淘汰", value: "已淘汰" },
+          { text: "已入职", value: "已入职" },
+        ],
     },
     currentSceneId: null,
     serverSearchInput: {
       gender: null
     },
     searchInput: null,
+    serverSearchForm: {
+        select: {
+          resumeStatus: null,
+        },
+        searchSummary: null,
+      },
     isTableLoading: true,
     tableData: [],
     headers: [
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 160, class: 'fixed', cellClass: 'fixed'},
-      {text: "ID", value: "id", width: 120},
+      // {text: "ID", value: "id", width: 120},
        
       {text: "简历ID", value: "jobResumeId", width: 120}, 
-      {text: "姓名", value: "user", width: 120}, 
+      {text: "候选人姓名", value: "user", width: 120}, 
+      {text: "招聘渠道", value: "recruitmentChannel", width: 120}, 
+      {text: "候选人状态", value: "resumeStatus", width: 120}, 
       {text: "性别", value: "gender", width: 120}, 
       {text: "年龄", value: "age", width: 120}, 
       {text: "民族", value: "ethnicity", width: 120}, 
@@ -209,9 +304,7 @@ new Vue({
       {text: "社交爱好", value: "socialHobbies", width: 120}, 
       {text: "个人特点", value: "personality", width: 120}, 
       {text: "是否有违反法纪、解雇等", value: "offence", width: 120}, 
-      {text: "紧急联系人 json", value: "emergencyContact", width: 120}, 
-      {text: "招聘渠道", value: "recruitmentChannel", width: 120}, 
-      {text: "resumeStatus", value: "resumeStatus", width: 120}, 
+      {text: "紧急联系人", value: "emergencyContact", width: 120}, 
       {text: "操作者", value: "operationByUser", width: 120},
       {text: "操作时间", value: "operationAt", width: 250},
     ],
@@ -220,6 +313,7 @@ new Vue({
     createItem: {},
     createActionData: {},
     isUpdateDrawerShown: false,
+    isResumePreviewShown:false,
     updateItem: {},
     updateItemId: null,
     updateActionData: {},
@@ -237,6 +331,7 @@ new Vue({
       switch (uiActionId) {
         case 'getTableData':
           await this.getTableData();
+          await this.getStatusCount();
           break;
         case 'startCreateItem':
           await this.prepareCreateFormData();
@@ -278,27 +373,73 @@ new Vue({
           break;
       }
     },
+
+    getHeaders(content) {
+        return this[`${content.action}Headers`] || []
+      },
+
+    // 状态筛选
+    changeStatus(filed, value) {
+        console.log(filed)
+        console.log(value)
+        this.serverSearchForm.select = {};
+        this.serverSearchForm.select[filed] = value;
+        this.getTableData();
+      },
+
+      /**
+       * 状态统计
+       */
+      async getStatusCount() {
+        const { rows } = (await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'getStatusCount'
+            }
+          }
+        })).data.appData.resultData;
+        this.setSelectOptionList(rows)
+      },
+
+      /**
+       * 设置下拉框的选项列表
+       */
+      setSelectOptionList(rows) {
+        _.forIn(rows, (value, key) => {
+          const obj = _.keyBy(value, key)
+          _.forEach(this.constantObj[key], o => {
+            o.num = obj[o.value] ? obj[o.value].count : 0
+          })
+        });
+        this.$forceUpdate();
+      },
+
+
     /**
      * 获取表格数据
      */
     async getTableData() {
       this.isTableLoading = true;
-      const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
-        if(fieldValue !== null && fieldValue !== '') {
-          return true;
-        }
-      });
-      const rows = (await window.jianghuAxios({
+      // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
+      //   if(fieldValue !== null && fieldValue !== '') {
+      //     return true;
+      //   }
+      // });
+      const where = _.omitBy(this.serverSearchForm.select, _.isNull);
+      const result = (await window.jianghuAxios({
         data: {
           appData: {
             pageId: 'jobResumeManagement',
             actionId: 'selectItemList',
             actionData: {},
-            where: backendSearchData,
+            // where: backendSearchData,
+            where:where,
             orderBy: [{column: 'operationAt', order: 'desc'}]
           }
         }
-      })).data.appData.resultData.rows;
+      }));
+      const { rows, count } = result.data.appData.resultData;
       this.tableData = rows;
       this.isTableLoading = false;
     },

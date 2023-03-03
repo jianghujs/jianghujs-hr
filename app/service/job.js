@@ -8,6 +8,19 @@ const { tableEnum } = require('../constant/constant');
 
 class JobService extends Service {
 
+   // 状态统计
+   async getStatusCount() {
+    const { jianghuKnex, knex } = this.app;
+    const { actionData } = this.ctx.request.body.appData;
+
+    const table = `${tableEnum.view01_job_resume} as jobResume`
+    const resumeStatus = await jianghuKnex(table).groupBy('resumeStatus').select(`jobResume.resumeStatus`, knex.raw('COUNT(*) AS count'));
+    // const employmentForms = await jianghuKnex(table).groupBy('employmentForms').select(`employee.employmentForms`, knex.raw('COUNT(*) AS count'));
+    // const entryStatus = await jianghuKnex(table).groupBy('entryStatus').select(`employee.entryStatus`, knex.raw('COUNT(*) AS count'));
+
+    return { rows: { resumeStatus } }
+  }
+
   async list() {
     const { jianghuKnex } = this.app;
     const { pageId } = this.ctx.packagePage;
