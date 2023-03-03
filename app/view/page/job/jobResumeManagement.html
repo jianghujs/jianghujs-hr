@@ -355,6 +355,7 @@ new Vue({
           await this.doUpdateItem();
           await this.closeUpdateDrawer();
           await this.getTableData();
+          await this.getStatusCount();
           break;
         case 'deleteItem':
           await this.prepareDeleteFormData(uiActionData);
