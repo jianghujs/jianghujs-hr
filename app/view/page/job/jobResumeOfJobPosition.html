@@ -515,7 +515,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'jobResumeManagement',
+            pageId: 'jobResumeOfJobPosition',
             actionId: 'insertItem',
             actionData: this.createActionData
           }
@@ -564,7 +564,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'jobResumeManagement',
+            pageId: 'jobResumeOfJobPosition',
             actionId: 'updateItem',
             actionData: this.updateActionData,
             where: {id: this.updateItemId}
@@ -601,7 +601,7 @@ new Vue({
       await window.jianghuAxios({
         data: {
           appData: {
-            pageId: 'jobResumeManagement',
+            pageId: 'jobResumeOfJobPosition',
             actionId: 'deleteItem',
             actionData: {},
             where: {id: this.deleteItemId}
