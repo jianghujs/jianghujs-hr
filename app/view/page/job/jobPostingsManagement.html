@@ -87,7 +87,7 @@ SQL END!-->
               <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
             </span>
             <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('redirect',{ item, path:'jobResumeOfJobPosition'} )">
-              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>应聘候选人
+              <v-icon size="16" class="success--text">mdi-account-school-outline</v-icon>候选人
             </span>
           </template>
           <!-- 没有数据 -->
@@ -380,7 +380,7 @@ new Vue({
     isTableLoading: true,
     tableData: [],
     headers: [
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
       {text: "职位ID", value: "jobId", width: 120}, 
       {text: "招聘渠道", value: "recruitmentType", width: 100}, 
       {text: "职位名称", value: "jobTitle", width: 120}, 
