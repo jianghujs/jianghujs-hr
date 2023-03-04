@@ -66,7 +66,9 @@
                   checkbox-color="success"
                   class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
           <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">查看详情</v-btn>
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+              <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>查看详情
+            </span>
           </template>
                     
           <!-- 没有数据 -->
@@ -178,12 +180,12 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
       {text: "title", value: "title", width: 120}, 
       {text: "计薪人数", value: "num", width: 120}, 
       {text: "应发工资", value: "expectedPaySalary", width: 120}, 
       {text: "实发工资", value: "realPaySalary", width: 120}, 
       {text: "个税总额", value: "personalTax", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

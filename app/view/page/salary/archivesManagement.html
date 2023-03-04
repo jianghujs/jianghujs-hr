@@ -23,8 +23,8 @@
         <v-row class="ma-0 pa-4">
 
           <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">批量调薪</v-btn>
-            <v-btn class="elevation-0 mr-2" @click="showChangeTmpDrawer">管理调薪模板</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">批量调薪</v-btn>
+            <v-btn class="elevation-0 mr-2" small @click="showChangeTmpDrawer">管理调薪模板</v-btn>
             <span class="body-2">共{{ tableData.length }}条记录</span>
           </v-col>
 
@@ -48,9 +48,15 @@
             {{getConstText('status', item.status)}}
           </template>
           <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('showEmployeeDetail', {item})">薪资明细</v-btn>
-            <v-btn small class=" success" :disabled="!isEdit" @click="doUiAction('startUpdateItem', {item})">{{ item.changeType > 0 ? '调薪' : '定薪'}}</v-btn>
-            <v-btn small class=" success" v-if="item.changeType > 0" :disabled="!isEdit" @click="doUiAction('showEmployeeChangeRecord', {item})">调薪记录</v-btn>
+            <span role="button":disabled="!isEdit" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('showEmployeeDetail', {item})">
+              <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>薪资明细
+            </span>
+            <span role="button" :disabled="!isEdit" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>{{ item.changeType > 0 ? '调薪' : '定薪'}}
+            </span>
+            <span role="button" v-if="item.changeType > 0" :disabled="!isEdit" class="success--text font-weight-medium font-size-2" @click="doUiAction('showEmployeeChangeRecord', {item})">
+              <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>调薪记录
+            </span>
           </template>
                 
           <!-- 没有数据 -->
@@ -151,8 +157,8 @@
        
     </v-row>
     <v-row class="justify-end pr-6">
-      <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-      <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+      <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
+      <v-btn class="ml-2" @click="isCreateDrawerShown = false">取消</v-btn>
     </v-row>
   </v-form>
   <!-- 抽屉关闭按钮 -->
@@ -172,8 +178,8 @@
       <change-template ref="changeTmp" :options="constantObj.salaryOption" @refresh-change-tmp-list="setChangeTmpList"></change-template>
     </v-row>
     <v-row class="justify-end pr-6">
-      <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-      <v-btn class="ml-2" @click="isChangeTmpDrawerShow = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+      <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
+      <v-btn class="ml-2" @click="isChangeTmpDrawerShow = false">取消</v-btn>
     </v-row>
   </v-form>
   <!-- 抽屉关闭按钮 -->
@@ -453,6 +459,7 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      {text: '操作', value: 'action', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
       {text: "姓名", value: "employeeName", width: 120, class: 'fixed', cellClass: 'fixed'}, 
       {text: "工号", value: "jobNumber", width: 120}, 
       {text: "部门", value: "deptName", width: 120}, 
@@ -464,7 +471,6 @@ new Vue({
       {text: "工资合计", value: "totalSalary", width: 120}, 
       // {text: "0 未定薪 1 已定薪 2 已调薪", value: "changeType", width: 120}, 
       // {text: "备注", value: "remarks", width: 120}, 
-      {text: '操作', value: 'action', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {

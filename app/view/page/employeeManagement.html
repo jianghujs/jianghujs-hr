@@ -83,7 +83,7 @@ SQL END!-->
             <v-card>
               <v-row class="ma-0 pa-4">
                 <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-                  <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
+                  <v-btn color="success" small dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
                   <span class="body-2">共{{ tableData.length }}条记录</span>
                 </v-col>
                 <v-spacer></v-spacer>
@@ -502,7 +502,7 @@ SQL END!-->
                 </v-col>
 
               </v-row>
-              
+
               <v-row>
                 <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">社保信息</span>
                 <v-spacer></v-spacer>
@@ -736,6 +736,7 @@ SQL END!-->
       showTableZebraLine: true,
       actionTab: 0,
       headers: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "员工ID", value: "employeeId", width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "员工姓名", value: "employeeName", width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "性别", value: "sex", width: 120 },
@@ -753,7 +754,6 @@ SQL END!-->
         { text: "聘用形式", value: "employmentForms", width: 120 },
         { text: "入职状态", value: "entryStatus", width: 120 },
 
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       tabs: [
         // { title: '岗位信息', action: 'post' },

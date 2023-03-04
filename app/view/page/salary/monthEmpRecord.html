@@ -23,10 +23,10 @@
         <v-row class="ma-0 pa-4">
 
           <v-col cols="12" xs="8" sm="8" md="8" xl="8" class="pl-0">
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: false})">核算工资</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createSlipRecord')">发送工资条</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: true})">创建下月工资表</v-btn>
-            <v-btn color="success" dark class="elevation-0 mr-2" @click="doUiAction('editOnline')">在线编辑</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: false})">核算工资</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createSlipRecord')">发送工资条</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: true})">创建下月工资表</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('editOnline')">在线编辑</v-btn>
             <span class="body-2">共{{ tableData.length }}条记录</span>
           </v-col>
 
@@ -47,8 +47,12 @@
                       checkbox-color="success"
                       class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
           <template v-slot:item.action="{ item }">
-            <v-btn small class=" success" @click="doUiAction('startUpdateItem', {item})">修改</v-btn>
-            <v-btn small class=" error" @click="doUiAction('deleteItem', {item})">删除</v-btn>
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+            </span>
+            <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', {item})">
+              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+            </span>
           </template>
                 
           <!-- 没有数据 -->
@@ -121,8 +125,8 @@
             
           </v-row>
           <v-row class="justify-end pr-6">
-            <v-btn color="success" @click="doUiAction('createItem')" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增</v-btn>
-            <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mr-4': isMobile}">取消</v-btn>
+            <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
+            <v-btn class="ml-2" @click="isCreateDrawerShown = false">取消</v-btn>
           </v-row>
         </v-form>
         <!-- 抽屉关闭按钮 -->
@@ -180,26 +184,6 @@
               <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['createTime']"></v-text-field>
             </v-col>
             
-      <!--      <v-col cols="12" sm="12" md="4">-->
-      <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-      <!--            <span class="inputLabel">学生ID</span>-->
-      <!--        <v-text-field class="jh-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-      <!--      </v-col>-->
-      <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-      <!--      <v-col cols="12" sm="12" md="4">-->
-      <!--            <span class="inputLabel">班级ID</span>-->
-      <!--        <v-select class="jh-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
-      <!--      </v-col>-->
-      <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-      <!--      <v-col cols="12" sm="12" md="4">-->
-      <!--        <span class="inputLabel">出生日期</span>-->
-      <!--        <v-menu class="jh-v-input " offset-y max-width="290">-->
-      <!--          <template v-slot:activator="{ on, attrs }">-->
-      <!--            <v-text-field class="jh-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-      <!--          </template>-->
-      <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-      <!--        </v-menu>-->
-      <!--      </v-col>-->
           </v-row>
           <v-row class="justify-end mx-0 mt-8 px-6">
             <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
@@ -411,8 +395,9 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
-      {text: "ID", value: "id", width: 90, class: 'fixed', cellClass: 'fixed'},
-      {text: "员工", value: "employeeName", width: 120}, 
+      {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
+      {text: "ID", value: "id", width: 80, class: 'fixed', cellClass: 'fixed'},
+      {text: "员工", value: "employeeName"}, 
       {text: "实际计薪时长", value: "actualWorkDay", width: 120}, 
       {text: "月计薪时长", value: "needWorkDay", width: 120}, 
       {text: "年", value: "year", width: 120}, 
@@ -550,7 +535,6 @@ new Vue({
       salaryOption.forEach(item => {
         this.headers.push({text: item.name, value: item.code + '', width: 120});
       });
-      this.headers.push({text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'});
     },
     // =================================uiAction 公共方法 end ======================================
 

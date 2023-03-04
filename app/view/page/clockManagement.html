@@ -147,6 +147,7 @@ new Vue({
     isTableLoading: true,
     tableDataFromBackend: [],
     headers: [
+      // {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
       {text: "ID", value: "id", width: 120, class: 'fixed', cellClass: 'fixed'},
        
       {text: "员工", value: "employeeName", width: 120}, 
@@ -155,7 +156,6 @@ new Vue({
       {text: "上班日期", value: "attendanceTime", width: 120}, 
       {text: "打卡类型 1手机端打卡 2手工录入", value: "type", width: 120}, 
       {text: "考勤地址", value: "address", width: 120}, 
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed'},
     ],
     isUpdateDrawerShown: false,
     editItem: {},

@@ -1,217 +1,259 @@
-{% extends 'template/jhTemplateV3.html'%}
+{% extends 'template/jhTemplateV4.html'%}
 
-{% block vue_template %}
+{% block vueTemplate %}
 
+<script type="text/html" id="app-template">
+<div>
+<v-app mobile-breakpoint="sm">
+  <jh-menu />
+  <v-main class="mt-15">
+    <!-- 头部内容 >>>>>>>>>>>>> -->
+    <div class="jh-page-second-bar px-8">
+      <v-row>
+        <v-col cols="12" xs="12" sm="12" md="4" xl="3">
+          <div class="pt-3 text-h7 font-weight-bold">服务端搜索
+            <!-- 帮助页按钮 -->
+            <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
+            </v-icon>
+          </div>
+          <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+        </v-col>
+        <!-- pc端的搜索条件表单 >>>>>>>> -->
+        <v-col cols="12" xs="12" sm="12" md="8" xl="9">
+          <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
+            <v-col cols="12" xs="6" sm="6" md="4" xl="3" class="pa-xs-0 pb-2 pr-1 pr-xs-1">
+              <v-select v-model="serverSearchInput.level" color="success" prefix="年级：" class="jh-v-input bg-white" :items="constantObj.level" dense filled single-line></v-select>
+            </v-col>
+            <v-col cols="12" xs="6" sm="6" md="4" xl="3" class="pa-xs-0 pb-2 pl-1 pl-xs-1">
+              <v-select v-model="serverSearchInput.gender" color="success" prefix="性别：" class="jh-v-input bg-white" :items="constantObj.gender" dense filled single-line></v-select>
+            </v-col>
+            <v-btn class="jh-backend-search-btn elevation-0 ml-0 mt-3" color="success" small @click="doUiAction('getTableData')">
+              查询
+            </v-btn>
+          </v-row>
+        </v-col>
+        <!-- <<<<<<<< pc端的搜索条件表单 -->
+      </v-row>
+    </div>
+    <!-- <<<<<<<<<<<<< 头部内容 -->
 
-<jh-layout-v3>
-  <!-- <template slot="serverSearch">
-    <v-row class="ma-0 align-center" :class="{'pa-0': isMobile, 'pa-2': !isMobile}" style="justify-content: end">
-      <v-col cols="4" sm="4" xs="3" md="3" xl="2" class="pb-3" :class="{'pt-0': isMobile}">
-        <v-select 
-          class="jh-v-input " 
-          dense filled 
-          single-line 
-          prefix="年度：" 
-          v-model="serverSearchInput.year" 
-          :items="constantObj.year">
-        </v-select>
-      </v-col>
-      <v-col class="px-0" :class="{'pt-0': isMobile}" style="max-width: 56px">
-        <v-btn
-            class="elevation-0"
-            color="success"
-            dark
-            @click="doUiAction('refreshTableData')">
-          查询
-        </v-btn>
-      </v-col>
-    </v-row>
-  </template> -->
-  <!-- 页面主要内容 -->
-  <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-    <v-card>
-      <v-row class="ma-0 pa-xs-4 align-center flex-none pt-0 "
-        :class="{'pa-4': !isMobile, 'pb-0': !isMobile, 'pa-2': isMobile}">
+    <div class="jh-page-body-container px-8">
+      <!-- 页面内容 >>>>>>>>>>>>> -->
+      <v-card class="rounded-lg">
+        <v-row class="ma-0 pa-4">
 
-        <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
-          <v-btn v-if="maxMonth < 12" class="elevation-0" color="success" dark
-            @click="doUiAction('startCreateInsurance')">
-            添加参保人员
+          <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
+            <v-btn v-if="maxMonth < 12" class="elevation-0" color="success" dark small
+              @click="doUiAction('startCreateInsurance')">
+              添加参保人员
+            </v-btn>
+            <span class="body-2">共{{ tableData.length }}条记录</span>
+          </v-col>
+
+          <v-spacer></v-spacer>
+
+          <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
+            <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
+          </v-col>
+        </v-row>
+        <v-data-table
+          fixed-header
+          :headers="headers"
+          :items="tableData"
+          :search="searchInput"
+          :items-per-page="20"
+          mobile-breakpoint="0" 
+          :loading="isTableLoading" 
+          checkbox-color="success" 
+          hide-default-footer
+          class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
+        >
+          <!-- 操作列 -->
+          <template v-slot:item.action="{ item }">
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('getEmpProjectRecordList', {item})">
+              <v-icon size="16" class="success--text">mdi-file-document-outlinee</v-icon>查看详情
+            </span>
+          </template>
+                  
+          <!-- 没有数据 -->
+          <template v-slot:loading>
+            <div class="jh-no-data">数据加载中</div>
+          </template>
+          <template v-slot:no-data>
+            <div class="jh-no-data">暂无数据</div>
+          </template>
+          <template v-slot:no-results>
+            <div class="jh-no-data">暂无数据</div>
+          </template>
+          <!-- 表格分页 -->
+          <template v-slot:footer.page-text="pagination">
+            <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
+            <span class="ml-1">共{{pagination.itemsLength}}条</span>
+          </template>
+        </v-data-table>
+      </v-card>
+    </div>
+    <!-- 选择参保员工 -->
+    <v-dialog v-model="isSelectEmployeeListDialogShow" scrollable max-width="500px">
+      <v-card>
+        <v-card-title>选择参保员工</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text style="height: 100px;" class="d-flex aligin-center justify-center">
+          <v-autocomplete v-if="isSelectEmployeeListDialogLoading === false" :items="constantObj.employeeList"
+            v-model="selectedEmployeeList" auto-select-first chips dense filled multiple rounded small-chips
+            item-text="employeeName" item-value="employeeId"></v-autocomplete>
+          <v-progress-circular v-else indeterminate color="primary" class="mx-auto"></v-progress-circular>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="isSelectEmployeeListDialogShow = false">
+            取消
           </v-btn>
-          <span class="body-2">共{{ tableData.length }}条记录</span>
-        </v-col>
+          <v-btn color="blue darken-1" text @click="doUiAction('insertEmployeeRecord')">
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-        <v-spacer></v-spacer>
+    <!-- 新增 -->
+    <v-navigation-drawer v-model="isEmpProjectRecordListDialogShow" :permanent="isEmpProjectRecordListDialogShow" fixed
+      temporary right width="80%" class="elevation-24">
+      <v-form v-model="isFormValid" v-if="isEmpProjectRecordListDialogShow" ref="form" lazy-validation>
+        <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
+          :class="{'px-4': isMobile, 'px-12': !isMobile}">
+          <span class="title">{{viewItem.employeeName}}</span>
+          <v-spacer></v-spacer>
+          <v-btn class="elevation-0 mr-4" color="primary" @click="doUiAction('startUpdateItem', {item: viewItem})">
+            编辑
+          </v-btn>
+          <v-btn class="elevation-0" fab x-small @click="isEmpProjectRecordListDialogShow = false">
+            <v-icon dark>mdi-close</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row class="ma-0 px-8" :class="{'px-3': isMobile, 'pb-7': isMobile}">
 
-        <v-col cols="12" xs="3" sm="3" md="2" xl="2" class="pa-0">
-          <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
-        </v-col>
-      </v-row>
-      <v-data-table fixed-header :headers="headers" :items="tableData" :search="searchInput" :items-per-page="20"
-        mobile-breakpoint="0" :loading="isTableLoading" checkbox-color="success" hide-default-footer
-        class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-        <template v-slot:item.action="{ item }">
-          <v-btn small class="mr-2" color="success" @click="doUiAction('getEmpProjectRecordList', {item})">查看详情</v-btn>
-        </template>
-                
-        <!-- 没有数据 -->
-        <template v-slot:loading>
-          <div class="jh-no-data">数据加载中</div>
-        </template>
-        <template v-slot:no-data>
-          <div class="jh-no-data">暂无数据</div>
-        </template>
-        <template v-slot:no-results>
-          <div class="jh-no-data">暂无数据</div>
-        </template>
-        <!-- 表格分页 -->
-        <template v-slot:footer.page-text="pagination">
-          <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
-          <span class="ml-1">共{{pagination.itemsLength}}条</span>
-        </template>
-      </v-data-table>
-    </v-card>
-  </v-container>
-  <v-dialog v-model="isSelectEmployeeListDialogShow" scrollable max-width="500px">
-    <v-card>
-      <v-card-title>选择参保员工</v-card-title>
-      <v-divider></v-divider>
-      <v-card-text style="height: 100px;" class="d-flex aligin-center justify-center">
-        <v-autocomplete v-if="isSelectEmployeeListDialogLoading === false" :items="constantObj.employeeList"
-          v-model="selectedEmployeeList" auto-select-first chips dense filled multiple rounded small-chips
-          item-text="employeeName" item-value="employeeId"></v-autocomplete>
-        <v-progress-circular v-else indeterminate color="primary" class="mx-auto"></v-progress-circular>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-btn color="blue darken-1" text @click="isSelectEmployeeListDialogShow = false">
-          取消
-        </v-btn>
-        <v-btn color="blue darken-1" text @click="doUiAction('insertEmployeeRecord')">
-          保存
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-  <!-- 新增 -->
-  <v-navigation-drawer v-model="isEmpProjectRecordListDialogShow" :permanent="isEmpProjectRecordListDialogShow" fixed
-    temporary right width="80%" class="elevation-24">
-    <v-form v-model="isFormValid" v-if="isEmpProjectRecordListDialogShow" ref="form" lazy-validation>
-      <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
-        :class="{'px-4': isMobile, 'px-12': !isMobile}">
-        <span class="title">{{viewItem.employeeName}}</span>
-        <v-spacer></v-spacer>
-        <v-btn class="elevation-0 mr-4" color="primary" @click="doUiAction('startUpdateItem', {item: viewItem})">
-          编辑
-        </v-btn>
-        <v-btn class="elevation-0" fab x-small @click="isEmpProjectRecordListDialogShow = false">
-          <v-icon dark>mdi-close</v-icon>
-        </v-btn>
-      </v-row>
-      <v-row class="ma-0 px-8" :class="{'px-3': isMobile, 'pb-7': isMobile}">
+          <v-col cols="12" sm="12" md="4">
+            <span class="inputLabel">参保城市</span>
+            <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['city']">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <span class="inputLabel">身份证号</span>
+            <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['idNumber']">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <span class="inputLabel">个人社保号</span>
+            <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['socialSecurityNum']">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <span class="inputLabel">个人公积金号</span>
+            <v-text-field class="jh-v-input " dense filled single-line readonly
+              v-model="viewItem['accumulationFundNum']"></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="12" md="4">
+            <span class="inputLabel">参保方案</span>
+            <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['schemeName']">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <emp-project-record-list ref="empProjectRecordList" :iEmpRecordId="viewItem.iEmpRecordId">
+            </emp-project-record-list>
+          </v-col>
+        </v-row>
+        <v-row class="justify-end pr-6">
+          <v-btn color="success" @click="doUiAction('createItem')"
+          >新增
+          </v-btn>
+          <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
+            :class="{'mr-4': isMobile}">取消</v-btn>
+        </v-row>
+      </v-form>
+    </v-navigation-drawer>
 
-        <v-col cols="12" sm="12" md="4">
-          <span class="inputLabel">参保城市</span>
-          <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['city']">
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <span class="inputLabel">身份证号</span>
-          <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['idNumber']">
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <span class="inputLabel">个人社保号</span>
-          <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['socialSecurityNum']">
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <span class="inputLabel">个人公积金号</span>
-          <v-text-field class="jh-v-input " dense filled single-line readonly
-            v-model="viewItem['accumulationFundNum']"></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="12" md="4">
-          <span class="inputLabel">参保方案</span>
-          <v-text-field class="jh-v-input " dense filled single-line readonly v-model="viewItem['schemeName']">
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <emp-project-record-list ref="empProjectRecordList" :iEmpRecordId="viewItem.iEmpRecordId">
-          </emp-project-record-list>
-        </v-col>
-      </v-row>
-      <v-row class="justify-end pr-6">
-        <v-btn color="success" @click="doUiAction('createItem')"
-          :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}" :class="{'mb-2': isMobile, 'mr-4': isMobile}">新增
-        </v-btn>
-        <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
-          :class="{'mr-4': isMobile}">取消</v-btn>
-      </v-row>
-    </v-form>
-  </v-navigation-drawer>
+    <!-- 编辑抽屉 -->
+    <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="70%"
+      class="elevation-24">
+      <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+        <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
+          :class="{'px-4': isMobile, 'px-12': !isMobile}">
+          <span class="title">编辑参保信息</span>
+          <v-spacer></v-spacer>
+          <v-btn class="elevation-0" fab x-small @click="isUpdateDrawerShown = false">
+            <v-icon dark>mdi-close</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row class="ma-0" class="mt-0 px-4">
 
+          <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <span class="inputLabel">参保方案</span>
+            <v-select class="jh-v-input " dense filled single-line label="班级ID" v-model="editItem.schemeId"
+              :items="constantObj.schemeList" item-text="schemeName" item-value="schemeId"></v-select>
+          </v-col>
+          <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+            <span class="inputLabel">社保各项基数</span>
+          </v-col>
+          <v-col cols="6" sm="6" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}" v-for="(project, index) in editItem.projectList">
+            <span class="inputLabel">{{project.projectName}}</span>
+            <v-text-field class="jh-v-input " dense filled single-line v-model="project.defaultAmount"></v-text-field>
+          </v-col>
 
-  <!-- 编辑抽屉 -->
-  <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="70%"
-    class="elevation-24">
-    <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
-      <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
-        :class="{'px-4': isMobile, 'px-12': !isMobile}">
-        <span class="title">编辑参保信息</span>
-        <v-spacer></v-spacer>
-        <v-btn class="elevation-0" fab x-small @click="isUpdateDrawerShown = false">
-          <v-icon dark>mdi-close</v-icon>
-        </v-btn>
-      </v-row>
-      <v-row class="ma-0" class="mt-0 px-4">
+          <!--      <v-col cols="12" sm="12" md="4">-->
+          <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
+          <!--            <span class="inputLabel">学生ID</span>-->
+          <!--        <v-text-field class="jh-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
+          <!--      </v-col>-->
+          <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
+          <!--      <v-col cols="12" sm="12" md="4">-->
+          <!--            <span class="inputLabel">班级ID</span>-->
+          <!--        <v-select class="jh-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
+          <!--      </v-col>-->
+          <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
+          <!--      <v-col cols="12" sm="12" md="4">-->
+          <!--        <span class="inputLabel">出生日期</span>-->
+          <!--        <v-menu class="jh-v-input " offset-y max-width="290">-->
+          <!--          <template v-slot:activator="{ on, attrs }">-->
+          <!--            <v-text-field class="jh-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
+          <!--          </template>-->
+          <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
+          <!--        </v-menu>-->
+          <!--      </v-col>-->
+        </v-row>
+        <v-row class="justify-end mx-0 mt-8 px-6">
+          <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+          <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
+        </v-row>
+      </v-form>
+    </v-navigation-drawer>
 
-        <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">参保方案</span>
-          <v-select class="jh-v-input " dense filled single-line label="班级ID" v-model="editItem.schemeId"
-            :items="constantObj.schemeList" item-text="schemeName" item-value="schemeId"></v-select>
-        </v-col>
-        <v-col cols="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-          <span class="inputLabel">社保各项基数</span>
-        </v-col>
-        <v-col cols="6" sm="6" md="4" xl="3" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}" v-for="(project, index) in editItem.projectList">
-          <span class="inputLabel">{{project.projectName}}</span>
-          <v-text-field class="jh-v-input " dense filled single-line v-model="project.defaultAmount"></v-text-field>
-        </v-col>
+    <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
+    <v-navigation-drawer v-model="isHelpPageDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+      <iframe style="border: 0" :src="`/${appInfo.appId}/pageDoc#5.backendSearchDemo.md`" width="100%" height="100%"></iframe>
+      <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isHelpPageDrawerShown = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-navigation-drawer>
+    <!-- <<<<<<<<<<<<< 帮助页抽屉 -->
 
-        <!--      <v-col cols="12" sm="12" md="4">-->
-        <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-        <!--            <span class="inputLabel">学生ID</span>-->
-        <!--        <v-text-field class="jh-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-        <!--      </v-col>-->
-        <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-        <!--      <v-col cols="12" sm="12" md="4">-->
-        <!--            <span class="inputLabel">班级ID</span>-->
-        <!--        <v-select class="jh-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
-        <!--      </v-col>-->
-        <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-        <!--      <v-col cols="12" sm="12" md="4">-->
-        <!--        <span class="inputLabel">出生日期</span>-->
-        <!--        <v-menu class="jh-v-input " offset-y max-width="290">-->
-        <!--          <template v-slot:activator="{ on, attrs }">-->
-        <!--            <v-text-field class="jh-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-        <!--          </template>-->
-        <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-        <!--        </v-menu>-->
-        <!--      </v-col>-->
-      </v-row>
-      <v-row class="justify-end mx-0 mt-8 px-6">
-        <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-        <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
-      </v-row>
-    </v-form>
-  </v-navigation-drawer>
+  </v-main>
+</v-app>
 
-</jh-layout-v3>
+<jh-toast />
+<jh-mask />
+<jh-confirm-dialog />
+</div>
+</script>
+
+<div id="app">
+</div>
 
 {% endblock %}
 
-{% block vue_body %}
+{% block vueScript %}
 {% include 'component/empProjectRecordList.html' %}
+{% include 'common/jianghuJs/fixedTableHeightV4.html' %}
 
 <script type="module">
   new Vue({
@@ -219,6 +261,21 @@
     template: '#app-template',
     vuetify: new Vuetify(),
     data: () => ({
+      // 面包屑
+      breadcrumbs: [
+        {
+          text: '首页',
+          disabled: true,
+        },
+        {
+          text: '服务端搜索',
+          disabled: true,
+        }
+      ],
+      isHelpPageDrawerShown: false,
+      isMobile: window.innerWidth < 500,
+      // 表格相关数据
+      isTableZebraLineShown: true,
       // 表格相关数据
       isFormValid: true,
       requireRules: [
@@ -238,6 +295,7 @@
       isTableLoading: true,
       tableDataFromBackend: [],
       headers: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "姓名", value: "employeeName", width: 110 },
         { text: "工号", value: "", width: 80 },
         { text: "部门", value: "name", width: 100 },
@@ -249,7 +307,6 @@
         { text: "公司社保费", value: "corporateInsuranceAmount", width: 110 },
         { text: "个人公积金", value: "personalProvidentFundAmount", width: 110 },
         { text: "公司公积金", value: "corporateProvidentFundAmount", width: 110 },
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
       ],
       isUpdateDrawerShown: false,
       editItem: {},
