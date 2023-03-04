@@ -283,7 +283,6 @@ new Vue({
       {text: "简历ID", value: "jobResumeId", width: 120}, 
       {text: "候选人姓名", value: "user", width: 120}, 
       {text: "应聘岗位", value: "jobTitle", width: 150}, 
-      {text: "岗位ID", value: "jobId", width: 150}, 
       {text: "候选人状态", value: "resumeStatus", width: 120}, 
       {text: "性别", value: "gender", width: 120}, 
       {text: "年龄", value: "age", width: 120}, 
@@ -323,10 +322,25 @@ new Vue({
 
   }),
   async created() {
+    const urlParams = new URLSearchParams(location.search);
+    const jobId = urlParams.get('jobId');
+    const jobTitle = urlParams.get('jobTitle');
+      if (jobId && jobTitle) {
+        this.jobId = jobId;
+        this.jobTitle = jobTitle;
+      }  else {
+          setTimeout(() => {
+            window.vtoast.fail('请从"招聘列表"点击"候选人"进入');
+          }, 1000);
+          return;
+      }
+      await this.getTableData();
   },
+
   mounted() {
-    this.doUiAction('getTableData');
+   
   },
+
   methods: {
     async doUiAction(uiActionId, uiActionData) {
       switch (uiActionId) {
@@ -396,7 +410,7 @@ new Vue({
         const { rows } = (await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'getStatusCount'
             }
           }
@@ -421,30 +435,53 @@ new Vue({
     /**
      * 获取表格数据
      */
+    //  async getTableData() {
+    //   this.isTableLoading = true;
+    //   // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
+    //   //   if(fieldValue !== null && fieldValue !== '') {
+    //   //     return true;
+    //   //   }
+    //   // });
+    //   const where = _.omitBy(this.serverSearchForm.select, _.isNull);
+    //   const result = (await window.jianghuAxios({
+    //     data: {
+    //       appData: {
+    //         pageId: 'jobResumeOfJobPosition',
+    //         actionId: 'selectItemList',
+    //         actionData: {},
+    //         // where: backendSearchData,
+    //         where:where,
+    //         orderBy: [{column: 'operationAt', order: 'desc'}]
+    //       }
+    //     }
+    //   }));
+    //   const { rows, count } = result.data.appData.resultData;
+    //   this.tableData = rows;
+    //   this.isTableLoading = false;
+    // },
+
     async getTableData() {
-      this.isTableLoading = true;
-      // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
-      //   if(fieldValue !== null && fieldValue !== '') {
-      //     return true;
-      //   }
-      // });
-      const where = _.omitBy(this.serverSearchForm.select, _.isNull);
-      const result = (await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'jobResumeManagement',
-            actionId: 'selectItemList',
-            actionData: {},
-            // where: backendSearchData,
-            where:where,
-            orderBy: [{column: 'operationAt', order: 'desc'}]
+        this.isTableLoading = true;
+        const selectWhere = _.omitBy(this.serverSearchForm.select, _.isNull);
+        const result = await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeOfJobPosition',
+              actionId: 'selectItemList',
+              where: { jobId: this.jobId },
+              whereLike:selectWhere,
+              orderBy: [{ column: 'operationAt', order: 'desc' }]
+            }
           }
-        }
-      }));
-      const { rows, count } = result.data.appData.resultData;
-      this.tableData = rows;
-      this.isTableLoading = false;
-    },
+        });
+        const { rows, count } = result.data.appData.resultData;
+        this.tableData = rows;
+        this.isTableLoading = false;
+      },
+
+
+
+
     // ---------- 新增数据 uiAction >>>>>>>>>> --------
     async prepareCreateFormData() {
       this.createItem = {};
