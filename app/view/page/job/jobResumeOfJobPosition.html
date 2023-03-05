@@ -66,23 +66,75 @@ SQL END!-->
           <!-- <v-col cols="12">
             <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
               <template v-for="(resumeStatus, index) in constantObj.resumeStatus" :key="index">
-                <v-card
-                  class="pa-3 text-center" style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;">
-                  <div class="mb-2">{{resumeStatus.text}}</div>
-                  <div>{{resumeStatus.num || 0}}</div>
-                </v-card>
-              </template>
-            </v-card>
-          </v-col> -->
-          <v-col cols="12">
-            <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
-              <template v-for="(resumeStatus, index) in constantObj.resumeStatus" :key="index">
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: index ===  constantObj.resumeStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', resumeStatus.value)">
                   <div class="mb-2">{{resumeStatus.text}}</div>
                   <div>{{resumeStatus.num || 0}}</div>
                 </v-card>
+              </template>
+            </v-card>
+          </v-col> -->
+
+
+          <v-col cols="12">
+            <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
+              <template>
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '新候选人')">
+                  <div class="mb-2">新候选人</div>
+                  <div>{{constantObj.resumeStatus.num1 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '初选通过')">
+                  <div class="mb-2">初选通过</div>
+                  <div>{{constantObj.resumeStatus.num2 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '安排面试')">
+                  <div class="mb-2">安排面试</div>
+                  <div>{{constantObj.resumeStatus.num3 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '面试通过')">
+                  <div class="mb-2">面试通过</div>
+                  <div>{{constantObj.resumeStatus.num4 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已发offer')">
+                  <div class="mb-2">已发offer</div>
+                  <div>{{constantObj.resumeStatus.num5 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '待入职')">
+                  <div class="mb-2">待入职</div>
+                  <div>{{constantObj.resumeStatus.num6 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已淘汰')">
+                  <div class="mb-2">已淘汰</div>
+                  <div>{{constantObj.resumeStatus.num7 || 0}}</div>
+                </v-card>
+
+                <v-card class="pa-2 text-center"
+                  :style="{ borderRight: '1px solid #F4F5F6'}"
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已入职')">
+                  <div class="mb-2">已入职</div>
+                  <div>{{constantObj.resumeStatus.num8 || 0}}</div>
+               </v-card>
               </template>
             </v-card>
           </v-col>
@@ -413,8 +465,8 @@ new Vue({
 
     // 状态筛选
     changeStatus(filed, value) {
-        console.log(filed)
-        console.log(value)
+        console.log("filed",filed)
+        console.log("value",value)
         this.serverSearchForm.select = {};
         this.serverSearchForm.select[filed] = value;
         this.getTableData();
@@ -452,30 +504,6 @@ new Vue({
     /**
      * 获取表格数据
      */
-    //  async getTableData() {
-    //   this.isTableLoading = true;
-    //   // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
-    //   //   if(fieldValue !== null && fieldValue !== '') {
-    //   //     return true;
-    //   //   }
-    //   // });
-    //   const where = _.omitBy(this.serverSearchForm.select, _.isNull);
-    //   const result = (await window.jianghuAxios({
-    //     data: {
-    //       appData: {
-    //         pageId: 'jobResumeOfJobPosition',
-    //         actionId: 'selectItemList',
-    //         actionData: {},
-    //         // where: backendSearchData,
-    //         where:where,
-    //         orderBy: [{column: 'operationAt', order: 'desc'}]
-    //       }
-    //     }
-    //   }));
-    //   const { rows, count } = result.data.appData.resultData;
-    //   this.tableData = rows;
-    //   this.isTableLoading = false;
-    // },
 
     async getTableData() {
         this.isTableLoading = true;
