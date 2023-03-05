@@ -23,12 +23,25 @@ SQL END!-->
     <div class="jh-page-second-bar px-8">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="4" xl="3">
-          <div class="pt-3 text-h7 font-weight-bold">投递简历列表
+          <div class="pt-3 text-h7 font-weight-bold">{{jobTitle }} - 投递简历列表
             <!-- 帮助页按钮 -->
             <!-- <v-icon @click="isHelpPageDrawerShown = true" color="success" small>mdi-help-circle-outline
             </v-icon> -->
           </div>
-          <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+          <v-breadcrumbs class="pb-3 pt-0 px-0" :items="breadcrumbs" divider="-">
+            <template v-slot:item="{ item }">
+              <v-breadcrumbs-item :disabled="item.disabled" v-if="item.text === '岗位的简历列表'">
+                {{ item.text }}
+              </v-breadcrumbs-item>
+              <v-breadcrumbs-item :disabled="item.disabled" v-else>
+                {{ item.text }}（jobId:{{ jobId }}）
+                <span role="button" class="success--text font-weight-medium font-size-2 back-btn"
+                  @click="doUiAction('redirect')">
+                  <v-icon size="14" class="success--text">mdi-arrow-left-top-bold</v-icon>返回
+                </span>
+              </v-breadcrumbs-item>
+            </template>
+          </v-breadcrumbs>
         </v-col>
         <!-- 搜索条件表单 >>>>>>>> -->
         <!-- <v-col cols="12" xs="12" sm="12" md="8" xl="9">
@@ -232,11 +245,11 @@ new Vue({
     // 面包屑
     breadcrumbs: [
       {
-        text: '首页',
+        text: '岗位的简历列表',
         disabled: true,
       },
       {
-        text: '简历列表',
+        text: 'jobResumeOfJobPosition',
         disabled: true,
       }
     ],
@@ -335,6 +348,7 @@ new Vue({
           return;
       }
       await this.getTableData();
+      await this.getStatusCount();
   },
 
   mounted() {
@@ -370,8 +384,8 @@ new Vue({
           await this.prepareDoUpdateItem();
           await this.doUpdateItem();
           await this.closeUpdateDrawer();
-          await this.getTableData();
           await this.getStatusCount();
+          await this.getTableData();
           break;
         case 'deleteItem':
           await this.prepareDeleteFormData(uiActionData);
@@ -380,6 +394,9 @@ new Vue({
           await this.doDeleteItem();
           await this.clearDeleteItem();
           await this.getTableData();
+          break;
+        case 'redirect':
+          await this.redirectToJobList();
           break;
         case 'jumpToResumePreview':
           await this.jumpToResumePreview(uiActionData);
@@ -478,8 +495,6 @@ new Vue({
         this.tableData = rows;
         this.isTableLoading = false;
       },
-
-
 
 
     // ---------- 新增数据 uiAction >>>>>>>>>> --------
@@ -618,10 +633,26 @@ new Vue({
     jumpToResumePreview({id}) {
       location.href = '/<$ ctx.app.config.appId $>/page/jobResumePreview?id=' + id;
       
-    }
+    },
+
+    redirectToJobList(){
+      window.location.href = `/${window.appInfo.appId}/page/jobPostingsManagement`
+    },
   }
 })
 </script>
 
 <style scoped>
-</style>{% endblock %}
+  /* 返回按钮 >>>>>> */
+  .back-btn {
+    pointer-events: auto;
+  }
+
+  .back-btn i {
+    position: relative;
+    top: -1px;
+  }
+  /* <<<<< 返回按钮 */
+</style>
+
+{% endblock %}
