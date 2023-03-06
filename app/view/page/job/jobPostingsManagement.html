@@ -155,10 +155,10 @@ SQL END!-->
               <span class="jh-input-label">招聘公司</span>
               <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.company"></v-text-field>
             </v-col>
-             
+
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">招聘状态</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.publishStatus"></v-text-field>
+              <v-select v-model="createItem.publishStatus" color="success" class="jh-v-input" :items="constantObj.publishStatus" dense filled single-line></v-select>
             </v-col>
              
             <v-col cols="12" sm="12" md="4">
@@ -489,7 +489,8 @@ new Vue({
     },
     // ---------- 新增数据 uiAction >>>>>>>>>> --------
     async prepareCreateFormData() {
-      this.createItem = {};
+      // this.createItem = {};
+      this.createItem.publishStatus = '招聘中'
     },
 
     async openCreateDrawer() {
