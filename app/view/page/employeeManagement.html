@@ -38,14 +38,14 @@ SQL END!-->
 
         <!-- 页面主要内容 -->
         <div class="jh-page-body-container px-8">
-          <v-row class="mb-2">
+          <v-row class="mb-3">
             <v-col cols="7" class="mt-1 py-0 pr-0 pl-0">
-              <v-card class="d-flex flex-row flex-wrap ml-3 rounded-lg" outlined
-                style="border: thin solid #F4F5F6;border-radius: inherit;">
+              <v-card class="d-flex flex-row flex-wrap ml-3 rounded-lg" 
+                style="border: none; overflow: hidden">
                 <template v-for="(status, index) in constantObj.status" :key="index">
-                  <v-card class="pa-2 text-center"
+                  <v-card class="pa-2 text-center rounded-0"
                     :style="{ borderRight: index ===  constantObj.status.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-                    style="flex: 1;border-radius: 0;" @click="changeStatus('status', status.value)">
+                    style="flex: 1;" @click="changeStatus('status', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
                   </v-card>
@@ -53,11 +53,11 @@ SQL END!-->
               </v-card>
             </v-col>
             <v-col cols="2" class="mt-1 py-0 pr-0">
-              <v-card class="d-flex flex-row flex-wrap" outlined style="border: thin solid #F4F5F6;border-radius: inherit;">
+              <v-card class="d-flex flex-row flex-wrap rounded-lg"  style="border: none; overflow: hidden">
                 <template v-for="(status, index) in constantObj.employmentForms" :key="index">
-                  <v-card class="pa-2 text-center"
+                  <v-card class="pa-2 text-center rounded-0"
                     :style="{ borderRight: index ===  constantObj.employmentForms.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-                    style="flex: 1;border-radius: 0;" @click="changeStatus('employmentForms', status.value)">
+                    style="flex: 1;" @click="changeStatus('employmentForms', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
                   </v-card>
@@ -65,12 +65,12 @@ SQL END!-->
               </v-card>
             </v-col>
             <v-col cols="3" class="mt-1 py-0 pr-0">
-              <v-card class="d-flex flex-row flex-wrap mr-3" outlined
-                style="border: thin solid #F4F5F6;border-radius: inherit;">
+              <v-card class="d-flex flex-row flex-wrap mr-3 rounded-lg" 
+                style="border: none; overflow: hidden">
                 <template v-for="(status, index) in constantObj.entryStatus" :key="index" v-if="">
-                  <v-card class="pa-2 text-center"
+                  <v-card class="pa-2 text-center rounded-0"
                     :style="{ borderRight: index ===  constantObj.entryStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-                    style="flex: 1;border-radius: 0;" @click="changeStatus('entryStatus', status.value)">
+                    style="flex: 1;" @click="changeStatus('entryStatus', status.value)">
                     <div class="mb-1">{{status.text}}</div>
                     <div>{{status.num || 0}}</div>
                   </v-card>
@@ -80,7 +80,7 @@ SQL END!-->
           </v-row>
 
           <v-container class="fullScreen d-flex flex-column pa-xs-0 pa-0">
-            <v-card>
+            <v-card class="rounded-lg">
               <v-row class="ma-0 pa-4">
                 <v-col cols="12" xs="4" sm="4" md="4" xl="4" class="pa-0">
                   <v-btn color="success" small dark class="elevation-0 mr-2" @click="doUiAction('startCreateItem')">新增</v-btn>
