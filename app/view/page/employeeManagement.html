@@ -481,24 +481,22 @@ SQL END!-->
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">工资卡卡号</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['employeeName']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem.salaryCard['salaryCardNum']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">工资卡开户城市</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['sex']"
-                  :items="constantObj.sex"></v-select>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem.salaryCard['accountOpeningCity']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">银行名称</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['age']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem.salaryCard['bankName']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">工资卡开户行</span>
-                  <v-text-field class="jh-v-input " dense filled single-line
-                    v-model="editItem['contactNumber']"></v-text-field>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['openingBank']"></v-text-field>
                 </v-col>
 
               </v-row>
@@ -511,43 +509,45 @@ SQL END!-->
               <v-row class="mt-0 px-4">
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">是否本地首次缴纳社保</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['post']"
-                  :items="constantObj.post"></v-select>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem.socialSecurity['isFirstSocialSecurity']"
+                  :items="constantObj.boolean"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">是否本地首次缴纳公积金</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingLevel']"
-                  :items="constantObj.level"></v-select>
+                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem.socialSecurity['isFirstAccumulationFund']"
+                  :items="constantObj.boolean"></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">个人社保账号</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['teachingSubject']"
-                  :items="constantObj.subject"></v-select>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem.socialSecurity['socialSecurityNum']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">个人公积金账号</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['status']"
-                  :items="constantObj.status"></v-select>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem.socialSecurity['accumulationFundNum']"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">参保起始月份</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['employmentForms']"
-                  :items="constantObj.employmentForms"></v-select>
+                  <v-menu class="jh-v-input" transition="scale-transition" offset-y min-width="auto">
+                    <template v-slot:activator="{on, attrs}">
+                      <v-text-field v-bind="attrs" v-on="on" v-model="editItem.socialSecurity['socialSecurityStartMonth']" class="jh-v-input" dense single-line filled readonly label="出生日期"></v-text-field>
+                    </template>
+                    <v-date-picker color="success" type="month" elevation="20" v-model="editItem.socialSecurity['socialSecurityStartMonth']"></v-date-picker>
+                  </v-menu>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">参保方案</span>
-                  <v-select class="jh-v-input mr-2" dense filled single-line v-model="editItem['entryStatus']"
-                  :items="constantObj.entryStatus"></v-select>
+                  <v-select class="jh-v-input mr-2" dense filled single-line item-value="value" item-text="label" v-model="editItem.socialSecurity['schemeId']"
+                  :items="constantObj.insuranceScheme"></v-select>
                 </v-col>
 
               </v-row>
               <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+                <v-btn color="success" @click="doUiAction('updateInsuranceSalaryItem')">保存</v-btn>
                 <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
               </v-row>
             </v-form>
@@ -672,6 +672,10 @@ SQL END!-->
         sex: [
           { text: '男', value: '男' },
           { text: '女', value: '女' }
+        ],
+        boolean: [
+          { text: '是', value: '是' },
+          { text: '否', value: '否' }
         ],
         post: [
           { text: "董事长", value: "董事长" },
@@ -809,7 +813,10 @@ SQL END!-->
     async created() {
       await this.doUiAction('refreshTableData');
     },
-    mounted() { },
+    mounted() { 
+      // 获取所有社保方案列表
+      this.getInsuranceList();
+    },
     methods: {
       async doUiAction(uiActionId, uiActionData) {
         switch (uiActionId) {
@@ -839,6 +846,12 @@ SQL END!-->
             await this.closeDrawerShow();
             await this.refreshTableData();
             break;
+          case 'updateInsuranceSalaryItem':
+            await this.confirmUpdateItemDialog();
+            await this.doUpdateInsuranceSalaryItem();
+            await this.closeDrawerShow();
+            await this.refreshTableData();
+            break;
           case 'leaveItem':
             await this.confirmDeleteItemDialog();
             await this.doLeaveItem(uiActionData);
@@ -863,9 +876,22 @@ SQL END!-->
         this.refreshTableData();
       },
 
-      /**
-       * 状态统计
-       */
+      async getInsuranceList() {
+        const { rows } = (await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'employeeManagement',
+              actionId: 'getInsuranceList'
+            }
+          }
+        })).data.appData.resultData;
+        this.constantObj.insuranceScheme = rows.map(item => {
+          return {
+            label: item.schemeName,
+            value: item.schemeId
+          }
+        });
+      },
       async getStatusCount() {
         const { rows } = (await window.jianghuAxios({
           data: {
@@ -923,6 +949,15 @@ SQL END!-->
           }
         });
         const { rows, count } = result.data.appData.resultData;
+        rows.forEach(row => {
+          row.contactPerson = JSON.parse(row.contactPerson || '[]');
+          row.educationExperience = JSON.parse(row.educationExperience || '[]');
+          row.certificate = JSON.parse(row.certificate || '[]');
+          row.trainingExperience = JSON.parse(row.trainingExperience || '[]');
+          row.workExperience = JSON.parse(row.workExperience || '[]');
+          row.salaryCard = JSON.parse(row.salaryCard || '{}');
+          row.socialSecurity = JSON.parse(row.socialSecurity || '{}');
+        })
         this.tableDataFromBackend = rows;
         this.isTableLoading = false;
         // this.setSearchConditions(rows, count);
@@ -1009,6 +1044,23 @@ SQL END!-->
               pageId: 'employeeManagementV2',
               actionId: 'updateItem',
               actionData: data,
+              where: { id }
+            }
+          }
+        })
+        await window.vtoast.success("修改数据成功");
+      },
+      async doUpdateInsuranceSalaryItem() {
+        const { id, salaryCard, socialSecurity } = this.editItem;
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'employeeManagementV2',
+              actionId: 'updateItem',
+              actionData: {
+                salaryCard: JSON.stringify(salaryCard),
+                socialSecurity: JSON.stringify(socialSecurity),
+              },
               where: { id }
             }
           }

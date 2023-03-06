@@ -55,14 +55,17 @@ class InsuranceService extends Service {
     }
     // TODO:: socialSecurityStartMonth 根据用户社保起始月份获取对应列表
     // 员工状态筛选：全职、并且有社保方案
-    const employeeList = await jianghuKnex(tableEnum.view01_employee_info).whereIn('status', [1, 2]).where({'employmentForms': 1, entryStatus: 1}).select();
+    const employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', [1, 2]).where({'employmentForms': 1, entryStatus: 1}).select();
     if (employeeList.length === 0) {
       throw new BizError(errorInfoEnum.noEmployee);
     }
     const iRecordId = idGenerateUtil.uuid();
     const monthRecord = { title: `${month}月社保表`, year, month, num: 0, status: 0, iRecordId };
-    await jianghuKnex(tableEnum.insurance_month_record).insert(monthRecord);
-    await this.insertEmployeeInsuranceDetail(monthRecord, employeeList)
+    // 事务处理
+    await jianghuKnex.transaction(async (trx) => {
+      await trx(tableEnum.insurance_month_record).insert(monthRecord);
+      await this.insertEmployeeInsuranceDetail(monthRecord, employeeList, trx);
+    });
   }
   async afterDelEmpRecord() {
     const { jianghuKnex } = this.app;
@@ -91,12 +94,20 @@ class InsuranceService extends Service {
     const monthRecord = await jianghuKnex(tableEnum.insurance_month_record).where({ iRecordId }).first();
     const employeeList = await jianghuKnex(tableEnum.view01_employee_info).whereIn("employeeId", employeeIdList).select();
 
-    await this.insertEmployeeInsuranceDetail(monthRecord, employeeList)
+    await this.insertEmployeeInsuranceDetail(monthRecord, employeeList, jianghuKnex)
   }
   // 根据 人员信息、社保方案，写入社保详情列表、社保金额明细
-  async insertEmployeeInsuranceDetail(monthRecord, employeeList) {
-    const { jianghuKnex } = this.app;
-    const schemeIdList = employeeList.map((employee) => employee.schemeId);
+  async insertEmployeeInsuranceDetail(monthRecord, employeeList, jianghuKnex) {
+    const schemeIdList = [];
+    employeeList.forEach((employee) => {
+      employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
+      if (employee.socialSecurity.schemeId) {
+        schemeIdList.push(employee.socialSecurity.schemeId);
+      }
+    });
+    if (!schemeIdList.length) {
+      throw new BizError(errorInfoEnum.noEmployee);
+    }
     const projectList = await jianghuKnex(tableEnum.insurance_project).whereIn('schemeId', schemeIdList).where({isDel: 0}).select();
     const projectListBySchemeId = _.groupBy(projectList, "schemeId");
     const insertMonthEmpRecordList = [];
