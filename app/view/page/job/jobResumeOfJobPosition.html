@@ -173,17 +173,28 @@ SQL END!-->
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
             </span>
 
-            <span
+            <!-- <span
             role="button" class="success--text font-weight-medium font-size-2 mr-2"
             @click="doUiAction('startUpdateItem', item)">
             <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改候选人状态
-          </span>
-            <!-- <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
-              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
-            </span> -->
-            <!-- <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
-              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
-            </span> -->
+          </span> -->
+
+
+          <v-menu offset-y rounded="lg">
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                role="button" class="success--text font-weight-medium font-size-2 mr-2" v-bind="attrs" v-on="on">
+                <v-icon size="16" class="success--text">mdi-menu-down</v-icon>修改候选人状态
+              </span>
+            </template>
+            <v-list dense>
+              <v-list-item link v-for="(action, actIndex) in actionItems" :key="actIndex"
+                @click="doUiAction(action.value, {item})" v-if="action.name !== item.Status">
+                <v-list-item-title>{{action.name}}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+
           </template>
           <!-- 没有数据 -->
           <template v-slot:loading>
@@ -336,6 +347,37 @@ new Vue({
     num6:0,
     num7:0,
     num8:0,
+    actionItems: [{
+        name: '新候选人',
+        value: 'newCandidate'
+      }, {
+        name: '初选通过',
+        value: 'passPreliminarySelection'
+      },
+      {
+        name: '安排面试',
+        value: 'arrangeInterview'
+      },
+      {
+        name: '面试通过',
+        value: 'passInterview'
+      },
+      {
+        name: '已发offer',
+        value: 'sendOffer'
+      },
+      {
+        name: '待入职',
+        value: 'pendingEntry'
+      },
+      {
+        name: '已淘汰',
+        value: 'phaseOut'
+      },
+      {
+        name: '已入职',
+        value: 'alreadyEntry'
+      }],
     currentSceneId: null,
     serverSearchInput: {
       gender: null
@@ -460,6 +502,46 @@ new Vue({
           break;
         case 'jumpToResumePreview':
           await this.jumpToResumePreview(uiActionData);
+          break;
+          case 'newCandidate':
+          await this.newCandidate(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'passPreliminarySelection':
+          await this.passPreliminarySelection(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'arrangeInterview':
+          await this.arrangeInterview(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'passInterview':
+          await this.passInterview(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'sendOffer':
+          await this.sendOffer(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'pendingEntry':
+          await this.pendingEntry(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'phaseOut':
+          await this.phaseOut(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
+          break;
+        case 'alreadyEntry':
+          await this.alreadyEntry(uiActionData);
+          await this.getTableData();
+          await this.getStatusCount();
           break;
         default:
           console.error("[doUiAction] uiActionId not find", {uiActionId});
@@ -695,6 +777,160 @@ new Vue({
     redirectToJobList(){
       window.location.href = `/${window.appInfo.appId}/page/jobPostingsManagement`
     },
+
+    async newCandidate({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '新候选人' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+    async passPreliminarySelection({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '初选通过' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async arrangeInterview({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '安排面试' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async passInterview({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '面试通过' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async sendOffer({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '已发offer' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async pendingEntry({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '待入职' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async pendingEntry({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '待入职' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async phaseOut({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '已淘汰' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
+      async alreadyEntry({ item }) {
+        this.updateItem = item;
+        const { jobResumeId } = this.updateItem;
+        await window.vtoast.loading("正在切换候选人状态");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: { resumeStatus: '已入职' },
+              where: { jobResumeId }
+            }
+          }
+        })
+        await window.vtoast.success("切换成功！");
+      },
+
   }
 })
 </script>
