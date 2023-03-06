@@ -542,6 +542,7 @@ new Vue({
           await this.alreadyEntry(uiActionData);
           await this.getTableData();
           await this.getStatusCount();
+          await this.creatEmployeeItem(uiActionData);
           break;
         default:
           console.error("[doUiAction] uiActionId not find", {uiActionId});
@@ -785,7 +786,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '新候选人' },
               where: { jobResumeId }
@@ -802,7 +803,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '初选通过' },
               where: { jobResumeId }
@@ -819,7 +820,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '安排面试' },
               where: { jobResumeId }
@@ -836,7 +837,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '面试通过' },
               where: { jobResumeId }
@@ -853,7 +854,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '已发offer' },
               where: { jobResumeId }
@@ -870,7 +871,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '待入职' },
               where: { jobResumeId }
@@ -887,7 +888,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '待入职' },
               where: { jobResumeId }
@@ -904,7 +905,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '已淘汰' },
               where: { jobResumeId }
@@ -921,7 +922,7 @@ new Vue({
         await window.jianghuAxios({
           data: {
             appData: {
-              pageId: 'jobResumeManagement',
+              pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
               actionData: { resumeStatus: '已入职' },
               where: { jobResumeId }
@@ -929,6 +930,32 @@ new Vue({
           }
         })
         await window.vtoast.success("切换成功！");
+      },
+
+      async creatEmployeeItem({ item }){
+       const actionData = {
+ 
+        employeeName:item.user,
+        sex:item.gender,
+        age:item.age,
+        contactNumber:item.phoneNumber,
+        post:item.jobTitle,
+        icNumber:item.IDNumber,
+        highestEducation:item.highestEducation,
+        entryStatus:'待入职',
+       };
+
+        await window.vtoast.loading("正在创建员工信息");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeOfJobPosition',
+              actionId: 'creatEmployeeItem',
+              actionData: actionData,
+            }
+          }
+        })
+        await window.vtoast.success("成功创建员工信息！");
       },
 
   }
