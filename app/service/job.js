@@ -24,6 +24,22 @@ class JobService extends Service {
     this.ctx.request.body.appData.actionData.jobResumeId = newJobResumeId;
   }
 
+  async beforHookForGenerateJobId(){
+    const maxJobResult = await this.app
+      .jianghuKnex("job_postings")
+      .max("jobId", { as: "maxJobId" })
+      .first();
+
+    let newJobId;
+    if (!maxJobResult.maxJobId) {
+      newJobId = "Z10001";
+    } else {
+      const maxJobId = parseInt(maxJobResult.maxJobId.replace("Z", ""))
+      newJobId = `Z${maxJobId + 1}`;
+    }
+    this.ctx.request.body.appData.actionData.jobId = newJobId;
+  }
+
 
 
    // 状态统计
