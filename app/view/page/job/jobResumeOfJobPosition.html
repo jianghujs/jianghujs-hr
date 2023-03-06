@@ -84,56 +84,56 @@ SQL END!-->
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '新候选人')">
                   <div class="mb-2">新候选人</div>
-                  <div>{{constantObj.resumeStatus.num1 || 0}}</div>
+                  <div>{{ num1 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '初选通过')">
                   <div class="mb-2">初选通过</div>
-                  <div>{{constantObj.resumeStatus.num2 || 0}}</div>
+                  <div>{{ num2 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '安排面试')">
                   <div class="mb-2">安排面试</div>
-                  <div>{{constantObj.resumeStatus.num3 || 0}}</div>
+                  <div>{{ num3 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '面试通过')">
                   <div class="mb-2">面试通过</div>
-                  <div>{{constantObj.resumeStatus.num4 || 0}}</div>
+                  <div>{{ num4 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已发offer')">
                   <div class="mb-2">已发offer</div>
-                  <div>{{constantObj.resumeStatus.num5 || 0}}</div>
+                  <div>{{ num5 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '待入职')">
                   <div class="mb-2">待入职</div>
-                  <div>{{constantObj.resumeStatus.num6 || 0}}</div>
+                  <div>{{ num6 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已淘汰')">
                   <div class="mb-2">已淘汰</div>
-                  <div>{{constantObj.resumeStatus.num7 || 0}}</div>
+                  <div>{{ num7 }}</div>
                 </v-card>
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
                   style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已入职')">
                   <div class="mb-2">已入职</div>
-                  <div>{{constantObj.resumeStatus.num8 || 0}}</div>
+                  <div>{{ num8 }}</div>
                </v-card>
               </template>
             </v-card>
@@ -328,6 +328,14 @@ new Vue({
           { text: "已入职", value: "已入职" },
         ],
     },
+    num1:0,
+    num2:0,
+    num3:0,
+    num4:0,
+    num5:0,
+    num6:0,
+    num7:0,
+    num8:0,
     currentSceneId: null,
     serverSearchInput: {
       gender: null
@@ -475,30 +483,51 @@ new Vue({
       /**
        * 状态统计
        */
+      // async getStatusCount() {
+      //   const { rows } = (await window.jianghuAxios({
+      //     data: {
+      //       appData: {
+      //         pageId: 'jobResumeOfJobPosition',
+      //         actionId: 'getStatusCount'
+      //       }
+      //     }
+      //   })).data.appData.resultData;
+      //   this.setSelectOptionList(rows)
+      // },
+
       async getStatusCount() {
         const { rows } = (await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'jobResumeOfJobPosition',
-              actionId: 'getStatusCount'
+              actionId: 'getStatusCount',
+              where:{jobId:this.jobId}
             }
           }
         })).data.appData.resultData;
-        this.setSelectOptionList(rows)
+        this.num1 = rows[0].num1;
+        this.num2 = rows[0].num2;
+        this.num3 = rows[0].num3;
+        this.num4 = rows[0].num4;
+        this.num5 = rows[0].num5;
+        this.num6 = rows[0].num6;
+        this.num7 = rows[0].num7;
+        this.num8 = rows[0].num8;
+        console.log("resumeStatusByJobId",rows)
       },
 
       /**
        * 设置下拉框的选项列表
        */
-      setSelectOptionList(rows) {
-        _.forIn(rows, (value, key) => {
-          const obj = _.keyBy(value, key)
-          _.forEach(this.constantObj[key], o => {
-            o.num = obj[o.value] ? obj[o.value].count : 0
-          })
-        });
-        this.$forceUpdate();
-      },
+      // setSelectOptionList(rows) {
+      //   _.forIn(rows, (value, key) => {
+      //     const obj = _.keyBy(value, key)
+      //     _.forEach(this.constantObj[key], o => {
+      //       o.num = obj[o.value] ? obj[o.value].count : 0
+      //     })
+      //   });
+      //   this.$forceUpdate();
+      // },
 
 
     /**
@@ -596,8 +625,8 @@ new Vue({
     },
 
     async prepareDoUpdateItem() {
-      const {id, ...data} = this.updateItem;
-      this.updateItemId = id;
+      const {id,jobResumeId,totalCount,num1,num2,num3,num4,num5,num6,num7,num8, ...data} = this.updateItem;
+      this.updateItemId = jobResumeId;;
       this.updateActionData = data;
     },
 
@@ -610,7 +639,7 @@ new Vue({
             pageId: 'jobResumeOfJobPosition',
             actionId: 'updateItem',
             actionData: this.updateActionData,
-            where: {id: this.updateItemId}
+            where: {jobResumeId: this.updateItemId}
           }
         }
       })
