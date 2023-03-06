@@ -79,6 +79,9 @@ SQL END!-->
           <template v-slot:item.employmentType="{ item }">
             {{ item.employmentType | employmentTypeFilter(constantObj)  }}
           </template>
+          <template v-slot:item.publishStatus="{ item }">
+            {{ item.publishStatus | publishStatusFilter(constantObj)  }}
+          </template>
           <template v-slot:item.action="{ item }">
             <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
@@ -248,7 +251,7 @@ SQL END!-->
              
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">招聘状态</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.publishStatus"></v-text-field>
+              <v-select v-model="updateItem.publishStatus" color="success" class="jh-v-input" :items="constantObj.publishStatus" dense filled single-line></v-select>
             </v-col>
              
             <v-col cols="12" sm="12" md="4">
@@ -371,6 +374,10 @@ new Vue({
         {text: '全职', value: 'full'},
         {text: '兼职', value: 'part'},
       ],
+      publishStatus:[
+        {text: '招聘中', value: '招聘中'},
+        {text: '停止招聘', value: '停止招聘'},
+      ]
     },
     currentSceneId: null,
     serverSearchInput: {
