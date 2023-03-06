@@ -113,10 +113,10 @@
   {% include 'util/jianghu/jianghuCommonCss.html' %}
 
   <!-- js -->
-  <script src="<$ static $>/js/lib/jquery.min.js?v=1.0.5"></script>
-  <script src="<$ static $>/jquery/jquery.cookie.min.js?v=1.0.5"></script>
-  <script src="<$ static $>/js/lib/lodash.min.js?v=1.0.5"></script>
-  <script src='<$ static $>/js/lib/axios.min.js'></script>
+  <script src="<$ static $>/lib/jquery/jquery.min.js?v=1.0.5"></script>
+  <script src="<$ static $>/lib/jquery/jquery.cookie.min.js?v=1.0.5"></script>
+  <script src="<$ static $>/lib/lodash/lodash.min.js?v=1.0.5"></script>
+  <script src='<$ static $>/lib/axios/axios.min.js'></script>
   <script src="<$ static $>/lib/vue/vue.min.js"></script>
 
   <style>
@@ -134,7 +134,7 @@
 </head>
 
 <body data-mdb-target="#scrollspy" data-mdb-offset="0">
-  {% include 'common/jianghuAxios.html' %}
+  {% include 'utility/jianghuJs/jianghuAxiosV4.html' %}
   {% block navBar %}
   <!-- header -->
   <header class="VPNav nav-bar">
