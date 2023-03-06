@@ -29,70 +29,18 @@ const actionDataScheme = Object.freeze({
 class InsuranceService extends Service {
 
   async afterSchemeAppendProjectHook() {
-    const { jianghuKnex } = this.app;
-    const projectList = await jianghuKnex(tableEnum.insurance_project).select();
+    // const projectList = await jianghuKnex(tableEnum.insurance_project).select();
     this.ctx.body.appData.resultData.rows.forEach((row) => {
-      row.projectList = projectList.filter((project) => project.schemeId === row.schemeId);
+      row.projectList = JSON.parse(row.projectList || "[]");
+      row.projectList.forEach((project) => {
+        delete project.schemeId;
+      });
     });
   }
-  async updateScheme() {
-    const { jianghuKnex } = this.app;
-    let { id, schemeName, city, schemeType, projectList, isDel, schemeId } = this.ctx.request.body.appData.actionData;
-    if (id) {
-      await jianghuKnex(tableEnum.insurance_scheme).where({ id }).update({city, schemeType, schemeName, isDel});
-    } else {
-      schemeId = idGenerateUtil.uuid();
-      await jianghuKnex(tableEnum.insurance_scheme).insert({city, schemeType, schemeName, isDel, schemeId, createTime: dayjs().format("YYYY-MM-DD HH:mm:ss")});
-    }
-    const existProjectList = await jianghuKnex(tableEnum.insurance_project).where({ schemeId }).select();
-    // 判断被删除的project
-    const delProjectIdList = existProjectList.filter((existProject) => !projectList.some((project) => project.id == existProject.id)).map((project) => project.id);
-    // 删除被删除的project
-    if (delProjectIdList.length > 0) {
-      await jianghuKnex(tableEnum.insurance_project).whereIn("id", delProjectIdList).delete();
-    }
 
-    for (const project of projectList) {
-      const { 
-        id, 
-        type,
-        schemeId: projectSchemeId,
-        projectName,
-        defaultAmount,
-        corporateProportion,
-        personalProportion,
-        corporateAmount,
-        personalAmount,
-        isDel 
-      } = project;
-      if (id) {
-        await jianghuKnex(tableEnum.insurance_project).where({ id }).update({
-          type,
-          defaultAmount,
-          corporateProportion,
-          personalProportion,
-          corporateAmount,
-          personalAmount,
-          isDel
-        });
-      } else {
-        const projectId = idGenerateUtil.uuid();
-        await jianghuKnex(tableEnum.insurance_project).insert({
-          type,
-          schemeId: projectSchemeId || schemeId,
-          projectId, 
-          projectName, 
-          defaultAmount,
-          corporateProportion,
-          personalProportion,
-          corporateAmount,
-          personalAmount,
-          isDel 
-        });
-      }
-    }
+  async beforeCreateSchemeIdHook() {
+    this.ctx.request.body.appData.actionData.schemeId = idGenerateUtil.uuid();
   }
-
 
   async insertMonthRecord() {
     const { jianghuKnex } = this.app;

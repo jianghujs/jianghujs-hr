@@ -28,7 +28,7 @@ module.exports = appInfo => {
           port: 3306,
           user: 'root',
           password: '123456',
-          database: 'zhiyuan_v6_hr'
+          database: 'zhiyuan_v6_hr_v2'
         },
         pool: { min: 0, max: 100 },
         acquireConnectionTimeout: 30000

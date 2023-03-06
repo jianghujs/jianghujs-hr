@@ -76,83 +76,12 @@
             </v-data-table>
           </v-card>
 
-          <!-- 新增 -->
-          <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%"
-            class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
-              <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
-                <v-spacer></v-spacer>
-                <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small
-                  @click="isCreateDrawerShown = false">
-                  <v-icon dark>mdi-close</v-icon>
-                </v-btn>
-              </v-row>
-              <v-row class="mt-0 px-4">
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">社保方案id</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['schemeId']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">方案名称</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['schemeName']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">参保城市</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['city']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">户籍类型</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['houseType']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">参保类型 1 比例 2 金额</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['schemeType']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">1 删除 0 使用</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['isDel']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">创建人id</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['createUserId']"></v-text-field>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">创建时间</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['createTime']"></v-text-field>
-                </v-col>
-
-              </v-row>
-              <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn color="success" @click="doUiAction('createItem')"
-                 >新增
-                </v-btn>
-                <v-btn class="ml-2" @click="isCreateDrawerShown = false" :style="{width: isMobile ? 'calc(100% - 45px)' : '200px'}"
-                  :class="{'mr-4': isMobile}">取消</v-btn>
-              </v-row>
-            </v-form>
-          </v-navigation-drawer>
-
-
           <!-- 编辑抽屉 -->
           <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%"
             class="elevation-24">
             <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
               <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
-                <v-spacer></v-spacer>
-                <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small
-                  @click="isUpdateDrawerShown = false">
-                  <v-icon dark>mdi-close</v-icon>
-                </v-btn>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7"> {{ editItem.id ? '编辑信息' : '新增信息' }} </span>
               </v-row>
               <v-row class="mt-0 px-4">
 
@@ -288,10 +217,16 @@
                 <!--      </v-col>-->
               </v-row>
               <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+                <v-btn color="success" @click="doUiAction(editItem.id ? 'updateItem' : 'createItem')">保存</v-btn>
                 <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
               </v-row>
             </v-form>
+            <!-- 抽屉关闭按钮 -->
+            <v-btn
+              elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+              @click="isUpdateDrawerShown = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
           </v-navigation-drawer>
         </div>
 
@@ -411,7 +346,6 @@
           });
           projectList = projectList.concat(notExistTypeList.map(item => {
             return {
-              schemeId: this.editItem.schemeId,
               type: item.value,
               projectName: item.text,
               defaultAmount: 0,
@@ -444,7 +378,7 @@
           case 'createItem':
             await this.prepareValidate();
             await this.confirmCreateItemDialog();
-            await this.doUpdateItem();
+            await this.doCreateItem();
             await this.closeDrawerShow();
             await this.refreshTableData();
             break;
@@ -525,7 +459,6 @@
           typeList: defaultTypeList,
           projectList: defaultTypeList.map(item => {
             return {
-              schemeId: '',
               type: item,
               projectName: this.constantObj.type.find(e => e.value === item).text,
               defaultAmount: 0,
@@ -553,14 +486,15 @@
         }
       },
       async doCreateItem() {
-        const { id, ...data } = this.addItem;
+        const { id, projectList, ...data } = this.editItem;
+        delete data.typeList;
         await window.vtoast.loading("新增数据");
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'insuranceSchemeSetup',
               actionId: 'insertItem',
-              actionData: data
+              actionData: {...data, projectList: JSON.stringify(projectList)}
             }
           }
         })
@@ -591,14 +525,16 @@
         }
       },
       async doUpdateItem() {
-        const { id, schemeName, city, schemeType, projectList, isDel, schemeId } = this.editItem;
+        const { id, projectList, ...data } = this.editItem;
+        delete data.typeList;
         await window.vtoast.loading("修改数据");
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'insuranceSchemeSetup',
               actionId: 'updateItem',
-              actionData: { id, schemeName, city, schemeType, projectList, isDel, schemeId }
+              actionData: { ...data, projectList: JSON.stringify(projectList) },
+              where: { id }
             }
           }
         })
