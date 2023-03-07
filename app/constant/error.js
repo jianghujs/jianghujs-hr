@@ -67,6 +67,10 @@ const errorInfoEnum = Object.freeze({
     errorCode: "no_employee",
     errorReason: "没有员工",
   },
+  noEmployeeScheme: {
+    errorCode: "no_employee_scheme",
+    errorReason: "员工无社保方案",
+  },
   onlyOneMonthRecord: {
     errorCode: "only_one_month_record",
     errorReason: "只有一个月的记录、不能删除",

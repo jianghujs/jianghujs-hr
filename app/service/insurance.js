@@ -91,7 +91,7 @@ class InsuranceService extends Service {
       throw new BizError(errorInfoEnum.noEmployee);
     }
     const monthRecord = await jianghuKnex(tableEnum.insurance_month_record).where({ iRecordId }).first();
-    const employeeList = await jianghuKnex(tableEnum.view01_employee_info).whereIn("employeeId", employeeIdList).select();
+    const employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn("employeeId", employeeIdList).select();
 
     await this.insertEmployeeInsuranceDetail(monthRecord, employeeList, jianghuKnex)
   }
@@ -105,7 +105,8 @@ class InsuranceService extends Service {
       }
     });
     if (!schemeIdList.length) {
-      throw new BizError(errorInfoEnum.noEmployee);
+      // 员工无社保方案
+      throw new BizError(errorInfoEnum.noEmployeeScheme);
     }
     const schemeList = await jianghuKnex(tableEnum.insurance_scheme).whereIn("schemeId", schemeIdList).select();
     schemeList.forEach((scheme) => {

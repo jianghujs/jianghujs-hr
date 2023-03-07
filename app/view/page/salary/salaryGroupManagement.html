@@ -101,7 +101,14 @@
                 
               <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">员工范围</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['employeeIds']"></v-text-field>
+                <v-autocomplete
+                  v-model="addItem.employeeIds"
+                  :items="constantObj.employeeList"
+                  dense filled single-line
+                  multiple
+                  small
+                  hide-details
+                ></v-autocomplete>
               </v-col>
                 
               <v-col cols="12" sm="12" md="4">
@@ -151,7 +158,14 @@
                 
               <v-col cols="12" sm="12" md="4">
                 <span class="inputLabel">员工范围</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['employeeIds']"></v-text-field>
+
+                <v-autocomplete
+                  v-model="editItem.employeeIds"
+                  :items="constantObj.employeeList"
+                  chips
+                  dense filled single-line
+                  multiple
+                ></v-autocomplete>
               </v-col>
                 
               <v-col cols="12" sm="12" md="4">
@@ -168,27 +182,6 @@
                 <span class="inputLabel">计税规则</span>
                 <v-select class="jh-v-input " dense filled single-line v-model="editItem.ruleId" :items="constantObj.salaryTaxRuleList" :rules="requireRules"></v-select>
               </v-col>
-                
-            <!--      <v-col cols="12" sm="12" md="4">-->
-            <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
-            <!--            <span class="inputLabel">学生ID</span>-->
-            <!--        <v-text-field class="jh-v-input " dense filled single-line label="学生ID" v-model="editItem.studentId" :rules="requireRules"></v-text-field>-->
-            <!--      </v-col>-->
-            <!--      &lt;!&ndash; select 字段 demo &ndash;&gt;-->
-            <!--      <v-col cols="12" sm="12" md="4">-->
-            <!--            <span class="inputLabel">班级ID</span>-->
-            <!--        <v-select class="jh-v-input " dense filled single-line clearable label="班级ID" v-model="editItem.classId" :items="constantObj.classId"></v-select>-->
-            <!--      </v-col>-->
-            <!--      &lt;!&ndash; 日期选择 demo &ndash;&gt;-->
-            <!--      <v-col cols="12" sm="12" md="4">-->
-            <!--        <span class="inputLabel">出生日期</span>-->
-            <!--        <v-menu class="jh-v-input " offset-y max-width="290">-->
-            <!--          <template v-slot:activator="{ on, attrs }">-->
-            <!--            <v-text-field class="jh-v-input " dense filled single-line v-on="on" label="出生日期" v-model="editItem.dateOfBirth"></v-text-field>-->
-            <!--          </template>-->
-            <!--          <v-date-picker color="success" elevation="20" v-model="editItem.dateOfBirth"></v-date-picker>-->
-            <!--        </v-menu>-->
-            <!--      </v-col>-->
             </v-row>
             <v-row class="justify-end mx-0 mt-8 px-6">
               <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
@@ -245,6 +238,7 @@ new Vue({
       v => !!v || 'This is required',
     ],
     constantObj: {
+      employeeList: [],
     },
 
     serverSearchInput: {
@@ -282,6 +276,7 @@ new Vue({
   async created() {
     this.doUiAction('refreshTableData');
     this.doUiAction('getSalaryTaxRuleList');
+    this.getEmployeeList();
   },
   mounted() {},
   methods: {
@@ -377,6 +372,19 @@ new Vue({
       });
       const { rows } = result.data.appData.resultData;
       this.constantObj.salaryTaxRuleList = rows.map(item => ({text: item.ruleName, value: item.ruleId}));
+    },
+    async getEmployeeList() {
+      const result = await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'salaryGroupManagement',
+            actionId: 'getEmployeeList',
+            actionData: {},
+          }
+        }
+      });
+      const { rows } = result.data.appData.resultData;
+      this.constantObj.employeeList = rows.map(item => ({text: item.employeeName, value: item.employeeId}));
     },
 
     /**
