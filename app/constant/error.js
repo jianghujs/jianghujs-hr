@@ -75,6 +75,10 @@ const errorInfoEnum = Object.freeze({
     errorCode: "only_one_month_record",
     errorReason: "只有一个月的记录、不能删除",
   },
+  insurance_month_record_not_exist: {
+    errorCode: "insurance_month_record_not_exist",
+    errorReason: "社保记录未生成",
+  },
 });
 
 module.exports = {

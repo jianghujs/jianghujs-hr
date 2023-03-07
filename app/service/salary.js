@@ -416,13 +416,13 @@ class InsuranceService extends Service {
     // 对应社保自然月 0-上月 1-当月 2-次月
     const { socialSecurityMonthType } = await this.getSalaryConfig();
     // 计算对应社保月份、兼容年底跨年
-    const cacheMonth = month + (socialSecurityMonthType - 1);
+    const cacheMonth = +month + (socialSecurityMonthType - 1);
     const insuranceYear = cacheMonth > 12 ? year + 1 : year;
     const insuranceMonth = cacheMonth > 12 ? cacheMonth - 12 : cacheMonth;
 
-    // 查询 符合条件的员工 entryStatus 在职 并且已定薪（校验生效日期）
+    // 查询 view01_employee_archives 符合条件的员工 entryStatus '在职' 并且 changeType != '未定薪' 的员工
+    // const employeeList = await jianghuKnex(tableEnum.view01_employee_archives).where({entryStatus: '在职'}).whereNot({changeType: '未定薪'}).select();
     
-    const employeeList = await jianghuKnex(tableEnum.employee).where({entryStatus: '在职'}).select();
     const insuranceMonthEmpRecordList = await jianghuKnex(tableEnum.insurance_month_emp_record).where({year: insuranceYear, month: insuranceMonth}).select();
     // 校验社保月份是否已生成
     if (!insuranceMonthEmpRecordList.length) {

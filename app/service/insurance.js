@@ -45,16 +45,31 @@ class InsuranceService extends Service {
   async insertMonthRecord() {
     const { jianghuKnex } = this.app;
     //  [{ year: 'desc'}, { month: 'desc' }] 的第一条
-    let {month, year} = await jianghuKnex(tableEnum.insurance_month_record).orderBy([{column: 'year', order: 'desc'}, {column: 'month', order: 'desc'}]).first();
-    // todo 月份不存在则取初始配置
-    month = month + 1;
+    const firstRecord = await jianghuKnex(tableEnum.insurance_month_record).orderBy([{column: 'year', order: 'desc'}, {column: 'month', order: 'desc'}]).first();
+    let year, month;
+    if (!firstRecord) { 
+      const {socialSecurityStartMonth} = await this.ctx.service.salary.getSalaryConfig();
+      [year, month] = socialSecurityStartMonth.split('-');
+    } else {
+      year = firstRecord.year;
+      month = firstRecord.month + 1;
+    }
     if (month > 12) {
       month = 1;
       year = year + 1;
     }
+    year = +year;
+    month = +month;
     // TODO:: socialSecurityStartMonth 根据用户社保起始月份获取对应列表
     // 员工状态筛选：全职、并且有社保方案
-    const employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', ['全职']).where({'employmentForms': '正式', entryStatus: '在职'}).select();
+    let employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', ['全职']).where({entryStatus: '在职'}).select();
+    employeeList.forEach((employee) => {
+      employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
+    });
+    // 筛选员工社保开始日期小于等于当前月份
+    employeeList = employeeList.filter((employee) => {
+      return employee.socialSecurity.schemeId && employee.socialSecurity.socialSecurityStartMonth <= `${year}-${month < 10 ? '0' + month : month}`;
+    });
     if (employeeList.length === 0) {
       throw new BizError(errorInfoEnum.noEmployee);
     }
@@ -78,9 +93,9 @@ class InsuranceService extends Service {
     const { jianghuKnex } = this.app;
     // 查询 motnhRecord 数量
     const monthRecordCount = await jianghuKnex(tableEnum.insurance_month_record).count("iRecordId as count").first();
-    if (monthRecordCount.count === 1) {
-      throw new BizError(errorInfoEnum.onlyOneMonthRecord);
-    }
+    // if (monthRecordCount.count === 1) {
+    //   throw new BizError(errorInfoEnum.onlyOneMonthRecord);
+    // }
   }
   // 手动添加社保员工
   async insertEmployeeRecord() {
@@ -99,7 +114,9 @@ class InsuranceService extends Service {
   async insertEmployeeInsuranceDetail(monthRecord, employeeList, jianghuKnex) {
     const schemeIdList = [];
     employeeList.forEach((employee) => {
-      employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
+      if (typeof employee.socialSecurity === "string") {
+        employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
+      }
       if (employee.socialSecurity.schemeId) {
         schemeIdList.push(employee.socialSecurity.schemeId);
       }
@@ -126,7 +143,7 @@ class InsuranceService extends Service {
         iEmpRecordId,
         iRecordId: monthRecord.iRecordId, 
         employeeId: employee.employeeId, 
-        schemeId: employee.schemeId, 
+        schemeId: employee.socialSecurity.schemeId, 
         year: monthRecord.year,
         month: monthRecord.month,
         personalInsuranceAmount, 
