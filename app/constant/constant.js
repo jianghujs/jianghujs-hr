@@ -39,15 +39,7 @@ module.exports.tableEnum = Object.freeze({
   salary_config: "salary_config",
   salary_group: "salary_group",
   salary_month_emp_record: "salary_month_emp_record",
-  salary_month_option_value: "salary_month_option_value",
   salary_month_record: "salary_month_record",
-  salary_option: "salary_option",
-  salary_option_template: "salary_option_template",
-  salary_slip: "salary_slip",
-  salary_slip_option: "salary_slip_option",
-  salary_slip_record: "salary_slip_record",
-  salary_slip_template: "salary_slip_template",
-  salary_slip_template_option: "salary_slip_template_option",
   salary_tax_rule: "salary_tax_rule",
   // 招聘
   job_postings: 'job_postings',
@@ -63,8 +55,6 @@ module.exports.tableEnum = Object.freeze({
   view01_employee_info: "view01_employee_info",
   view01_archives_option_by_emp: "view01_archives_option_by_emp",
   view01_employee_archives: "view01_employee_archives",
-  view01_salary_option: "view01_salary_option",
-  view01_salary_slip_template: "view01_salary_slip_template",
   view01_employee_info: "view01_employee_info",
 });
 

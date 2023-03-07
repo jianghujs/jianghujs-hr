@@ -310,7 +310,7 @@ class InsuranceService extends Service {
     // 自动查询最新月份的 salary_month_record 的记录
     const { jianghuKnex } = this.app;
     const salaryMonthRecord = await jianghuKnex(tableEnum.salary_month_record).orderBy("year", "desc").orderBy("month", "desc").first();
-    const salaryConfig = await jianghuKnex(tableEnum.salary_config).first();
+    const salaryConfig = await this.getSalaryConfig();
     // 如果没有最新记录、查询 salary_config 配置的最初开始日期
     if (!salaryMonthRecord) {
       if (!salaryConfig) {
@@ -325,15 +325,17 @@ class InsuranceService extends Service {
   async monthEmpRecordByYearMonth() {
     const { jianghuKnex } = this.app;
     const { year, month } = this.ctx.request.body.appData.actionData;
-    return { rows: await this.monthEmpRecordDetail(year, month), salaryConfig: await jianghuKnex(tableEnum.salary_option).select() };
+    const salaryConfig = await this.getSalayOptionConfig();
+    return { rows: await this.monthEmpRecordDetail(year, month), salaryConfig};
   }
   async monthEmpRecordDetail(year, month) {
     const { jianghuKnex } = this.app;
-    const salaryMonthEmpRecord = await jianghuKnex(tableEnum.salary_month_emp_record).leftJoin(tableEnum.employee, `${tableEnum.salary_month_emp_record}.employeeId`, `${tableEnum.employee}.employeeId`).where({year, month}).select(tableEnum.salary_month_emp_record + '.*', tableEnum.employee + '.employeeName');
-    const sEmpRecordIdList = salaryMonthEmpRecord.map((item) => item.sEmpRecordId);
-    const salaryMonthEmpRecordOption = await jianghuKnex(tableEnum.salary_month_option_value).whereIn("sEmpRecordId", sEmpRecordIdList).select();
+    const salaryMonthEmpRecord = await jianghuKnex(tableEnum.salary_month_emp_record)
+      .leftJoin(tableEnum.employee, `${tableEnum.salary_month_emp_record}.employeeId`, `${tableEnum.employee}.employeeId`)
+      .where({year, month})
+      .select(tableEnum.salary_month_emp_record + '.*', tableEnum.employee + '.employeeName');
     salaryMonthEmpRecord.forEach((item) => {
-      const optionList = salaryMonthEmpRecordOption.filter((option) => option.sEmpRecordId == item.sEmpRecordId);
+      const optionList = JSON.parse(item.optionList || '[]');
       optionList.forEach((option) => {
         item[option.code] = option.value;
       });
@@ -345,14 +347,14 @@ class InsuranceService extends Service {
     const lastMonth = await jianghuKnex(tableEnum.salary_month_record).orderBy('year', 'desc').orderBy('month', 'desc').first();
     let month,year;
     if (!lastMonth) {
-      const {salaryStartMonth} = await jianghuKnex(tableEnum.salary_config).first();
+      const {salaryStartMonth} = await this.getSalaryConfig();
       [year, month] = salaryStartMonth.split('-');
     } else {
       month = lastMonth.month;
       year = lastMonth.year;
     }
     // salary_option parentCode > 0
-    const salaryOption = await jianghuKnex(tableEnum.salary_option).where('parentCode', '>', 0).select();
+    const salaryOption = (await this.getSalayOptionConfig()).filter(e => e.parentCode > 0);
     return {month, year, salaryOption};
   }
   // 核算薪资：生成月薪资记录
@@ -361,7 +363,7 @@ class InsuranceService extends Service {
     let { year, month } = this.ctx.request.body.appData.actionData;
     // 获取可生成的最新月份
     if (!year || !month) {
-      const {salaryStartMonth} = await jianghuKnex(tableEnum.salary_config).first();
+      const {salaryStartMonth} = await this.getSalaryConfig();
       [year, month] = salaryStartMonth.split("-").map((item) => parseInt(item));
     }
     if (month > 12) {
@@ -388,11 +390,12 @@ class InsuranceService extends Service {
 
       // 写入人员的薪资项明细
       if (insertMonthEmpRecord.length) {
+        const insertMonthOptionValue = await this.buildInsertMonthOptionValue(insertMonthEmpRecord, insuranceMonthEmpRecordList);
+        insertMonthEmpRecord.forEach((item) => {
+          item.optionList = JSON.stringify(insertMonthOptionValue[item.sEmpRecordId])
+        });
         // 写入月份人员记录
         await trx(tableEnum.salary_month_emp_record).insert(insertMonthEmpRecord);
-        const insertMonthOptionValue = await this.buildInsertMonthOptionValue(insertMonthEmpRecord, insuranceMonthEmpRecordList);
-        // 写入月份人员薪资项记录
-        insertMonthOptionValue.length && await trx(tableEnum.salary_month_option_value).insert(insertMonthOptionValue);
       }
 
     });
@@ -411,13 +414,15 @@ class InsuranceService extends Service {
   async buildInsertMonthRecordList(jianghuKnex, year, month) {
     const { userId } = this.ctx.userInfo;
     // 对应社保自然月 0-上月 1-当月 2-次月
-    const { socialSecurityMonthType } = await jianghuKnex(tableEnum.salary_config).first();
+    const { socialSecurityMonthType } = await this.getSalaryConfig();
     // 计算对应社保月份、兼容年底跨年
     const cacheMonth = month + (socialSecurityMonthType - 1);
     const insuranceYear = cacheMonth > 12 ? year + 1 : year;
     const insuranceMonth = cacheMonth > 12 ? cacheMonth - 12 : cacheMonth;
 
-    // 查询 insurance_month_emp_record 明细
+    // 查询 符合条件的员工 entryStatus 在职 并且已定薪（校验生效日期）
+    
+    const employeeList = await jianghuKnex(tableEnum.employee).where({entryStatus: '在职'}).select();
     const insuranceMonthEmpRecordList = await jianghuKnex(tableEnum.insurance_month_emp_record).where({year: insuranceYear, month: insuranceMonth}).select();
     // 校验社保月份是否已生成
     if (!insuranceMonthEmpRecordList.length) {
@@ -472,9 +477,9 @@ class InsuranceService extends Service {
     const employeeIdList = insertMonthEmpRecord.map((item) => item.employeeId);
     const archivesOptionListByEmployeeId = await jianghuKnex(tableEnum.salary_archives_option).whereIn("employeeId", employeeIdList).select();
     const employeeList = await jianghuKnex(tableEnum.employee).whereIn("employeeId", employeeIdList).select();
-    const insertMonthOptionValue = [];
+    const insertMonthOptionValue = {};
     // 查询 parentCode > 0 的 salary_option
-    const salaryOptionList = await jianghuKnex(tableEnum.salary_option).where("parentCode", ">", 0).select();
+    const salaryOptionList = (await this.getSalayOptionConfig()).filter(e => e.parentCode > 0);
     insertMonthEmpRecord.forEach((item) => {
       const employee = employeeList.find((employee) => employee.employeeId === item.employeeId);
       const insurance = insuranceMonthEmpRecordList.find((insurance) => insurance.employeeId === item.employeeId);
@@ -484,20 +489,19 @@ class InsuranceService extends Service {
       } else {
         archivesOptionList = archivesOptionListByEmployeeId.filter((option) => option.employeeId == item.employeeId && option.isPro == 1);
       }
+      insertMonthOptionValue[item.sEmpRecordId] = [];
       salaryOptionList.forEach((option) => {
         const archivesOption = archivesOptionList.find((optionItem) => optionItem.code == option.code);
         if (option.code == 210101) {
-          insertMonthOptionValue.push({
-            sEmpRecordId: item.sEmpRecordId,
+          insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
-            value: _.sumBy(insertMonthOptionValue, "value"),
+            value: _.sumBy(insertMonthOptionValue[item.sEmpRecordId], "value"),
           });
           return true;
         } else if (option.code == 240101) {
-          insertMonthOptionValue.push({
-            sEmpRecordId: item.sEmpRecordId,
+          insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
-            value: insertMonthOptionValue.find((optionItem) => optionItem.code == 210101).value,
+            value: insertMonthOptionValue[item.sEmpRecordId].find((optionItem) => optionItem.code == 210101).value,
           });
           return true;
         }
@@ -508,22 +512,19 @@ class InsuranceService extends Service {
             110101: "corporateInsuranceAmount",
             120101: "corporateProvidentFundAmount",
           }
-          insertMonthOptionValue.push({
-            sEmpRecordId: item.sEmpRecordId,
+          insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: insurance ? +insurance[codeKey[option.code]] : 0,
           })
           return true;
         }
         if (archivesOption) {
-          insertMonthOptionValue.push({
-            sEmpRecordId: item.sEmpRecordId,
+          insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: +archivesOption.value,
           });
         } else {
-          insertMonthOptionValue.push({
-            sEmpRecordId: item.sEmpRecordId,
+          insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: 0,
           });
@@ -555,7 +556,7 @@ class InsuranceService extends Service {
       const monthOptionValueList = await trx(tableEnum.salary_month_option_value).whereIn("sEmpRecordId", monthEmpRecordList.map((item) => item.sEmpRecordId)).select();
       
       // 薪资项
-      const optionList = await trx(tableEnum.salary_option).where('parentCode', '>', 0).select();
+      const optionList = (await this.getSalayOptionConfig()).filter(e => e.parentCode > 0);
       const optionListByValue = _.keyBy(optionList, "code");
       // 写入主工资条
       const insertSlipRecord = {
@@ -601,6 +602,24 @@ class InsuranceService extends Service {
         await jianghuKnex(tableEnum.salary_month_record).where({sRecordId: monthRecord.sRecordId}).update({checkStatus: 11});
       };
     });
+  }
+  // 获取薪资项配置
+  async getSalayOptionConfig() {
+    const { jianghuKnex } = this.app;
+    const optionConstant = await jianghuKnex(tableEnum._constant).where({constantKey: 'salaryOption'}).first();
+    if (!optionConstant) {
+      return [];
+    }
+    return JSON.parse(optionConstant.constantValue || '[]');
+  }
+
+  async getSalaryConfig() {
+    const { jianghuKnex } = this.app;
+    const optionConstant = await jianghuKnex(tableEnum._constant).where({constantKey: 'salaryConfig'}).first();
+    if (!optionConstant) {
+      return {};
+    }
+    return JSON.parse(optionConstant.constantValue || '{}');
   }
 }
 

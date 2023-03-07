@@ -595,14 +595,14 @@ new Vue({
             pageId: 'archivesManagement',
             actionId: 'getSalaryOption',
             actionData: {},
-            where: {},
-            whereLike: {},
-            orderBy: [{column: 'code', order: 'asc'}]
+            where: {constantKey: 'salaryOption'},
           }
         }
       });
       const { rows } = result.data.appData.resultData;
-      this.constantObj.salaryOption = rows;
+      if (rows.length) {
+        this.constantObj.salaryOption = JSON.parse(rows[0].constantValue);
+      }
     },
     setChangeTmpList(rows) {
       this.constantObj.changeTmpList = rows.map(item => {
