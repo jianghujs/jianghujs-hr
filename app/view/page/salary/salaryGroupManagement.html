@@ -39,16 +39,21 @@
                 <v-text-field v-model="searchInput" label="表格过滤" class="jh-v-input" dense filled single-line></v-text-field>
               </v-col>
             </v-row>
-            <v-data-table fixed-header
-                          :headers="headers"
-                          :items="tableData"
-                          :search="searchInput"
-                          :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
-                          :items-per-page="-1"
-                          mobile-breakpoint="0"
-                          :loading="isTableLoading"
-                          checkbox-color="success"
-                          class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+            <v-data-table 
+              fixed-header
+              :headers="headers"
+              :items="tableData"
+              :search="searchInput"
+              :footer-props="{ itemsPerPageOptions: [20, 40, 60, 100, -1] }"
+              :items-per-page="-1"
+              mobile-breakpoint="0"
+              :loading="isTableLoading"
+              checkbox-color="success"
+              class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column"
+            >
+              <template v-slot:item.employeeIds="{ item }">
+                {{ item.employeeIds | formatEmployeeName(constantObj.employeeList) }}
+              </template>
               <template v-slot:item.action="{ item }">
                 <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
                   <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
@@ -220,6 +225,12 @@ new Vue({
   el: '#app',
   template: '#app-template',
   vuetify: new Vuetify(),
+  filters: {
+    formatEmployeeName: function (value, employeeList) {
+      if (!value) return ''
+      return employeeList.filter(e => value.includes(e.value)).map(e => e.text).join(', ')
+    },
+  },
   data: () => ({
       breadcrumbs: [
         {
@@ -254,9 +265,9 @@ new Vue({
       {text: "部门范围", value: "deptIds", width: 120}, 
       {text: "员工范围", value: "employeeIds", width: 120}, 
       {text: "月计薪标准", value: "salaryStandard", width: 120}, 
-      {text: "转正、调薪月规则", value: "changeRule", width: 120}, 
+      {text: "转正、调薪月规则", value: "changeRule", width: 250}, 
       {text: "计税规则id", value: "ruleId", width: 120}, 
-      {text: "创建时间", value: "createTime", width: 120}, 
+      {text: "创建时间", value: "createTime", width: 150}, 
       {text: "创建人", value: "createUserId", width: 120}, 
     ],
     isUpdateDrawerShown: false,
@@ -459,7 +470,7 @@ new Vue({
           appData: {
             pageId: 'salaryGroupManagement',
             actionId: 'updateItem',
-            actionData: {...data, employeeIds: employeeIds.join(',')},
+            actionData: {...data, employeeIds: employeeIds.filter(e => this.constantObj.employeeList.some(a => a.value === e)).join(',')},
             where: {id}
           }
         }
