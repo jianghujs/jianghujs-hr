@@ -459,7 +459,7 @@ new Vue({
         case 'createMonthRecord':
           await this.confirmCreateMonthRecordDialog(uiActionData);
           await this.doCreateMonthRecord(uiActionData);
-          await this.getLastConfig();
+          // await this.getLastConfig();
           await this.refreshTableData();
           break;
         case 'editOnline':

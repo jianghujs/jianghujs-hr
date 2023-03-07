@@ -60,16 +60,8 @@ class InsuranceService extends Service {
     }
     year = +year;
     month = +month;
-    // TODO:: socialSecurityStartMonth 根据用户社保起始月份获取对应列表
-    // 员工状态筛选：全职、并且有社保方案
-    let employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', ['全职']).where({entryStatus: '在职'}).select();
-    employeeList.forEach((employee) => {
-      employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
-    });
-    // 筛选员工社保开始日期小于等于当前月份
-    employeeList = employeeList.filter((employee) => {
-      return employee.socialSecurity.schemeId && employee.socialSecurity.socialSecurityStartMonth <= `${year}-${month < 10 ? '0' + month : month}`;
-    });
+    
+    const employeeList = await this.getInsuranceEmployeeList(year, month);
     if (employeeList.length === 0) {
       throw new BizError(errorInfoEnum.noEmployee);
     }
@@ -81,6 +73,20 @@ class InsuranceService extends Service {
       await this.insertEmployeeInsuranceDetail(monthRecord, employeeList, trx);
     });
   }
+
+  async getInsuranceEmployeeList(year, month) {
+    const { jianghuKnex } = this.app;
+    let employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', ['全职']).where({entryStatus: '在职'}).select();
+    employeeList.forEach((employee) => {
+      employee.socialSecurity = JSON.parse(employee.socialSecurity || "{}");
+    });
+    // 筛选员工社保开始日期小于等于当前月份
+    employeeList = employeeList.filter((employee) => {
+      return employee.socialSecurity.schemeId && employee.socialSecurity.socialSecurityStartMonth <= `${year}-${month < 10 ? '0' + month : month}`;
+    });
+    return employeeList; 
+  }
+
   async afterDelEmpRecord() {
     const { jianghuKnex } = this.app;
     const actionData = this.ctx.request.body.appData.where;

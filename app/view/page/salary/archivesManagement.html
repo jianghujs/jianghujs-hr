@@ -52,9 +52,9 @@
               <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>薪资明细
             </span>
             <span role="button" :disabled="!isEdit" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
-              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>{{ item.changeType > 0 ? '调薪' : '定薪'}}
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>{{ item.changeType && item.changeType != '未调薪' ? '调薪' : '定薪'}}
             </span>
-            <span role="button" v-if="item.changeType > 0" :disabled="!isEdit" class="success--text font-weight-medium font-size-2" @click="doUiAction('showEmployeeChangeRecord', {item})">
+            <span role="button" v-if="['已定薪', '已调薪'].includes(item.changeType)" :disabled="!isEdit" class="success--text font-weight-medium font-size-2" @click="doUiAction('showEmployeeChangeRecord', {item})">
               <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>调薪记录
             </span>
           </template>
@@ -443,9 +443,9 @@ new Vue({
       ],
       // changeType 0 未定薪 1 已定薪 2 已调薪
       changeType: [
-        { text: '未定薪', value: 0 },
-        { text: '已定薪', value: 1 },
-        { text: '已调薪', value: 2 },
+        { text: '未定薪', value: '未定薪' },
+        { text: '已定薪', value: '已定薪' },
+        { text: '已调薪', value: '已调薪' },
       ],
       salaryOption: [],
       changeTmpList: [],
@@ -710,7 +710,7 @@ new Vue({
       const { employeeId, changeType, status, changeRecordList } = item;
       this.editItem = {
         employeeId,
-        recordType: changeType > 0 ? 2 : 1,
+        recordType: changeType != '未定薪' ? '已调薪' : '已定薪',
         templateId: this.defaultChangeTmp.templateId,
         proSalary: {oldSalary: [], newSalary: []},
         salary: {oldSalary: [], newSalary: []},
