@@ -44,23 +44,22 @@ class InsuranceService extends Service {
 
   async insertMonthRecord() {
     const { jianghuKnex } = this.app;
-    const maxDate = await jianghuKnex(tableEnum.insurance_month_record).max("month as maxMonth").max("year as maxYear").first();
-    const maxMonth = maxDate.maxMonth;
-    const maxYear = maxDate.maxYear;
-    let month = maxMonth + 1;
-    let year = maxYear;
-    if (maxMonth === 12) {
+    //  [{ year: 'desc'}, { month: 'desc' }] 的第一条
+    let {month, year} = await jianghuKnex(tableEnum.insurance_month_record).orderBy([{column: 'year', order: 'desc'}, {column: 'month', order: 'desc'}]).first();
+    // todo 月份不存在则取初始配置
+    month = month + 1;
+    if (month > 12) {
       month = 1;
-      year = maxYear + 1;
+      year = year + 1;
     }
     // TODO:: socialSecurityStartMonth 根据用户社保起始月份获取对应列表
     // 员工状态筛选：全职、并且有社保方案
-    const employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', [1, 2]).where({'employmentForms': 1, entryStatus: 1}).select();
+    const employeeList = await jianghuKnex(tableEnum.view01_employee).whereIn('status', ['全职']).where({'employmentForms': '正式', entryStatus: '在职'}).select();
     if (employeeList.length === 0) {
       throw new BizError(errorInfoEnum.noEmployee);
     }
     const iRecordId = idGenerateUtil.uuid();
-    const monthRecord = { title: `${month}月社保表`, year, month, num: 0, status: 0, iRecordId };
+    const monthRecord = { title: `${month}月社保表`, year, month, status: 0, iRecordId };
     // 事务处理
     await jianghuKnex.transaction(async (trx) => {
       await trx(tableEnum.insurance_month_record).insert(monthRecord);
@@ -108,43 +107,42 @@ class InsuranceService extends Service {
     if (!schemeIdList.length) {
       throw new BizError(errorInfoEnum.noEmployee);
     }
-    const projectList = await jianghuKnex(tableEnum.insurance_project).whereIn('schemeId', schemeIdList).where({isDel: 0}).select();
-    const projectListBySchemeId = _.groupBy(projectList, "schemeId");
+    const schemeList = await jianghuKnex(tableEnum.insurance_scheme).whereIn("schemeId", schemeIdList).select();
+    schemeList.forEach((scheme) => {
+      scheme.projectList = JSON.parse(scheme.projectList || "[]");
+    });
+    const schemeListBySchemeId = _.groupBy(schemeList, "schemeId");
     const insertMonthEmpRecordList = [];
-    let insertMonthEmpProjectRecordList = [];
     employeeList.forEach((employee) => {
       const iEmpRecordId = idGenerateUtil.uuid();
+      const currentProjectList = schemeListBySchemeId[employee.socialSecurity.schemeId][0].projectList;
+      const schemeFilter = currentProjectList.filter(e => e.projectName !== "公积金");
+      const personalInsuranceAmount = schemeFilter.reduce((acc, cur) => acc + cur.personalAmount, 0);
+      const corporateInsuranceAmount = schemeFilter.reduce((acc, cur) => acc + cur.corporateAmount, 0);
+      const {personalAmount: personalProvidentFundAmount, corporateAmount: corporateProvidentFundAmount} = currentProjectList.find(e => e.projectName === "公积金");
       // 生成 empRecord
       insertMonthEmpRecordList.push({ 
+        iEmpRecordId,
         iRecordId: monthRecord.iRecordId, 
         employeeId: employee.employeeId, 
         schemeId: employee.schemeId, 
         year: monthRecord.year,
         month: monthRecord.month,
-        personalInsuranceAmount: employee.personalAmount, 
-        corporateInsuranceAmount: employee.corporateAmount, 
-        personalProvidentFundAmount: employee.personalProvidentFundAmount, 
-        corporateProvidentFundAmount: employee.corporateProvidentFundAmount,
+        personalInsuranceAmount, 
+        corporateInsuranceAmount, 
+        personalProvidentFundAmount, 
+        corporateProvidentFundAmount,
         createTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-        iEmpRecordId,
+        optionList: JSON.stringify(this.buildMonthEmpProjectRecordList(currentProjectList)),
       });
-      const currentProjectList = projectListBySchemeId[employee.schemeId];
-      // 生成 empProjectRecord
-      insertMonthEmpProjectRecordList = _.concat(insertMonthEmpProjectRecordList, this.buildMonthEmpProjectRecordList(iEmpRecordId, currentProjectList));
     });
     await jianghuKnex(tableEnum.insurance_month_emp_record).insert(insertMonthEmpRecordList);
-    // 更改 monthRecord 的 num
-    await jianghuKnex(tableEnum.insurance_month_record).where({ iRecordId: monthRecord.iRecordId }).update({ num: monthRecord.num + employeeList.length });
-    // 写入员工社保详情
-    await jianghuKnex(tableEnum.insurance_month_emp_project_record).insert(insertMonthEmpProjectRecordList);
   }
   // 生成 empProjectRecord
-  buildMonthEmpProjectRecordList(iEmpRecordId, projectList) {
+  buildMonthEmpProjectRecordList(projectList) {
     const insertMonthEmpProjectRecordList = [];
     projectList.forEach((project) => {
       insertMonthEmpProjectRecordList.push({
-        empProjectRecordId: idGenerateUtil.uuid(),
-        iEmpRecordId,
         projectId: project.projectId,
         type: project.type,
         projectName: project.projectName,
