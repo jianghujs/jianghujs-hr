@@ -84,115 +84,119 @@
 
             <!-- 新增 -->
             <v-navigation-drawer v-model="isCreateDrawerShown" :permanent="isCreateDrawerShown" fixed temporary right width="80%" class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
-            <v-row>
-              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
-              <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isCreateDrawerShown = false">
-                <v-icon dark>mdi-close</v-icon>
+              <v-form v-model="isFormValid" v-if="isCreateDrawerShown" ref="form" lazy-validation>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
+              </v-row>
+              <v-row class="mt-0 px-4">
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">薪资组名称</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['groupName']"></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">部门范围</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['deptIds']"></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">员工范围</span>
+                  <v-autocomplete
+                    v-model="addItem.employeeIds"
+                    :items="constantObj.employeeList"
+                    dense filled single-line
+                    multiple
+                    small
+                    hide-details
+                  ></v-autocomplete>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">月计薪标准</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['salaryStandard']" readonly></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">转正、调薪月规则</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['changeRule']" readonly></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">计税规则</span>
+                  <v-select class="jh-v-input " dense filled single-line v-model="addItem.ruleId" :items="constantObj.salaryTaxRuleList" :rules="requireRules"></v-select>
+                </v-col>
+                  
+              </v-row>
+              <v-row class="justify-end mx-0 mt-8 px-6">
+                <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
+                <v-btn class="ml-2" @click="isCreateDrawerShown = false">取消</v-btn>
+              </v-row>
+              </v-form>
+              <!-- 抽屉关闭按钮 -->
+              <v-btn
+                elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+                @click="isCreateDrawerShown = false">
+                <v-icon>mdi-close</v-icon>
               </v-btn>
-            </v-row>
-            <v-row class="mt-0 px-4">
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">薪资组名称</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['groupName']"></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">部门范围</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['deptIds']"></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">员工范围</span>
-                <v-autocomplete
-                  v-model="addItem.employeeIds"
-                  :items="constantObj.employeeList"
-                  dense filled single-line
-                  multiple
-                  small
-                  hide-details
-                ></v-autocomplete>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">月计薪标准</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['salaryStandard']" readonly></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">转正、调薪月规则</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="addItem['changeRule']" readonly></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">计税规则</span>
-                <v-select class="jh-v-input " dense filled single-line v-model="addItem.ruleId" :items="constantObj.salaryTaxRuleList" :rules="requireRules"></v-select>
-              </v-col>
-                
-            </v-row>
-            <v-row class="justify-end mx-0 mt-8 px-6">
-              <v-btn color="success" @click="doUiAction('createItem')">新增</v-btn>
-              <v-btn class="ml-2" @click="isCreateDrawerShown = false">取消</v-btn>
-            </v-row>
-            </v-form>
             </v-navigation-drawer>
 
             <!-- 编辑抽屉 -->
             <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="80%" class="elevation-24">
-            <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
-            <v-row>
-              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
-              <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isUpdateDrawerShown = false">
-                <v-icon dark>mdi-close</v-icon>
+              <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑信息</span>
+              </v-row>
+              <v-row class="mt-0 px-4">
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">薪资组名称</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['groupName']"></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">部门范围</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['deptIds']"></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">员工范围</span>
+
+                  <v-autocomplete
+                    v-model="editItem.employeeIds"
+                    :items="constantObj.employeeList"
+                    chips
+                    dense filled single-line
+                    multiple
+                  ></v-autocomplete>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">月计薪标准</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['salaryStandard']" readonly></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">转正、调薪月规则</span>
+                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['changeRule']" readonly></v-text-field>
+                </v-col>
+                  
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">计税规则</span>
+                  <v-select class="jh-v-input " dense filled single-line v-model="editItem.ruleId" :items="constantObj.salaryTaxRuleList" :rules="requireRules"></v-select>
+                </v-col>
+              </v-row>
+              <v-row class="justify-end mx-0 mt-8 px-6">
+                <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
+                <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
+              </v-row>
+              </v-form>
+              <!-- 抽屉关闭按钮 -->
+              <v-btn
+                elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+                @click="isUpdateDrawerShown = false">
+                <v-icon>mdi-close</v-icon>
               </v-btn>
-            </v-row>
-            <v-row class="mt-0 px-4">
-
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">薪资组名称</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['groupName']"></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">部门范围</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['deptIds']"></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">员工范围</span>
-
-                <v-autocomplete
-                  v-model="editItem.employeeIds"
-                  :items="constantObj.employeeList"
-                  chips
-                  dense filled single-line
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">月计薪标准</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['salaryStandard']" readonly></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">转正、调薪月规则</span>
-                <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['changeRule']" readonly></v-text-field>
-              </v-col>
-                
-              <v-col cols="12" sm="12" md="4">
-                <span class="inputLabel">计税规则</span>
-                <v-select class="jh-v-input " dense filled single-line v-model="editItem.ruleId" :items="constantObj.salaryTaxRuleList" :rules="requireRules"></v-select>
-              </v-col>
-            </v-row>
-            <v-row class="justify-end mx-0 mt-8 px-6">
-              <v-btn color="success" @click="doUiAction('updateItem')">保存</v-btn>
-              <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
-            </v-row>
-            </v-form>
             </v-navigation-drawer>
           </div>
 

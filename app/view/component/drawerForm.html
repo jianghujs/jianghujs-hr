@@ -6,10 +6,6 @@
     <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
       <v-row>
         <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">{{ currentClickButton.title }}</span>
-        <v-spacer></v-spacer>
-        <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="$emit('close')">
-          <v-icon dark>mdi-close</v-icon>
-        </v-btn>
       </v-row>
       <v-row class="pa-0 ma-0 pa-xs-4 pb-xs-4 flex-none">
         <template v-for="(item, index) of sortedHeaders">
@@ -74,6 +70,12 @@
         <v-btn class="ml-2" @click="$emit('close')">取消</v-btn>
       </v-row>
     </v-form>
+    <!-- 抽屉关闭按钮 -->
+    <v-btn
+      elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+      @click="isUpdateDrawerShown = false">
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
   </v-navigation-drawer>
 
 </template>

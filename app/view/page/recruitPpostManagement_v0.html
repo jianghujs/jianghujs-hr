@@ -106,10 +106,6 @@
           <v-navigation-drawer v-if="isDetailDrawerShow" v-model="isDetailDrawerShow" :permanent="isDetailDrawerShow" fixed temporary right width="80%" class="elevation-24">
             <v-row>
               <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">【{{editItem.postName}}】详情</span>
-              <v-spacer></v-spacer>
-              <v-btn class="mt-6 elevation-0" :class="{'mr-16': !isMobile, 'mr-8': isMobile}" fab x-small @click="isDetailDrawerShow = false">
-                <v-icon dark>mdi-close</v-icon>
-              </v-btn>
             </v-row>
             <v-row class="ma-0 mb-2" :class="{'px-10': !isMobile, 'px-4': isMobile}">
               <v-tabs dense v-model="actionTab">
@@ -136,6 +132,12 @@
                 </div>
               </template>
             </div>
+            <!-- 抽屉关闭按钮 -->
+            <v-btn
+              elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+              @click="isDetailDrawerShow = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
           </v-navigation-drawer>
         </div>
 

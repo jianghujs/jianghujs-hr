@@ -112,9 +112,6 @@
           <v-btn class="elevation-0 mr-4" color="primary" @click="doUiAction('startUpdateItem', {item: viewItem})">
             编辑
           </v-btn>
-          <v-btn class="elevation-0" fab x-small @click="isEmpProjectRecordListDialogShow = false">
-            <v-icon dark>mdi-close</v-icon>
-          </v-btn>
         </v-row>
         <v-row class="ma-0 px-8" :class="{'px-3': isMobile, 'pb-7': isMobile}">
 
@@ -156,19 +153,21 @@
             :class="{'mr-4': isMobile}">取消</v-btn>
         </v-row>
       </v-form>
+      <!-- 抽屉关闭按钮 -->
+      <v-btn
+        elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+        @click="isEmpProjectRecordListDialogShow = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </v-navigation-drawer>
 
     <!-- 编辑抽屉 -->
     <v-navigation-drawer v-model="isUpdateDrawerShown" :permanent="isUpdateDrawerShown" fixed temporary right width="70%"
       class="elevation-24">
       <v-form v-model="isFormValid" v-if="isUpdateDrawerShown" ref="form" lazy-validation>
-        <v-row no-gutters justify="center" align="center" class=" pb-6 pt-10"
-          :class="{'px-4': isMobile, 'px-12': !isMobile}">
-          <span class="title">编辑参保信息</span>
-          <v-spacer></v-spacer>
-          <v-btn class="elevation-0" fab x-small @click="isUpdateDrawerShown = false">
-            <v-icon dark>mdi-close</v-icon>
-          </v-btn>
+        <!-- 抽屉标题 -->
+        <v-row>
+          <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">编辑参保信息</span>
         </v-row>
         <v-row class="ma-0" class="mt-0 px-4">
 
@@ -211,6 +210,12 @@
           <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
         </v-row>
       </v-form>
+      <!-- 抽屉关闭按钮 -->
+      <v-btn
+        elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn"
+        @click="isUpdateDrawerShown = false">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </v-navigation-drawer>
 
     <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
