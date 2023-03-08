@@ -499,12 +499,14 @@ class InsuranceService extends Service {
       const employee = employeeList.find((employee) => employee.employeeId === item.employeeId);
       const insurance = insuranceMonthEmpRecordList.find((insurance) => insurance.employeeId === item.employeeId);
       let archivesOptionList = [];
+      // 根据员工状态获取对应的薪资档案
       if (employee.employmentForms == '正式') {
         archivesOptionList = archivesOptionListByEmployeeId.filter((option) => option.employeeId == item.employeeId && option.isPro == 0);
       } else {
         archivesOptionList = archivesOptionListByEmployeeId.filter((option) => option.employeeId == item.employeeId && option.isPro == 1);
       }
       insertMonthOptionValue[item.sEmpRecordId] = [];
+      // 循环遍历添加薪资项明细
       salaryOptionList.forEach((option) => {
 
         if (option.code == 210101) {

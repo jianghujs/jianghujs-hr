@@ -215,76 +215,6 @@
           <template :slot="'item.' + key" slot-scope="{item}" v-for="(key, index) in constantObj.salaryCodeList" >
             <v-text-field v-model="item[key]" filled single-line hide-details></v-text-field>
           </template>
-          
-          <template v-slot:item.100101="{item}">
-            <v-text-field v-model="item[100101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.100102="{item}">
-            <v-text-field v-model="item[100102]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.110101="{item}">
-            <v-text-field v-model="item[110101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.120101="{item}">
-            <v-text-field v-model="item[120101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.130101="{item}">
-            <v-text-field v-model="item[130101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.140101="{item}">
-            <v-text-field v-model="item[140101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.150101="{item}">
-            <v-text-field v-model="item[150101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.160101="{item}">
-            <v-text-field v-model="item[160101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.160102="{item}">
-            <v-text-field v-model="item[160102]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.160103="{item}">
-            <v-text-field v-model="item[160103]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.170101="{item}">
-            <v-text-field v-model="item[170101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.180101="{item}">
-            <v-text-field v-model="item[180101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190101="{item}">
-            <v-text-field v-model="item[190101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190102="{item}">
-            <v-text-field v-model="item[190102]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190103="{item}">
-            <v-text-field v-model="item[190103]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190104="{item}">
-            <v-text-field v-model="item[190104]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190105="{item}">
-            <v-text-field v-model="item[190105]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.190106="{item}">
-            <v-text-field v-model="item[190106]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.200101="{item}">
-            <v-text-field v-model="item[200101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.210101="{item}">
-            <v-text-field v-model="item[210101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.220101="{item}">
-            <v-text-field v-model="item[220101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.230101="{item}">
-            <v-text-field v-model="item[230101]" filled single-line hide-details></v-text-field>
-          </template>
-          <template v-slot:item.240101="{item}">
-            <v-text-field v-model="item[240101]" filled single-line hide-details></v-text-field>
-          </template>
                 
           <!-- 没有数据 -->
           <template v-slot:loading>
@@ -396,12 +326,13 @@ new Vue({
     tableDataFromBackend: [],
     headers: [
       {text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed'},
-      {text: "ID", value: "id", width: 80, class: 'fixed', cellClass: 'fixed'},
-      {text: "员工", value: "employeeName"}, 
+      // {text: "ID", value: "id", width: 80, class: 'fixed', cellClass: 'fixed'},
+      {text: "员工", value: "employeeName", width: 120}, 
       {text: "实际计薪时长", value: "actualWorkDay", width: 120}, 
       {text: "月计薪时长", value: "needWorkDay", width: 120}, 
       {text: "年", value: "year", width: 120}, 
-      {text: "月", value: "month", width: 120}, 
+      {text: "月", value: "month"}, 
+      {text: "", value: "", sortable: false}, 
     ],
     isUpdateDrawerShown: false,
     editItem: {},
