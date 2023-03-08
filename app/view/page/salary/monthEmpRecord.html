@@ -390,7 +390,7 @@ new Vue({
         case 'createMonthRecord':
           await this.confirmCreateMonthRecordDialog(uiActionData);
           await this.doCreateMonthRecord(uiActionData);
-          // await this.getLastConfig();
+          await this.getLastConfig();
           await this.refreshTableData();
           break;
         case 'editOnline':
@@ -463,6 +463,8 @@ new Vue({
       
       this.lastYear = year;
       this.lastMonth = month;
+      // 切割获取前七个
+      this.headers = this.headers.slice(0, 7);
       salaryOption.forEach(item => {
         this.headers.push({text: item.name, value: item.code + '', width: 120});
       });

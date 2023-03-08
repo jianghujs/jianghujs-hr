@@ -393,7 +393,7 @@ class InsuranceService extends Service {
         const insertMonthOptionValue = await this.buildInsertMonthOptionValue(insertMonthEmpRecord, insuranceMonthEmpRecordList);
         insertMonthEmpRecord.forEach((item) => {
           item.optionList = JSON.stringify(insertMonthOptionValue[item.sEmpRecordId]);
-          item.realSalary = insertMonthOptionValue[item.sEmpRecordId].find((option) => option.code == '240101')?.value || 0;
+          item.realSalary = insertMonthOptionValue[item.sEmpRecordId].find((option) => option.code == '              ')?.value || 0;
         });
         // 写入月份人员记录
         await trx(tableEnum.salary_month_emp_record).insert(insertMonthEmpRecord);
@@ -445,7 +445,6 @@ class InsuranceService extends Service {
       title: month + '月薪资报表',
       year,
       month,
-      num: insuranceMonthEmpRecordList.length,
       startTime: `${year}-${month}-01`,
       endTime: `${year}-${month}-${dayjs(`${year}-${month}-01`).daysInMonth()}`,
       checkStatus: 0,
