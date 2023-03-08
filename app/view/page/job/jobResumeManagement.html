@@ -66,9 +66,9 @@ SQL END!-->
               <template v-for="(resumeStatus, index) in constantObj.resumeStatus" :key="index">
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: index ===  constantObj.resumeStatus.length - 1 ? 'none' : '1px solid #F4F5F6'}"
-                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', resumeStatus.value)">
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus(resumeStatus.value)">
                   <div class="mb-2">{{resumeStatus.text}}</div>
-                  <div>{{resumeStatus.num || 0}}</div>
+                  <div>{{ resumeStatus.value | getListFilterNum(tableList) }}</div>
                 </v-card>
               </template>
             </v-card>
@@ -245,6 +245,11 @@ SQL END!-->
     el: '#app',
     template: '#app-template',
     vuetify: new Vuetify(),
+    filters: {
+      getListFilterNum(resumeStatus, list) {
+        return list.filter(item => item.resumeStatus === resumeStatus).length
+      },
+    },
     data: () => ({
       // 面包屑
       breadcrumbs: [
@@ -320,6 +325,7 @@ SQL END!-->
       },
       searchInput: null,
       searchJob: null,
+      searchStatus: null,
       serverSearchForm: {
         select: {
           resumeStatus: null,
@@ -377,10 +383,16 @@ SQL END!-->
     // 计算变量
     computed: {
       tableList() {
-        if (!this.searchJob) {
+        if (!this.searchJob && !this.searchStatus) {
           return this.tableData;
         }
-        return this.tableData.filter((item) => item.jobId === this.searchJob);
+        if (this.searchJob && !this.searchStatus) {
+          return this.tableData.filter((item) => item.jobId === this.searchJob);
+        }
+        if (!this.searchJob && this.searchStatus) {
+          return this.tableData.filter((item) => item.resumeStatus === this.searchStatus);
+        }
+        return this.tableData.filter((item) => item.jobId === this.searchJob && item.resumeStatus === this.searchStatus);
       },
 
     },
@@ -493,12 +505,8 @@ SQL END!-->
       },
 
       // 状态筛选
-      changeStatus(filed, value) {
-        console.log(filed)
-        console.log(value)
-        this.serverSearchForm.select = {};
-        this.serverSearchForm.select[filed] = value;
-        this.getTableData();
+      changeStatus(value) {
+        this.searchStatus = value;
       },
 
       /**
