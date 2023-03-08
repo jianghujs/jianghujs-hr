@@ -50,6 +50,7 @@ module.exports.tableEnum = Object.freeze({
   view01_employee: "view01_employee",
   view01_job_resume:"view01_job_resume",
   view01_member_org_role: 'view01_member_org_role',
+  view01_salary_group_rule: 'view01_salary_group_rule',
   employee_social_security_info: "employee_social_security_info",
   // ========================高级 View============================
   view01_employee_info: "view01_employee_info",

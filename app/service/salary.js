@@ -423,6 +423,8 @@ class InsuranceService extends Service {
 
     // 查询 view01_employee_archives 符合条件的员工 entryStatus '在职' 并且 changeType != '未定薪' 的员工
     const salaryEmployeeList = await this.getSalaryEmployeeList(year, month);
+
+
     
     let insuranceMonthEmpRecordList = await jianghuKnex(tableEnum.insurance_month_emp_record).where({year: insuranceYear, month: insuranceMonth}).select();
     insuranceMonthEmpRecordList = insuranceMonthEmpRecordList.filter((item) => {
@@ -456,21 +458,23 @@ class InsuranceService extends Service {
   async getSalaryEmployeeList(year, month) {
     const { jianghuKnex } = this.app;
     const employeeList = await jianghuKnex(tableEnum.view01_employee_archives).where({entryStatus: '在职'}).whereNot({changeType: '未定薪'}).select();
-    const salaryEmployeeList = employeeList.filter((item) => {
+    let salaryEmployeeList = employeeList.filter((item) => {
       const entryTime = dayjs(item.dateOfEntry);
       const leaveTime = item.dateOfContractExpiration ? dayjs(item.dateOfContractExpiration) : dayjs('9999-12-31');
       const entryStatus = item.dateOfEntry <= `${year}-${month < 10 ? '0' + +month : month}-01`;
       return entryStatus && leaveTime.isAfter(`${year}-${month < 10 ? '0' + month : month}-01`);
     });
+
+    // 校验员工是否在薪资组内
+    const salaryGroupList = await jianghuKnex(tableEnum.view01_salary_group_rule).select();
+    salaryEmployeeList = salaryEmployeeList.filter((item) => salaryGroupList.some((group) => group.employeeIds.includes(item.employeeId)));
     return salaryEmployeeList;
   }
   // 核算薪资：生成月薪资记录
   async buildInsertMonthEmpRecordList(jianghuKnex, insuranceMonthEmpRecordList, year, month, sRecordId) {
     // 查询用户所在薪资组 salary_group
     const salaryGroupList = await jianghuKnex(tableEnum.salary_group).select();
-    
-    const insuranceMonthEmpRecordListFilter = insuranceMonthEmpRecordList.filter((item) => salaryGroupList.some((group) => group.employeeIds.includes(item.employeeId)));
-    const insertMonthEmpRecord = insuranceMonthEmpRecordListFilter.map((item) => {
+    const insertMonthEmpRecord = insuranceMonthEmpRecordList.map((item) => {
       const salaryGroup = salaryGroupList.find((group) => group.employeeIds.includes(item.employeeId));
       return {
         sEmpRecordId: idGenerateUtil.uuid(),
@@ -492,6 +496,8 @@ class InsuranceService extends Service {
     const archivesOptionListByEmployeeId = await jianghuKnex(tableEnum.salary_archives_option).whereIn("employeeId", employeeIdList).select();
     const employeeList = await jianghuKnex(tableEnum.employee).whereIn("employeeId", employeeIdList).select();
     const insertMonthOptionValue = {};
+    // 查询 计税规则
+    const salaryGroupList = await jianghuKnex(tableEnum.view01_salary_group_rule).select();
     // 查询 parentCode > 0 的 salary_option
     const salaryOptionList = (await this.getSalayOptionConfig()).filter(e => e.parentCode > 0);
     insertMonthEmpRecord.forEach((item) => {
@@ -507,22 +513,26 @@ class InsuranceService extends Service {
       insertMonthOptionValue[item.sEmpRecordId] = [];
       // 循环遍历添加薪资项明细
       salaryOptionList.forEach((option) => {
-
+        
         if (option.code == 210101) {
+          // 应发工资
           insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => ![100101, 100102, 110101, 120101].includes(e.code)), "value"),
           });
           return true;
         } else if (option.code == 240101) {
+          // 实发工资
           const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 210101).value;
+          const salaryValue2 = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 230101).value;
           const insuranceSum = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => [100101, 100102].includes(e.code)), "value");
           insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
-            value: salaryValue - insuranceSum
+            value: salaryValue - insuranceSum - salaryValue2
           });
           return true;
         } else if ([100101, 100102, 110101, 120101].includes(option.code)) {
+          // 个人社保、个人公积金、企业社保、企业公积金
           const codeKey = {
             100101: "personalInsuranceAmount",
             100102: "personalProvidentFundAmount",
@@ -534,20 +544,59 @@ class InsuranceService extends Service {
             value: insurance ? +insurance[codeKey[option.code]] : 0,
           })
           return true;
-        }
-        const archivesOption = archivesOptionList.find((optionItem) => optionItem.code == option.code);
-        if (archivesOption) {
+        } else if ( option.code == 220101) {
+          // 应税工资
+          const taxGroup = salaryGroupList.find((group) => group.employeeIds.includes(item.employeeId));
+          let value = 0;
+          if (taxGroup.isTax > 0) {
+            const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 210101).value;
+            // taxType 1 - 工资个税 2 - 劳务个税 3 - 不记税
+            if (taxGroup.taxType == 1) { 
+              value = salaryValue > taxGroup.markingPoint ? salaryValue - taxGroup.markingPoint : 0;
+            } else if (taxGroup.taxType == 2) {
+              value = (salaryValue * 0.7).toFixed(taxGroup.decimalPoint);
+            }
+          }
           insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
-            value: +archivesOption.value,
+            value,
+          });
+        } else if (option.code == 230101) {
+          // 应税工资
+          const taxGroup = salaryGroupList.find((group) => group.employeeIds.includes(item.employeeId));
+          let value = 0;
+          if (taxGroup.isTax > 0) {
+            const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 220101).value;
+            // taxType 1 - 工资个税 2 - 劳务个税 3 - 不记税
+            if (taxGroup.taxType == 1) { 
+              // salaryValue - taxGroup.markingPoint 保留 taxGroup.decimalPoint 为小数点
+              value = this.calculatePersonalIncomeTax(salaryValue, taxGroup.decimalPoint);
+            } else if (taxGroup.taxType == 2) {
+              // 劳务个税计算
+              value = this.calculateLaborIncomeTax(salaryValue, taxGroup.decimalPoint);
+            }
+          }
+          insertMonthOptionValue[item.sEmpRecordId].push({
+            code: option.code,
+            value,
           });
         } else {
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value: 0,
-          });
+          const archivesOption = archivesOptionList.find((optionItem) => optionItem.code == option.code);
+          if (archivesOption && archivesOption.value) {
+            insertMonthOptionValue[item.sEmpRecordId].push({
+              code: option.code,
+              value: +archivesOption.value,
+            });
+          } else {
+            insertMonthOptionValue[item.sEmpRecordId].push({
+              code: option.code,
+              value: 0,
+            });
+          }
         }
+        
       });
+      console.log(insertMonthOptionValue[item.sEmpRecordId]);
     });
     return insertMonthOptionValue;
   }
@@ -577,6 +626,99 @@ class InsuranceService extends Service {
     }
     return JSON.parse(optionConstant.constantValue || '{}');
   }
+  calculatePersonalIncomeTax(salary, decimal) {
+    if (salary <= 0) {
+      return 0;
+    }
+    const thresholds = [0, 36000, 144000, 300000, 420000, 660000, 960000];
+    const rates = [0.03, 0.1, 0.2, 0.25, 0.3, 0.35, 0.45];
+    let tax = 0;
+    
+    // 判断应纳税所得额在哪个阶梯范围内
+    for (let i = thresholds.length - 1; i >= 0; i--) {
+      if (salary > thresholds[i]) {
+        // 计算当前阶梯下应纳税额
+        tax = (salary - thresholds[i]) * rates[i];
+        break;
+      }
+    }
+    
+    return tax.toFixed(decimal);
+  }
+  calculateLaborIncomeTax(salary, decimal) {
+//     预扣预缴应纳税所得额 = 劳务报酬（少于4000元） - 800元
+
+// 预扣预缴应纳税所得额 = 劳务报酬（超过4000元） × （1 - 20%）
+
+// 应纳税额 = 应纳税收入额 × 适用税率 - 速算扣除数
+
+// 2022年最新个人所得税税率表：劳务报酬收入所得税
+// 级数应纳税收入额(含税)税率(%)速算扣除数
+// 1不超过20000元的20% 速算扣除数：0
+// 2超过20000元至50,000元的部分30% 速算扣除数：2000
+// 3超过50,000元的部分40% 速算扣除数：7000
+// 提示：
+// 1、劳务报酬收入在800元以下的，不用缴纳个人所得税；
+
+// 2、劳务报酬收入大于800元且没有超过4000元，可减除800元的扣除费用；
+
+// 3、劳务报酬收入超过4000元的，可减除劳务报酬收入20%的扣除费用；
+
+// 4、本表中的含税级距、不含税级距，均为按照税法规定减除有关费用后的收入额；
+
+// 5、含税级距适用于由纳税人负担税款的劳务报酬收入；不含税级距适用于由他人（单位）代付税款的劳务报酬收入。
+
+    let tax = 0;
+    if (salary < 4000) {
+      tax = salary - 800;
+    }
+    if (salary >= 4000) {
+      tax = salary * (1 - 0.2);
+    }
+    if (tax <= 20000) {
+      tax = tax * 0.2;
+    }
+    if (tax > 20000 && tax <= 50000) {
+      tax = (tax - 20000) * 0.3 + 2000;
+    }
+    if (tax > 50000) {
+      tax = (tax - 50000) * 0.4 + 7000;
+    }
+    return tax.toFixed(decimal);
+  }
+  calculateTaxableIncome(salary, decimal) {
+    const threshold = 5000;  // 个税起征点
+    const taxLevels = [
+      { threshold: 36000, rate: 0.03, deduction: 0 },
+      { threshold: 144000, rate: 0.1, deduction: 2520 },
+      { threshold: 300000, rate: 0.2, deduction: 16920 },
+      { threshold: 420000, rate: 0.25, deduction: 31920 },
+      { threshold: 660000, rate: 0.3, deduction: 52920 },
+      { threshold: 960000, rate: 0.35, deduction: 85920 },
+      { threshold: Infinity, rate: 0.45, deduction: 181920 },
+    ];  // 个税税率表
+  
+    let taxableIncome = salary - threshold;  // 应税工资
+  
+    if (taxableIncome <= 0) {
+      return 0;  // 不需要缴纳个税
+    }
+  
+    let totalTax = 0;  // 总个税
+  
+    for (let i = 0; i < taxLevels.length; i++) {
+      const level = taxLevels[i];
+      if (taxableIncome <= level.threshold) {
+        totalTax += taxableIncome * level.rate - level.deduction;
+        break;
+      } else {
+        totalTax += (level.threshold - (i === 0 ? threshold : taxLevels[i - 1].threshold)) * level.rate - level.deduction;
+      }
+    }
+  
+    return Math.max(totalTax, 0).toFixed(decimal);  // 返回应纳个税金额，最小为0
+  }
+  
 }
 
 module.exports = InsuranceService;
