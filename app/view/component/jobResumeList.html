@@ -1,7 +1,7 @@
 <template id="job-resume-list">
 
   <div>
-    <v-card>
+    <v-card class="rounded-lg">
       <v-row>
         <v-col cols="12">
           <v-card class="d-flex flex-row flex-wrap mx-3" outlined>
@@ -21,7 +21,7 @@
     </v-card>
 
     <!-- 页面内容 >>>>>>>>>>>>> -->
-    <v-card class="rounded-lg">
+    <v-card class="rounded-lg mt-6" :outlined="outlined">
       <v-row class="ma-0 pa-4">
         <!-- 新增按钮 -->
         <!-- <v-btn color="success" class="elevation-0 mr-2" @click="doUiAction('startCreateItem')" small>新增
@@ -149,10 +149,11 @@
 <script type="module">
   Vue.component('job-resume-list', {
     template: '#job-resume-list',
-    props: ['jobId'],
+    props: ['jobId', 'outlined'],
     vuetify: new Vuetify(),
     filters: {
       getListFilterNum(resumeStatus, list) {
+        if (resumeStatus === '全部') return list.length
         return list.filter(item => item.resumeStatus === resumeStatus).length
       },
     },
@@ -167,7 +168,7 @@
       // 下拉选项
       constantObj: {
         resumeStatus: [
-          // { text: "全部", value: "全部" },
+          { text: "全部", value: "全部" },
           { text: "新候选人", value: "新候选人" },
           { text: "初选通过", value: "初选通过" },
           { text: "安排面试", value: "安排面试" },
@@ -281,7 +282,7 @@
         return this.tableData.filter((item) => item.jobId === this.searchJob);
       },
       tableListFilterByStatus() {
-        if (!this.searchStatus) {
+        if (!this.searchStatus || this.searchStatus === '全部') {
           return this.tableList;
         }
         return this.tableList.filter((item) => item.resumeStatus === this.searchStatus);

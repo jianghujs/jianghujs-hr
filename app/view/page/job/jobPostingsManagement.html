@@ -295,6 +295,21 @@ SQL END!-->
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-navigation-drawer>
+      <v-navigation-drawer v-model="isDetailDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+        <!-- 抽屉标题 -->
+        <v-row>
+          <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">新增信息</span>
+        </v-row>
+        <!-- 抽屉内容 -->
+        <div class="px-6" v-if="isDetailDrawerShown">
+          <job-resume-list :jobId="detailJobId" outlined></job-resume-list>
+        </div>
+        
+        <!-- 抽屉关闭按钮 -->
+        <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isDetailDrawerShown = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-navigation-drawer>
       <!-- <<<<<<<<<<<<< 页面内容 -->
     </div>
 
@@ -323,6 +338,7 @@ SQL END!-->
 
 {% block vueScript %}
 
+{% include 'component/jobResumeList.html' %}
 {% include 'common/jianghuJs/fixedTableHeightV4.html' %}
 <script type="module">
 new Vue({
@@ -409,8 +425,9 @@ new Vue({
     updateItemId: null,
     updateActionData: {},
     deleteItem: {},
-    deleteItemId: null
-
+    deleteItemId: null,
+    detailJobId: null,
+    isDetailDrawerShown: false,
   }),
   async created() {
   },
@@ -623,7 +640,8 @@ new Vue({
     // ---------- <<<<<<<<<<< 删除数据 uiAction ---------
 
     async doRedirect({item, path}) {
-        window.location.href = `/${window.appInfo.appId}/page/${path}?jobId=${item.jobId}&jobTitle=${item.jobTitle}`
+      this.detailJobId = item.jobId;
+      this.isDetailDrawerShown = true;
     },
 
   }
