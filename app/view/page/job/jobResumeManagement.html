@@ -86,13 +86,16 @@ SQL END!-->
           <v-spacer></v-spacer>
           <!-- 搜索过滤 -->
           <v-col cols="12" xs="8" sm="4" md="3" xl="2" class="pa-0">
+            <v-autocomplete v-model="searchJob" color="success" prefix="职位：" class="jh-v-input" :items="constantObj.jobList" dense filled single-line clearable></v-autocomplete>
+          </v-col>
+          <v-col cols="12" xs="8" sm="4" md="2" xl="2" class="pa-0 pl-2">
             <v-text-field color="success" v-model="searchInput" prefix="搜索：" class="jh-v-input" dense filled single-line></v-text-field>
           </v-col>
         </v-row>
         <!-- 表格 -->
         <v-data-table
           :headers="headers"
-          :items="tableData"
+          :items="tableList"
           :search="searchInput"
           :footer-props="{ itemsPerPageOptions: [20, 50, -1], itemsPerPageText: '每页', itemsPerPageAllText: '所有'}"
           :items-per-page="-1"
@@ -238,47 +241,48 @@ SQL END!-->
 {% include 'component/resumePreview.html' %}
 {% include 'common/jianghuJs/fixedTableHeightV4.html' %}
 <script>
-new Vue({
-  el: '#app',
-  template: '#app-template',
-  vuetify: new Vuetify(),
-  data: () => ({
-    // 面包屑
-    breadcrumbs: [
-      {
-        text: '首页',
-        disabled: true,
-      },
-      {
-        text: '简历列表',
-        disabled: true,
-      }
-    ],
-    isHelpPageDrawerShown: false,
-    isMobile: window.innerWidth < 500,
-    // 表格相关数据
-    isTableZebraLineShown: true,
-    validationRules: {
-      requireRules: [
-        v => !!v || 'This is required',
+  new Vue({
+    el: '#app',
+    template: '#app-template',
+    vuetify: new Vuetify(),
+    data: () => ({
+      // 面包屑
+      breadcrumbs: [
+        {
+          text: '首页',
+          disabled: true,
+        },
+        {
+          text: '简历列表',
+          disabled: true,
+        }
       ],
-    },
-    // 下拉选项
-    constantObj: {
-      resumeStatus: [
+      isHelpPageDrawerShown: false,
+      isMobile: window.innerWidth < 500,
+      // 表格相关数据
+      isTableZebraLineShown: true,
+      validationRules: {
+        requireRules: [
+          v => !!v || 'This is required',
+        ],
+      },
+      // 下拉选项
+      constantObj: {
+        resumeStatus: [
           // { text: "全部", value: "全部" },
           { text: "新候选人", value: "新候选人" },
-          { text: "初选通过", value: "初选通过"},
-          { text: "安排面试", value: "安排面试"},
-          { text: "面试通过", value: "面试通过"},
+          { text: "初选通过", value: "初选通过" },
+          { text: "安排面试", value: "安排面试" },
+          { text: "面试通过", value: "面试通过" },
           { text: "已发offer", value: "已发offer" },
-          { text: "待入职", value:  "待入职" },
+          { text: "待入职", value: "待入职" },
           { text: "已淘汰", value: "已淘汰" },
-          { text: "已入职", value: "已入职" },
+          { text: "已录用", value: "已录用" },
         ],
-    },
+        jobList: []
+      },
 
-    actionItems: [{
+      actionItems: [{
         name: '新候选人',
         value: 'newCandidate'
       }, {
@@ -306,169 +310,190 @@ new Vue({
         value: 'phaseOut'
       },
       {
-        name: '已入职',
+        name: '已录用',
         value: 'alreadyEntry'
       }],
 
-    currentSceneId: null,
-    serverSearchInput: {
-      gender: null
-    },
-    searchInput: null,
-    serverSearchForm: {
+      currentSceneId: null,
+      serverSearchInput: {
+        gender: null
+      },
+      searchInput: null,
+      searchJob: null,
+      serverSearchForm: {
         select: {
           resumeStatus: null,
         },
         searchSummary: null,
       },
-    isTableLoading: true,
-    tableData: [],
-    headers: [
-      {text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed'},
-      // {text: "ID", value: "id", width: 120},
-       
-      {text: "简历ID", value: "jobResumeId", width: 120}, 
-      {text: "候选人姓名", value: "user", width: 120}, 
-      {text: "应聘岗位", value: "jobTitle", width: 150}, 
-      {text: "岗位ID", value: "jobId", width: 150}, 
-      {text: "候选人状态", value: "resumeStatus", width: 120}, 
-      {text: "性别", value: "gender", width: 120}, 
-      {text: "年龄", value: "age", width: 120}, 
-      {text: "民族", value: "ethnicity", width: 120}, 
-      {text: "身高", value: "height", width: 120}, 
-      {text: "体重", value: "weight", width: 120}, 
-      {text: "血型", value: "bloodType", width: 120}, 
-      {text: "婚姻状况", value: "maritalStatus", width: 120}, 
-      {text: "政治面貌", value: "politicalAffiliation", width: 120}, 
-      {text: "身体状况", value: "physicalCondition", width: 120}, 
-      {text: "宗教信仰", value: "religiousBeliefs", width: 120}, 
-      {text: "手机号码", value: "phoneNumber", width: 120}, 
-      {text: "身份证号", value: "IDNumber", width: 120}, 
-      {text: "邮箱", value: "email", width: 120}, 
-      {text: "最高学历", value: "highestEducation", width: 120}, 
-      {text: "微信", value: "wechatID", width: 120}, 
-      {text: "薪资期望", value: "salaryExpectation", width: 120}, 
-      {text: "最快可到岗日期", value: "earliestAvailability", width: 120}, 
-      {text: "社交爱好", value: "socialHobbies", width: 120}, 
-      {text: "个人特点", value: "personality", width: 120}, 
-      {text: "是否有违反法纪、解雇等", value: "offence", width: 120}, 
-      {text: "紧急联系人", value: "emergencyContact", width: 120}, 
-      {text: "操作者", value: "operationByUser", width: 120},
-      {text: "操作时间", value: "operationAt", width: 250},
-    ],
+      isTableLoading: true,
+      tableData: [],
+      headers: [
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 250, class: 'fixed', cellClass: 'fixed' },
+        // {text: "ID", value: "id", width: 120},
 
-    isCreateDrawerShown: false,
-    createItem: {},
-    createActionData: {},
-    isUpdateDrawerShown: false,
-    isResumePreviewShown:false,
-    updateItem: {},
-    updateItemId: null,
-    updateActionData: {},
-    deleteItem: {},
-    deleteItemId: null
+        { text: "简历ID", value: "jobResumeId", width: 120 },
+        { text: "候选人姓名", value: "user", width: 120 },
+        { text: "应聘岗位", value: "jobTitle", width: 150 },
+        { text: "岗位ID", value: "jobId", width: 150 },
+        { text: "候选人状态", value: "resumeStatus", width: 120 },
+        { text: "性别", value: "gender", width: 120 },
+        { text: "年龄", value: "age", width: 120 },
+        { text: "民族", value: "ethnicity", width: 120 },
+        { text: "身高", value: "height", width: 120 },
+        { text: "体重", value: "weight", width: 120 },
+        { text: "血型", value: "bloodType", width: 120 },
+        { text: "婚姻状况", value: "maritalStatus", width: 120 },
+        { text: "政治面貌", value: "politicalAffiliation", width: 120 },
+        { text: "身体状况", value: "physicalCondition", width: 120 },
+        { text: "宗教信仰", value: "religiousBeliefs", width: 120 },
+        { text: "手机号码", value: "phoneNumber", width: 120 },
+        { text: "身份证号", value: "IDNumber", width: 120 },
+        { text: "邮箱", value: "email", width: 120 },
+        { text: "最高学历", value: "highestEducation", width: 120 },
+        { text: "微信", value: "wechatID", width: 120 },
+        { text: "薪资期望", value: "salaryExpectation", width: 120 },
+        { text: "最快可到岗日期", value: "earliestAvailability", width: 120 },
+        { text: "社交爱好", value: "socialHobbies", width: 120 },
+        { text: "个人特点", value: "personality", width: 120 },
+        { text: "是否有违反法纪、解雇等", value: "offence", width: 120 },
+        { text: "紧急联系人", value: "emergencyContact", width: 120 },
+        { text: "操作者", value: "operationByUser", width: 120 },
+        { text: "操作时间", value: "operationAt", width: 250 },
+      ],
 
-  }),
-  async created() {
-  },
-  mounted() {
-    this.doUiAction('getTableData');
-  },
-  methods: {
-    async doUiAction(uiActionId, uiActionData) {
-      switch (uiActionId) {
-        case 'getTableData':
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'startCreateItem':
-          await this.prepareCreateFormData();
-          await this.openCreateDrawer();
-          break;
-        case 'createItem':
-          await this.prepareCreateValidate();
-          await this.confirmCreateItemDialog();
-          await this.prepareDoCreateItem();
-          await this.doCreateItem();
-          await this.closeCreateDrawer();
-          await this.getTableData();
-          break;
-        case 'startUpdateItem':
-          await this.prepareUpdateFormData(uiActionData);
-          await this.openUpdateDrawer();
-          break;
-        case 'updateItem':
-          await this.prepareUpdateValidate();
-          await this.confirmUpdateItemDialog();
-          await this.prepareDoUpdateItem();
-          await this.doUpdateItem();
-          await this.closeUpdateDrawer();
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'deleteItem':
-          await this.prepareDeleteFormData(uiActionData);
-          await this.confirmDeleteItemDialog();
-          await this.prepareDoDeleteItem();
-          await this.doDeleteItem();
-          await this.clearDeleteItem();
-          await this.getTableData();
-          break;
-        case 'jumpToResumePreview':
-          await this.jumpToResumePreview(uiActionData);
-          break;
-        case 'newCandidate':
-          await this.newCandidate(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'passPreliminarySelection':
-          await this.passPreliminarySelection(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'arrangeInterview':
-          await this.arrangeInterview(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'passInterview':
-          await this.passInterview(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'sendOffer':
-          await this.sendOffer(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'pendingEntry':
-          await this.pendingEntry(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'phaseOut':
-          await this.phaseOut(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        case 'alreadyEntry':
-          await this.alreadyEntry(uiActionData);
-          await this.getTableData();
-          await this.getStatusCount();
-          break;
-        default:
-          console.error("[doUiAction] uiActionId not find", {uiActionId});
-          break;
+      isCreateDrawerShown: false,
+      createItem: {},
+      createActionData: {},
+      isUpdateDrawerShown: false,
+      isResumePreviewShown: false,
+      updateItem: {},
+      updateItemId: null,
+      updateActionData: {},
+      deleteItem: {},
+      deleteItemId: null
+
+    }),
+    // 计算变量
+    computed: {
+      tableList() {
+        if (!this.searchJob) {
+          return this.tableData;
+        }
+        return this.tableData.filter((item) => item.jobId === this.searchJob);
+      },
+
+    },
+    async created() {
+      const urlParams = new URLSearchParams(location.search);
+      const jobId = urlParams.get('jobId');
+      const jobTitle = urlParams.get('jobTitle');
+      if (jobId) {
+        this.searchJob = jobId;
       }
     },
+    mounted() {
+      this.doUiAction('getTableData');
+      this.doUiAction('getJobList');
+    },
+    methods: {
+      async doUiAction(uiActionId, uiActionData) {
+        switch (uiActionId) {
+          case 'getTableData':
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'getJobList':
+            await this.getJobList();
+            break;
+          case 'startCreateItem':
+            await this.prepareCreateFormData();
+            await this.openCreateDrawer();
+            break;
+          case 'createItem':
+            await this.prepareCreateValidate();
+            await this.confirmCreateItemDialog();
+            await this.prepareDoCreateItem();
+            await this.doCreateItem();
+            await this.closeCreateDrawer();
+            await this.getTableData();
+            break;
+          case 'startUpdateItem':
+            await this.prepareUpdateFormData(uiActionData);
+            await this.openUpdateDrawer();
+            break;
+          case 'updateItem':
+            await this.prepareUpdateValidate();
+            await this.confirmUpdateItemDialog();
+            await this.prepareDoUpdateItem();
+            await this.doUpdateItem();
+            await this.closeUpdateDrawer();
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'deleteItem':
+            await this.prepareDeleteFormData(uiActionData);
+            await this.confirmDeleteItemDialog();
+            await this.prepareDoDeleteItem();
+            await this.doDeleteItem();
+            await this.clearDeleteItem();
+            await this.getTableData();
+            break;
+          case 'jumpToResumePreview':
+            await this.jumpToResumePreview(uiActionData);
+            break;
+          case 'newCandidate':
+            await this.newCandidate(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'passPreliminarySelection':
+            await this.passPreliminarySelection(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'arrangeInterview':
+            await this.arrangeInterview(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'passInterview':
+            await this.passInterview(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'sendOffer':
+            await this.sendOffer(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'pendingEntry':
+            await this.pendingEntry(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'phaseOut':
+            await this.phaseOut(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          case 'alreadyEntry':
+            await this.alreadyEntry(uiActionData);
+            await this.getTableData();
+            await this.getStatusCount();
+            break;
+          default:
+            console.error("[doUiAction] uiActionId not find", { uiActionId });
+            break;
+        }
+      },
 
-    getHeaders(content) {
+      getHeaders(content) {
         return this[`${content.action}Headers`] || []
       },
 
-    // 状态筛选
-    changeStatus(filed, value) {
+      // 状态筛选
+      changeStatus(filed, value) {
         console.log(filed)
         console.log(value)
         this.serverSearchForm.select = {};
@@ -504,173 +529,192 @@ new Vue({
         this.$forceUpdate();
       },
 
-
-    /**
-     * 获取表格数据
-     */
-    async getTableData() {
-      this.isTableLoading = true;
-      // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
-      //   if(fieldValue !== null && fieldValue !== '') {
-      //     return true;
-      //   }
-      // });
-      const where = _.omitBy(this.serverSearchForm.select, _.isNull);
-      const result = (await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'jobResumeManagement',
-            actionId: 'selectItemList',
-            actionData: {},
-            // where: backendSearchData,
-            where:where,
-            orderBy: [{column: 'operationAt', order: 'desc'}]
+      // 获取职位列表
+      async getJobList() {
+        const rows = (await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'selectJobList',
+              actionData: {},
+              orderBy: [{ column: 'operationAt', order: 'desc' }]
+            }
           }
-        }
-      }));
-      const { rows, count } = result.data.appData.resultData;
-      this.tableData = rows;
-      this.isTableLoading = false;
-    },
-    // ---------- 新增数据 uiAction >>>>>>>>>> --------
-    async prepareCreateFormData() {
-      this.createItem = {};
-    },
-
-    async openCreateDrawer() {
-      this.isCreateDrawerShown = true;
-    },
-
-    async prepareCreateValidate() {
-      if (await this.$refs.createForm.validate()) {
-        return true;
-      }
-      throw new Error("请完善表单信息")
-    },
-
-    async confirmCreateItemDialog() {
-      if (await window.confirmDialog({title: "新增", content: "确定新增吗？"}) === false) {
-        throw new Error("[confirmCreateFormDialog] 否");
-      }
-    },
-
-    prepareDoCreateItem() {
-      const {id, ...data} = this.createItem;
-      this.createActionData = data;
-    },
-
-    async doCreateItem() {
-      await window.jhMask.show();
-      await window.vtoast.loading("新增数据");
-      await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'jobResumeManagement',
-            actionId: 'insertItem',
-            actionData: this.createActionData
+        })).data.appData.resultData.rows;
+        this.constantObj.jobList = rows.map(item => {
+          return {
+            text: item.jobTitle,
+            value: item.jobId
           }
-        }
-      })
-      await window.jhMask.hide();
-      await window.vtoast.success("新增数据成功");
-    },
-    async closeCreateDrawer() {
-      this.isCreateDrawerShown = false;
-      this.createItem = {};
-      this.createActionData = null;
-    },
-    // ---------- <<<<<<<<<<< 新增数据 uiAction ---------
-    // ---------- 修改数据 uiAction >>>>>>>>>>>> --------
-    async prepareUpdateFormData(funObj) {
-      this.updateItem = _.cloneDeep(funObj);
-    },
+        });
+      },
 
-    async openUpdateDrawer() {
-      this.isUpdateDrawerShown = true;
-    },
-
-    async prepareUpdateValidate() {
-      if (await this.$refs.updateForm.validate()) {
-        return true;
-      }
-      throw new Error("请完善表单信息")
-    },
-
-    async confirmUpdateItemDialog() {
-      if (await window.confirmDialog({title: "修改", content: "确定修改吗？"}) === false) {
-        throw new Error("[confirmUpdateItemDialog] 否");
-      }
-    },
-
-    async prepareDoUpdateItem() {
-      const {id, ...data} = this.updateItem;
-      this.updateItemId = id;
-      this.updateActionData = data;
-    },
-
-    async doUpdateItem() {
-      await window.jhMask.show();
-      await window.vtoast.loading("修改数据");
-      await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'jobResumeManagement',
-            actionId: 'updateItem',
-            actionData: this.updateActionData,
-            where: {id: this.updateItemId}
+      /**
+       * 获取表格数据
+       */
+      async getTableData() {
+        this.isTableLoading = true;
+        // const backendSearchData = _.pickBy(this.serverSearchInput, ( fieldValue, fieldKey ) => {
+        //   if(fieldValue !== null && fieldValue !== '') {
+        //     return true;
+        //   }
+        // });
+        const where = _.omitBy(this.serverSearchForm.select, _.isNull);
+        const result = (await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'selectItemList',
+              actionData: {},
+              // where: backendSearchData,
+              where: where,
+              orderBy: [{ column: 'operationAt', order: 'desc' }]
+            }
           }
+        }));
+        const { rows, count } = result.data.appData.resultData;
+        this.tableData = rows;
+        this.isTableLoading = false;
+      },
+      // ---------- 新增数据 uiAction >>>>>>>>>> --------
+      async prepareCreateFormData() {
+        this.createItem = {};
+      },
+
+      async openCreateDrawer() {
+        this.isCreateDrawerShown = true;
+      },
+
+      async prepareCreateValidate() {
+        if (await this.$refs.createForm.validate()) {
+          return true;
         }
-      })
+        throw new Error("请完善表单信息")
+      },
 
-      await window.jhMask.hide();
-      await window.vtoast.success("修改数据成功");
-    },
+      async confirmCreateItemDialog() {
+        if (await window.confirmDialog({ title: "新增", content: "确定新增吗？" }) === false) {
+          throw new Error("[confirmCreateFormDialog] 否");
+        }
+      },
 
-    async closeUpdateDrawer() {
-      this.isUpdateDrawerShown = false;
-      this.updateItem = {};
-      this.updateActionData = null;
-      this.updateItemId = null;
-    },
-    // ---------- <<<<<<<<<<< 修改数据 uiAction ---------
-    // ---------- 删除数据 uiAction >>>>>>>>>>>> --------
-    async prepareDeleteFormData(funObj) {
-      this.deleteItem = _.cloneDeep(funObj);
-    },
-    async confirmDeleteItemDialog() {
-      if (await window.confirmDialog({title: "删除", content: "确定删除吗？"}) === false) {
-        throw new Error("[confirmDeleteItemDialog] 否");
-      }
-    },
-    async prepareDoDeleteItem() {
-      const {id} = this.deleteItem;
-      this.deleteItemId = id;
-    },
-    async doDeleteItem() {
-      await window.vtoast.loading("删除数据");
-      await window.jianghuAxios({
-        data: {
-          appData: {
-            pageId: 'jobResumeManagement',
-            actionId: 'deleteItem',
-            actionData: {},
-            where: {id: this.deleteItemId}
+      prepareDoCreateItem() {
+        const { id, ...data } = this.createItem;
+        this.createActionData = data;
+      },
+
+      async doCreateItem() {
+        await window.jhMask.show();
+        await window.vtoast.loading("新增数据");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'insertItem',
+              actionData: this.createActionData
+            }
           }
-        }
-      });
-      await window.vtoast.success("删除数据成功");
-    },
-    async clearDeleteItem() {
-      this.deleteItem = {};
-      this.deleteItemId = null;
-    },
-    // ---------- <<<<<<<<<<< 删除数据 uiAction ---------
-    jumpToResumePreview({id}) {
-      location.href = '/<$ ctx.app.config.appId $>/page/jobResumePreview?id=' + id;
-      
-    },
+        })
+        await window.jhMask.hide();
+        await window.vtoast.success("新增数据成功");
+      },
+      async closeCreateDrawer() {
+        this.isCreateDrawerShown = false;
+        this.createItem = {};
+        this.createActionData = null;
+      },
+      // ---------- <<<<<<<<<<< 新增数据 uiAction ---------
+      // ---------- 修改数据 uiAction >>>>>>>>>>>> --------
+      async prepareUpdateFormData(funObj) {
+        this.updateItem = _.cloneDeep(funObj);
+      },
 
-    async newCandidate({ item }) {
+      async openUpdateDrawer() {
+        this.isUpdateDrawerShown = true;
+      },
+
+      async prepareUpdateValidate() {
+        if (await this.$refs.updateForm.validate()) {
+          return true;
+        }
+        throw new Error("请完善表单信息")
+      },
+
+      async confirmUpdateItemDialog() {
+        if (await window.confirmDialog({ title: "修改", content: "确定修改吗？" }) === false) {
+          throw new Error("[confirmUpdateItemDialog] 否");
+        }
+      },
+
+      async prepareDoUpdateItem() {
+        const { id, ...data } = this.updateItem;
+        this.updateItemId = id;
+        this.updateActionData = data;
+      },
+
+      async doUpdateItem() {
+        await window.jhMask.show();
+        await window.vtoast.loading("修改数据");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'updateItem',
+              actionData: this.updateActionData,
+              where: { id: this.updateItemId }
+            }
+          }
+        })
+
+        await window.jhMask.hide();
+        await window.vtoast.success("修改数据成功");
+      },
+
+      async closeUpdateDrawer() {
+        this.isUpdateDrawerShown = false;
+        this.updateItem = {};
+        this.updateActionData = null;
+        this.updateItemId = null;
+      },
+      // ---------- <<<<<<<<<<< 修改数据 uiAction ---------
+      // ---------- 删除数据 uiAction >>>>>>>>>>>> --------
+      async prepareDeleteFormData(funObj) {
+        this.deleteItem = _.cloneDeep(funObj);
+      },
+      async confirmDeleteItemDialog() {
+        if (await window.confirmDialog({ title: "删除", content: "确定删除吗？" }) === false) {
+          throw new Error("[confirmDeleteItemDialog] 否");
+        }
+      },
+      async prepareDoDeleteItem() {
+        const { id } = this.deleteItem;
+        this.deleteItemId = id;
+      },
+      async doDeleteItem() {
+        await window.vtoast.loading("删除数据");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeManagement',
+              actionId: 'deleteItem',
+              actionData: {},
+              where: { id: this.deleteItemId }
+            }
+          }
+        });
+        await window.vtoast.success("删除数据成功");
+      },
+      async clearDeleteItem() {
+        this.deleteItem = {};
+        this.deleteItemId = null;
+      },
+      // ---------- <<<<<<<<<<< 删除数据 uiAction ---------
+      jumpToResumePreview({ id }) {
+        location.href = '/<$ ctx.app.config.appId $>/page/jobResumePreview?id=' + id;
+
+      },
+
+      async newCandidate({ item }) {
         this.updateItem = item;
         const { jobResumeId } = this.updateItem;
         await window.vtoast.loading("正在切换候选人状态");
@@ -687,7 +731,7 @@ new Vue({
         await window.vtoast.success("切换成功！");
       },
 
-    async passPreliminarySelection({ item }) {
+      async passPreliminarySelection({ item }) {
         this.updateItem = item;
         const { jobResumeId } = this.updateItem;
         await window.vtoast.loading("正在切换候选人状态");
@@ -808,23 +852,23 @@ new Vue({
 
       async alreadyEntry({ item }) {
         this.updateItem = item;
-        const { jobResumeId } = this.updateItem;
+        const { id } = this.updateItem;
         await window.vtoast.loading("正在切换候选人状态");
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'jobResumeManagement',
-              actionId: 'updateItem',
-              actionData: { resumeStatus: '已入职' },
-              where: { jobResumeId }
+              actionId: 'employItem',
+              actionData: { resumeStatus: '已录用' },
+              where: { id }
             }
           }
         })
         await window.vtoast.success("切换成功！");
       },
 
-  }
-})
+    }
+  })
 </script>
 
 <style scoped>

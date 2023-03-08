@@ -4,7 +4,7 @@
 const Service = require('egg').Service;
 const { tableEnum } = require('../constant/constant');
 // ========================================常用 require end=============================================
-
+const dayjs = require('dayjs');
 
 class JobService extends Service {
 
@@ -56,7 +56,7 @@ class JobService extends Service {
     const { pageId } = this.ctx.packagePage;
     const {keyword = ''} = this.ctx.query;
     // 模糊查询
-    const jobList = await jianghuKnex(tableEnum.job_postings).where('jobTitle', 'like', `%${keyword}%`).select();
+    const jobList = await jianghuKnex(tableEnum.job_postings).where('jobTitle', 'like', `%${keyword}%`).andWhere('publishStatus','招聘中').select();
     return jobList;
   }
   async hotList() {
@@ -79,6 +79,61 @@ class JobService extends Service {
     const {resumeId} = this.ctx.query;
     const job = await jianghuKnex(tableEnum.job_resume).where({jobResumeId: resumeId}).first();
     return job;
+  }
+  async afterEmployItemHook() {
+    const { jianghuKnex } = this.app;
+    const {id} = this.ctx.request.body.appData.where;
+    // 查询 简历
+    const jobResume = await jianghuKnex(tableEnum.job_resume).where({id}).first();
+    if (jobResume.employeeId) {
+      throw new Error('该简历已经被录用')
+    }
+
+    const { employeeId, idSequence } = await this.ctx.service.employee.getEmployeeInsertId();
+
+    // 录入员工信息
+    const employee = {
+      employeeId,
+      employeeName: jobResume.name,
+      idSequence,
+      sex: jobResume.gender,
+      age: jobResume.age,
+      contactNumber: jobResume.phone,
+      emergencyContactNumber: '',
+      post: jobResume.jobTitle,
+      politicalBackground: jobResume.politicalAffiliation,
+      icNumber: jobResume.idCard,
+      dateOfBirth: jobResume.birthday,
+      institution: '',
+      major: '',
+      highestEducation: jobResume.highestEducation,
+      teacherQualification: '',
+      teacherQualificationLeaver: '',
+      teacherQualificationSubject: '',
+      teacherCertificationNumber: '',
+      teachingLevel: '',
+      teachingSubject: '',
+      residentialAddress: jobResume.homeAddress,
+      province: '',
+      city: '',
+      county: '',
+      dateOfEntry: dayjs().format('YYYY-MM-DD'),
+      dateOfContractExpiration: '',
+      cardNumber: '',
+      licensePlateNumber: '',
+      employmentForms: '',
+      entryStatus: '',
+      status: '',
+      remarks: '',
+      contactPerson: '',
+      educationExperience: jobResume.education,
+      // certificate: jobResume.educationCertificate,
+      salaryCard: '{}',
+      socialSecurity: '{}',
+      workExperience: jobResume.experience,
+    }
+    await jianghuKnex(tableEnum.employee).insert(employee);
+    await jianghuKnex(tableEnum.job_resume).where({id}).update({employeeId});
   }
 }
 

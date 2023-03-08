@@ -131,8 +131,8 @@ SQL END!-->
 
                 <v-card class="pa-2 text-center"
                   :style="{ borderRight: '1px solid #F4F5F6'}"
-                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已入职')">
-                  <div class="mb-2">已入职</div>
+                  style="flex: 1;border-right: 1px solid #f5f5f5;border-radius: 0;" @click="changeStatus('resumeStatus', constantObj.resumeStatus.value = '已录用')">
+                  <div class="mb-2">已录用</div>
                   <div>{{ num8 }}</div>
                </v-card>
               </template>
@@ -173,22 +173,21 @@ SQL END!-->
               <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>简历详情
             </span>
 
-            <!-- <span
-            role="button" class="success--text font-weight-medium font-size-2 mr-2"
-            @click="doUiAction('startUpdateItem', item)">
-            <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改候选人状态
-          </span> -->
-
+            <span role="button" v-if="item.resumeStatus == '已录用'" class="success--text font-weight-medium font-size-2 mr-2"
+              @click="doUiAction('creatEmployeeItem', {item})">
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>创建员工信息
+          </span>
 
           <v-menu offset-y rounded="lg">
             <template v-slot:activator="{ on, attrs }">
               <span
-                role="button" class="success--text font-weight-medium font-size-2 mr-2" v-bind="attrs" v-on="on">
+                role="button" v-if="item.resumeStatus != '已录用'" class="success--text font-weight-medium font-size-2 mr-2" v-bind="attrs" v-on="on">
                 <v-icon size="16" class="success--text">mdi-menu-down</v-icon>修改候选人状态
               </span>
             </template>
             <v-list dense>
               <v-list-item link v-for="(action, actIndex) in actionItems" :key="actIndex"
+                
                 @click="doUiAction(action.value, {item})" v-if="action.name !== item.Status">
                 <v-list-item-title>{{action.name}}</v-list-item-title>
               </v-list-item>
@@ -336,7 +335,7 @@ new Vue({
           { text: "已发offer", value: "已发offer" },
           { text: "待入职", value:  "待入职" },
           { text: "已淘汰", value: "已淘汰" },
-          { text: "已入职", value: "已入职" },
+          { text: "已录用", value: "已录用" },
         ],
     },
     num1:0,
@@ -375,7 +374,7 @@ new Vue({
         value: 'phaseOut'
       },
       {
-        name: '已入职',
+        name: '已录用',
         value: 'alreadyEntry'
       }],
     currentSceneId: null,
@@ -433,7 +432,8 @@ new Vue({
     updateItemId: null,
     updateActionData: {},
     deleteItem: {},
-    deleteItemId: null
+    deleteItemId: null,
+    jobResumeEmployeeId:'',
 
   }),
   async created() {
@@ -542,7 +542,12 @@ new Vue({
           await this.alreadyEntry(uiActionData);
           await this.getTableData();
           await this.getStatusCount();
+          break;
+        case 'creatEmployeeItem':
+          await this.confirmCreatEmployeeItem();
           await this.creatEmployeeItem(uiActionData);
+          await this.selectEmployeeItem();
+          await this.updateEmployeeId(uiActionData);
           break;
         default:
           console.error("[doUiAction] uiActionId not find", {uiActionId});
@@ -924,7 +929,7 @@ new Vue({
             appData: {
               pageId: 'jobResumeOfJobPosition',
               actionId: 'updateItem',
-              actionData: { resumeStatus: '已入职' },
+              actionData: { resumeStatus: '已录用' },
               where: { jobResumeId }
             }
           }
@@ -932,9 +937,16 @@ new Vue({
         await window.vtoast.success("切换成功！");
       },
 
+     async confirmCreatEmployeeItem(){
+      if (await window.confirmDialog({title: "请确定", content: "确定要创建员工信息吗？"}) === false) {
+        throw new Error("[confirmDeleteItemDialog] 否");
+      }
+     },
+
       async creatEmployeeItem({ item }){
+     
        const actionData = {
- 
+        employeeId:'',
         employeeName:item.user,
         sex:item.gender,
         age:item.age,
@@ -942,9 +954,9 @@ new Vue({
         post:item.jobTitle,
         icNumber:item.IDNumber,
         highestEducation:item.highestEducation,
-        entryStatus:'待入职',
+        entryStatus:'试用',
        };
-
+ 
         await window.vtoast.loading("正在创建员工信息");
         await window.jianghuAxios({
           data: {
@@ -954,8 +966,50 @@ new Vue({
               actionData: actionData,
             }
           }
-        })
+        }),
+
         await window.vtoast.success("成功创建员工信息！");
+        console.log("actionData",actionData);
+      },
+
+
+      async selectEmployeeItem(){
+        const result = await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'employeeManagement',
+              actionId: 'selectItemList',
+              where: { jobResumeId: this.jobResumeId },
+              orderBy: [{ column: 'operationAt', order: 'desc' }]
+            }
+          }
+        });
+        const { rows} = result.data.appData.resultData;
+        console.log("employeeInfo", rows)
+        this. jobResumeEmployeeId = rows[0].employeeId;
+        console.log("jobResumeEmployeeId",this.jobResumeEmployeeId);
+      },
+
+      async updateEmployeeId({item}){
+        
+        const {jobResumeId} = item;
+        const {employeeId} = item;
+
+        const actionData2 = {
+        employeeId:this.jobResumeEmployeeId,
+      };
+
+      await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'jobResumeOfJobPosition',
+              actionId: 'updateItem',
+              actionData: actionData2,
+              where:{jobResumeId}
+            }
+          }
+        });
+        console.log("actionData2",actionData2);
       },
 
   }
