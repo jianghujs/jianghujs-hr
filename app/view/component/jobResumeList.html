@@ -149,7 +149,7 @@
 <script type="module">
   Vue.component('job-resume-list', {
     template: '#job-resume-list',
-    props: [],
+    props: ['jobId'],
     vuetify: new Vuetify(),
     filters: {
       getListFilterNum(resumeStatus, list) {
@@ -288,11 +288,8 @@
       },
     },
     async created() {
-      const urlParams = new URLSearchParams(location.search);
-      const jobId = urlParams.get('jobId');
-      const jobTitle = urlParams.get('jobTitle');
-      if (jobId) {
-        this.searchJob = jobId;
+      if (this.jobId) {
+        this.searchJob = this.jobId;
       }
     },
     mounted() {
