@@ -94,7 +94,7 @@ class JobService extends Service {
     // 录入员工信息
     const employee = {
       employeeId,
-      employeeName: jobResume.name,
+      employeeName: jobResume.user,
       idSequence,
       sex: jobResume.gender,
       age: jobResume.age,

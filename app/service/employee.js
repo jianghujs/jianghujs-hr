@@ -97,21 +97,25 @@ class EmployeeService extends Service {
   // BeforeHook
 
   async addEmployeeInsertBeforeHook() {
-    const { ctx, app } = this;
-    const { userId } = this.ctx.userInfo;
-    const { jianghuKnex } = app;
 
+    const { employeeId, idSequence } = await this.getEmployeeInsertId();
+
+    Object.assign(this.ctx.request.body.appData.actionData, {
+      employeeId,
+      idSequence,
+    })
+  }
+
+  async getEmployeeInsertId() {
+    const { jianghuKnex } = this.app;
     const maxSidInfo = await jianghuKnex('view01_employee_max_id').first();
     //console.log('maxSidInfo: ', maxSidInfo);
     var idSequence = maxSidInfo.maxId + 1;
     //console.log('memberIdNumber: ', idSequence);
     var employeeIdCheckSum = generateCheckSum(idSequence);
- 
-    Object.assign(this.ctx.request.body.appData.actionData, {
-      employeeId: `E${idSequence}${employeeIdCheckSum}`,
-      idSequence: idSequence,
-    })
+    return {employeeId: `E${idSequence}${employeeIdCheckSum}`, idSequence};
   }
+
   // ================ 导入相关 =====================
   async uploadItem() {
     const { userId } = this.ctx.userInfo;
