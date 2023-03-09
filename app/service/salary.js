@@ -254,8 +254,18 @@ class InsuranceService extends Service {
         value: item.value,
       })
     });
-    await jianghuKnex(tableEnum.salary_archives_option).delete({employeeId: employeeId});
+    await jianghuKnex(tableEnum.salary_archives_option).where({employeeId: employeeId}).delete();
     await jianghuKnex(tableEnum.salary_archives_option).insert(salaryArchivesOptionInsert);
+    salary.newSalary.forEach((item) => {
+      item.value = +item.value;
+    });
+    proSalary.newSalary.forEach((item) => {
+      item.value = +item.value;
+    });
+    salary.oldSalary.forEach((item) => {
+      item.value = +item.value;
+    });
+
     // 调薪还未生效、暂不更改工资明细
     const afterSum = _.sumBy(salary.newSalary, "value");
     // 写入 salary_change_record 调薪记录
@@ -265,12 +275,12 @@ class InsuranceService extends Service {
       changeReason,
       enableDate: enableDate || dayjs().format("YYYY-MM-DD"),
       proBeforeSum: 0,
-      proAfterSum: _.sumBy(proSalary, "value"), // 试用状态下可设定
+      proAfterSum: _.sumBy(proSalary.newSalary, "value"), // 试用状态下可设定
       proSalary: JSON.stringify(proSalary),
       salary: JSON.stringify(salary),
       beforeSum: _.sumBy(salary.oldSalary, "value"),
       afterSum,
-      status: 0,
+      status: 1, // 生效
       employeeStatus: employeeStatus || employeeInfo.status,
       beforeTotal: _.sumBy(salary.oldSalary, "value"),
       afterTotal: this.checkUserBecomeTime(employeeInfo, afterSum),

@@ -52,7 +52,7 @@
               <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>薪资明细
             </span>
             <span role="button" :disabled="!isEdit" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', {item})">
-              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>{{ item.changeType && item.changeType != '未调薪' ? '调薪' : '定薪'}}
+              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>{{ ['已定薪', '已调薪'].includes(item.changeType) ? '调薪' : '定薪'}}
             </span>
             <span role="button" v-if="['已定薪', '已调薪'].includes(item.changeType)" :disabled="!isEdit" class="success--text font-weight-medium font-size-2" @click="doUiAction('showEmployeeChangeRecord', {item})">
               <v-icon size="16" class="success--text">mdi-file-document-outline</v-icon>调薪记录
@@ -204,7 +204,7 @@
         :items="constantObj.changeTmpList" item-text="templateName" item-value="templateId"></v-select>
       </v-col>
        
-      <v-col v-if="editItem.recordType == 1" cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col v-if="editItem.recordType == '定薪'" cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">定薪细则</span>
         <!-- 定薪 -->
         <v-simple-table>
@@ -229,7 +229,7 @@
               >
                 <td>{{ item.name }}</td>
                 <td>
-                  <v-text-field v-if="editItem.proSalary.newSalary[index]" class="jh-v-input " :readonly="editItem.employeeStatus == 1" type="number" dense filled single-line v-model="editItem.proSalary.newSalary[index].value"></v-text-field>
+                  <v-text-field v-if="editItem.proSalary.newSalary[index]" class="jh-v-input " readonly type="number" dense filled single-line v-model="editItem.proSalary.newSalary[index].value"></v-text-field>
                 </td>
                 <td>
                   <v-text-field v-if="editItem.salary.newSalary[index]" class="jh-v-input " type="number" dense filled single-line v-model="editItem.salary.newSalary[index].value"></v-text-field>
@@ -244,12 +244,12 @@
           </template>
         </v-simple-table>
       </v-col>
-       
+
       <v-col v-else cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">调薪细则</span>
-        <span v-if="editItem.employeeStatus > 1" class="inputLabel">试用期工资</span>
+        <span v-if="editItem.employmentForms != '正式'" class="inputLabel">试用期工资</span>
         <!-- 定薪 -->
-        <v-simple-table v-if="editItem.employeeStatus > 1" >
+        <v-simple-table v-if="editItem.employmentForms != '正式'">
           <template v-slot:default>
             <thead>
               <tr>
@@ -271,7 +271,7 @@
               >
                 <td>{{ item.name }}</td>
                 <td>
-                  <v-text-field v-if="editItem.proSalary.oldSalary[index]" class="jh-v-input " :readonly="editItem.employeeStatus == 1" type="number" dense filled single-line v-model="editItem.proSalary.oldSalary[index].value"></v-text-field>
+                  <v-text-field v-if="editItem.proSalary.oldSalary[index]" class="jh-v-input " type="number" dense filled single-line v-model="editItem.proSalary.oldSalary[index].value"></v-text-field>
                 </td>
                 <td>
                   <v-text-field v-if="editItem.proSalary.newSalary[index]" class="jh-v-input " type="number" dense filled single-line v-model="editItem.proSalary.newSalary[index].value"></v-text-field>
@@ -285,9 +285,9 @@
             </tbody>
           </template>
         </v-simple-table>
-        <span class="inputLabel">转正后工资</span>
+        <span class="inputLabel" v-if="editItem.employmentForms == '正式'">转正后工资</span>
         <!-- 定薪 -->
-        <v-simple-table >
+        <v-simple-table v-if="editItem.employmentForms == '正式'">
           <template v-slot:default>
             <thead>
               <tr>
@@ -309,7 +309,7 @@
               >
                 <td>{{ item.name }}</td>
                 <td>
-                  <v-text-field v-if="editItem.salary.oldSalary[index]" class="jh-v-input " :readonly="editItem.employeeStatus == 1" type="number" dense filled single-line v-model="editItem.salary.oldSalary[index].value"></v-text-field>
+                  <v-text-field v-if="editItem.salary.oldSalary[index]" class="jh-v-input " readonly type="number" dense filled single-line v-model="editItem.salary.oldSalary[index].value"></v-text-field>
                 </td>
                 <td>
                   <v-text-field v-if="editItem.salary.newSalary[index]" class="jh-v-input " type="number" dense filled single-line v-model="editItem.salary.newSalary[index].value"></v-text-field>
@@ -324,13 +324,14 @@
           </template>
         </v-simple-table>
       </v-col>
+
        
-      <v-col v-if="editItem.recordType > 1" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col v-if="editItem.recordType == '调薪'" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">调薪原因</span>
         <v-select class="jh-v-input " dense filled single-line label="班级ID" v-model="editItem.changeReason"
         :items="constantObj.changeReason" item-text="text" item-value="value"></v-select>
       </v-col>
-      <v-col v-if="editItem.recordType > 1" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+      <v-col v-if="editItem.recordType == '调薪'" cols="6" sm="12" md="6" xl="6" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
         <span class="inputLabel">调薪生效日期</span>
         <v-menu class="jh-v-input " offset-y max-width="290">
           <template v-slot:activator="{ on, attrs }">
@@ -345,7 +346,7 @@
       </v-col>
     </v-row>
     <v-row class="justify-end mx-0 mt-8 px-6">
-      <v-btn v-if="editItem.recordType == 1" color="success" @click="doUiAction('updateItem', {type: 'makeEmployeeArchives'})">定薪提交</v-btn>
+      <v-btn v-if="editItem.recordType == '定薪'" color="success" @click="doUiAction('updateItem', {type: 'makeEmployeeArchives'})">定薪提交</v-btn>
       <v-btn v-else color="success" @click="doUiAction('updateItem', {type: 'updateEmployeeArchives'})">调薪提交</v-btn>
       <v-btn class="ml-2" @click="isUpdateDrawerShown = false">取消</v-btn>
     </v-row>
@@ -707,10 +708,11 @@ new Vue({
     */
     async prepareItemData({item}) {
       this.defaultChangeTmp = this.constantObj.changeTmpList.find(item => item.isDefault == 1);
-      const { employeeId, changeType, status, changeRecordList } = item;
+      const { employeeId, changeType, status, changeRecordList, employmentForms } = item;
       this.editItem = {
         employeeId,
-        recordType: changeType != '未定薪' ? '已调薪' : '已定薪',
+        recordType: ['已定薪', '已调薪'].includes(changeType) ? '调薪' : '定薪',
+        employmentForms,
         templateId: this.defaultChangeTmp.templateId,
         proSalary: {oldSalary: [], newSalary: []},
         salary: {oldSalary: [], newSalary: []},
@@ -791,7 +793,7 @@ new Vue({
       this.defaultChangeTmp = changeTmp;
       const codeList = changeTmp.code || [];
       // 定薪默认
-      if (this.editItem.recordType == 1) {
+      if (this.editItem.recordType == '定薪') {
         // 定薪
         this.setDefaultNewSalary(changeTmp);
         console.log('定薪', this.editItem);

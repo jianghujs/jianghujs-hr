@@ -79,6 +79,10 @@ const errorInfoEnum = Object.freeze({
     errorCode: "insurance_month_record_not_exist",
     errorReason: "社保记录未生成",
   },
+  salary_change_record_exist: {
+    errorCode: "salary_change_record_exist",
+    errorReason: "存在未生效工资调薪记录",
+  },
 });
 
 module.exports = {
