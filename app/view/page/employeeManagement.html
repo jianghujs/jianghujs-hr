@@ -530,7 +530,7 @@ SQL END!-->
                   <span class="inputLabel">参保起始月份</span>
                   <v-menu class="jh-v-input" transition="scale-transition" offset-y min-width="auto">
                     <template v-slot:activator="{on, attrs}">
-                      <v-text-field v-bind="attrs" v-on="on" v-model="editItem.socialSecurity['socialSecurityStartMonth']" class="jh-v-input" dense single-line filled readonly label="出生日期"></v-text-field>
+                      <v-text-field v-bind="attrs" v-on="on" v-model="editItem.socialSecurity['socialSecurityStartMonth']" class="jh-v-input" dense single-line filled readonly label="参保起始月份"></v-text-field>
                     </template>
                     <v-date-picker color="success" type="month" elevation="20" v-model="editItem.socialSecurity['socialSecurityStartMonth']"></v-date-picker>
                   </v-menu>
@@ -765,7 +765,7 @@ SQL END!-->
       tabs: [
         // { title: '岗位信息', action: 'post' },
         // { title: '基本信息', action: 'basic' },
-        { title: '信息详细', action: 'basic' },
+        { title: '详细信息', action: 'basic' },
         // { title: '员工合同', action: 'contract' },
         { title: '工资社保', action: 'insurance' },
         { title: '材料附件', action: 'material' },
@@ -1041,12 +1041,13 @@ SQL END!-->
       },
       async doUpdateItem() {
         const { id, ...data } = this.editItem;
+        const detailData = this.buildEditItemDetailData(data)
         await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'employeeManagementV2',
               actionId: 'updateItem',
-              actionData: data,
+              actionData: detailData,
               where: { id }
             }
           }
@@ -1070,6 +1071,62 @@ SQL END!-->
         })
         await window.vtoast.success("修改数据成功");
       },
+      buildEditItemDetailData(item) {
+        // 包含 基础信息 + 岗位信息
+        // 员工性别
+        // 男
+        // 员工年龄
+        // 联系电话
+        // 紧急联系电话
+        // 身份证号
+        // 出生日期
+        // 毕业学校
+        // 专业
+        // 最高学历
+        // 教师资格证类别
+        // 教师资格证学段
+        // 教师资格证学科
+        // 教师资格证编号
+        // 家庭住址
+        // 建设银行卡
+        // 车牌号
+        // 备注
+        // 员工岗位
+        // 任教学段
+        // 任教学科
+        // 员工状态
+        // 聘用形式
+        // 入职状态
+        // 入职日期
+        // 到期日期
+        return {
+          sex: item.sex,
+          age: item.age,
+          contactNumber: item.contactNumber,
+          emergencyContactNumber: item.emergencyContactNumber,
+          icNumber: item.icNumber,
+          dateOfBirth: item.dateOfBirth,
+          institution: item.institution,
+          major: item.major,
+          highestEducation: item.highestEducation,
+          teacherQualification: item.teacherQualification,
+          teacherQualificationLeaver: item.teacherQualificationLeaver,
+          teacherQualificationSubject: item.teacherQualificationSubject,
+          teacherCertificationNumber: item.teacherCertificationNumber,
+          residentialAddress: item.residentialAddress,
+          cardNumber: item.cardNumber,
+          licensePlateNumber: item.licensePlateNumber,
+          remarks: item.remarks,
+          post: item.post,
+          teachingLevel: item.teachingLevel,
+          teachingSubject: item.teachingSubject,
+          status: item.status,
+          employmentForms: item.employmentForms,
+          entryStatus: item.entryStatus,
+          dateOfEntry: item.dateOfEntry,
+          dateOfContractExpiration: item.dateOfContractExpiration,
+        }
+      }, 
 
       /**
        * uiActionId:  deleteItem
