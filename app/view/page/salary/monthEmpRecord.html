@@ -23,9 +23,9 @@
         <v-row class="ma-0 pa-4">
 
           <v-col cols="12" xs="8" sm="8" md="8" xl="8" class="pa-0">
-            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: false})">核算工资</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord')">核算工资</v-btn>
             <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createSlipRecord')">发送工资条</v-btn>
-            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createMonthRecord', {next: true})">创建下月工资表</v-btn>
+            <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('createNextMonthRecord')">创建下月工资表</v-btn>
             <v-btn color="success" dark small class="elevation-0 mr-2" @click="doUiAction('editOnline')">在线编辑</v-btn>
             <span class="body-2">共{{ tableData.length }}条记录</span>
           </v-col>
@@ -388,8 +388,13 @@ new Vue({
           await this.refreshTableData();
           break;
         case 'createMonthRecord':
-          await this.confirmCreateMonthRecordDialog(uiActionData);
-          await this.doCreateMonthRecord(uiActionData);
+          await this.confirmCreateMonthRecordDialog({});
+          await this.doCreateMonthRecord({});
+          await this.refreshTableData();
+          break;
+        case 'createNextMonthRecord':
+          await this.confirmCreateMonthRecordDialog({next: true});
+          await this.doCreateMonthRecord({next: true});
           await this.getLastConfig();
           await this.refreshTableData();
           break;

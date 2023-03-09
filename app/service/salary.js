@@ -523,32 +523,45 @@ class InsuranceService extends Service {
       insertMonthOptionValue[item.sEmpRecordId] = [];
       // 循环遍历添加薪资项明细
       salaryOptionList.forEach((option) => {
+        // [10]基本工资：员工签订合同时确定的工资，通常是固定的月薪或年薪。
+        // [20]津补贴：一些公司为了激励员工或补偿员工的特殊工作环境或工作性质而发放的补贴，例如住房补贴、餐补等。津补贴通常不计入税前应税工资和税后实发工资。
+        // [30]浮动工资：根据公司业绩或员工绩效表现而调整的工资，通常是月度或季度调整。
+        // [40]奖金：根据公司或部门的业绩表现或个人的表现而发放的额外奖励，通常不计入税前应税工资和税后实发工资。
+        // [50]提成工资：员工根据销售业绩或完成项目而获得的工资，通常是一定比例的销售额或项目利润。
+        // [60]计件工资：员工根据完成的产品数量或完成的工作任务数而获得的工资，通常是按每个产品或任务的固定价格计算。
+        // [70]计时工资：员工根据工作时间计算的工资，通常是按小时或日计算。
+        // [80]工龄/司龄工资：员工在公司工作的年限或职位级别升级而获得的工资调整。
+        // [90]职称工资：员工根据职称等级而获得的工资调整。
+        // [100]代扣代缴：公司代替个人缴纳的费用，如个人社保、个人公积金。该类别下的薪酬项，将从应纳税所得额中扣除，影响个税计算。
+        // [130]税前补发：税前补发，与该月的工资一起发放，需参与计税。
+        // [140]税前补扣：税前从该月的工资中补扣的金额，会影响本月的应税工资总额。
+        // [150]税后补发：税后补发，不参与该月工资计算，会影响当月的实际所得。
+        // [160]税后补扣：从税后的工资中补扣的款项，不参与该月的工资计税。
+        // [170]特殊计税项：特定的收入项目根据税法规定需要特殊计税。
+        // [180]加班工资：员工在规定工作时间外工作的加班费。
+        // [200]考勤扣款合计：员工因迟到、早退、旷工等原因而被扣除的工资。
+        // [210]应发工资：员工应该获得的全部工资总额，包括基本工资
+        let value = 0;
         if (option.code == 200101) {
           // 考勤扣款合计 : 迟到、早退、旷工、缺卡、请假等6中异常考勤的扣款合计
-          const value = _.sumBy(archivesOptionList.filter((e) => e.parentCode == 190), "value");
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value,
-          });
+          value = _.sumBy(archivesOptionList.filter((e) => e.parentCode == 190), "value");
         } else if (option.code == 210101) {
-          // 应发工资
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value: _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => ![100101, 100102, 110101, 120101].includes(e.code)), "value"),
-          });
-          return true;
+          // 应发工资 = 基本工资 + 津补贴 + 浮动工资 + 奖金 + 提成工资 + 计件工资 + 计时工资 + 工龄/司龄工资 + 职称工资 - 代扣代缴 + 税前补发 - 税前补扣  + 加班工资 - 考勤扣款合计
+          value = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [10, 20, 30, 40, 50, 60, 70, 80, 90, 130, 180].includes(e.parentCode)), "value") - _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [140, 200].includes(e.parentCode)), "value")
         } else  if (option.code == 240101) {
-          // 实发工资
+          // 实发工资 = 应发工资 - 个人所得税 + 税后补发 - 税后补扣 - 代扣代缴
+          // 应发工资
           const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 210101).value;
+          // 社保公积金代扣代缴
+          const insuranceValue = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [100].includes(e.parentCode)), "value");
           // 个税缴纳
-          const salaryValue2 = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 230101).value;
-          // 个人社保总额
-          const insuranceSum = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => e.parentCode == 100), "value");
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value: salaryValue - insuranceSum - salaryValue2
-          });
-          return true;
+          const taxValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 230101).value;
+          // 税后补发
+          const afterTaxValue = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [150].includes(e.parentCode)), "value");
+          // 税后补扣
+          const afterTaxDeductValue = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [160].includes(e.parentCode)), "value");
+
+          value = salaryValue - taxValue + afterTaxValue - afterTaxDeductValue - insuranceValue;
         } else if ([100101, 100102, 110101, 120101].includes(option.code)) {
           // 个人社保、个人公积金、企业社保、企业公积金
           const codeKey = {
@@ -557,32 +570,26 @@ class InsuranceService extends Service {
             110101: "corporateInsuranceAmount",
             120101: "corporateProvidentFundAmount",
           }
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value: insurance ? +insurance[codeKey[option.code]] : 0,
-          })
-          return true;
+          value = insurance ? +insurance[codeKey[option.code]] : 0;
         } else if ( option.code == 220101) {
-          // 应税工资
+          // 应税工资 = 应发工资 - 个税起征点 + 特殊计税项
           const taxGroup = salaryGroupList.find((group) => group.employeeIds.includes(item.employeeId));
-          let value = 0;
           if (taxGroup.isTax > 0) {
             const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 210101).value;
+            // 特殊计税项
+            const otherValue = _.sumBy(archivesOptionList.filter((e) => e.parentCode == 170), "value");
+
+            const insuranceValue = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter((e) => [100].includes(e.parentCode)), "value");
             // taxType 1 - 工资个税 2 - 劳务个税 3 - 不记税
             if (taxGroup.taxType == 1) { 
-              value = salaryValue > taxGroup.markingPoint ? salaryValue - taxGroup.markingPoint : 0;
+              value = salaryValue > taxGroup.markingPoint ? salaryValue - taxGroup.markingPoint + otherValue - insuranceValue : 0;
             } else if (taxGroup.taxType == 2) {
-              value = (salaryValue * 0.7).toFixed(taxGroup.decimalPoint);
+              value = (salaryValue * 0.7 + otherValue - insuranceValue).toFixed(taxGroup.decimalPoint);
             }
           }
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value,
-          });
         } else if (option.code == 230101) {
-          // 应税工资
+          // 个税金额 = 应税工资 * 个税税率 - 速算扣除数
           const taxGroup = salaryGroupList.find((group) => group.employeeIds.includes(item.employeeId));
-          let value = 0;
           if (taxGroup.isTax > 0) {
             const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 220101).value;
             // taxType 1 - 工资个税 2 - 劳务个税 3 - 不记税
@@ -594,27 +601,20 @@ class InsuranceService extends Service {
               value = this.calculateLaborIncomeTax(salaryValue, taxGroup.decimalPoint);
             }
           }
-          insertMonthOptionValue[item.sEmpRecordId].push({
-            code: option.code,
-            value,
-          });
+          console.log(value)
         } else {
           const archivesOption = archivesOptionList.find((optionItem) => optionItem.code == option.code);
           if (archivesOption && archivesOption.value) {
-            insertMonthOptionValue[item.sEmpRecordId].push({
-              code: option.code,
-              value: +archivesOption.value,
-            });
-          } else {
-            insertMonthOptionValue[item.sEmpRecordId].push({
-              code: option.code,
-              value: 0,
-            });
+            value = +archivesOption.value;
           }
         }
-        
+
+        insertMonthOptionValue[item.sEmpRecordId].push({
+          code: option.code,
+          parentCode: option.parentCode,
+          value,
+        });
       });
-      console.log(insertMonthOptionValue[item.sEmpRecordId]);
     });
     return insertMonthOptionValue;
   }
