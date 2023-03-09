@@ -523,19 +523,27 @@ class InsuranceService extends Service {
       insertMonthOptionValue[item.sEmpRecordId] = [];
       // 循环遍历添加薪资项明细
       salaryOptionList.forEach((option) => {
-        
-        if (option.code == 210101) {
+        if (option.code == 200101) {
+          // 考勤扣款合计 : 迟到、早退、旷工、缺卡、请假等6中异常考勤的扣款合计
+          const value = _.sumBy(archivesOptionList.filter((e) => e.parentCode == 190), "value");
+          insertMonthOptionValue[item.sEmpRecordId].push({
+            code: option.code,
+            value,
+          });
+        } else if (option.code == 210101) {
           // 应发工资
           insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => ![100101, 100102, 110101, 120101].includes(e.code)), "value"),
           });
           return true;
-        } else if (option.code == 240101) {
+        } else  if (option.code == 240101) {
           // 实发工资
           const salaryValue = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 210101).value;
+          // 个税缴纳
           const salaryValue2 = insertMonthOptionValue[item.sEmpRecordId].find((e) => e.code == 230101).value;
-          const insuranceSum = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => [100101, 100102].includes(e.code)), "value");
+          // 个人社保总额
+          const insuranceSum = _.sumBy(insertMonthOptionValue[item.sEmpRecordId].filter(e => e.parentCode == 100), "value");
           insertMonthOptionValue[item.sEmpRecordId].push({
             code: option.code,
             value: salaryValue - insuranceSum - salaryValue2
