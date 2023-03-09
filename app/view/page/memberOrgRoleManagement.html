@@ -393,7 +393,6 @@ new Vue({
         }
       });
       const { rows } = result.data.appData.resultData;
-
       this.tableDataFromBackend = rows;
       rows.forEach(row => {
         row.roleIdCopy = row.roleId;

@@ -157,7 +157,7 @@
       addItem: {},
       openIdList: [],
       tableDataTree: [],
-      activeOrgId: null,
+      activeOrgId: [],
     }),
     computed: {
     },
@@ -236,7 +236,7 @@
           }
         });
         const { rows } = result.data.appData.resultData;
-
+        
         this.tableDataFromBackend = rows;
         this.tableDataTree = this.buildTableTree(rows);
         if (this.tableDataTree.length) {

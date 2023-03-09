@@ -54,7 +54,6 @@ module.exports.tableEnum = Object.freeze({
   employee_social_security_info: "employee_social_security_info",
   // ========================高级 View============================
   view01_employee_info: "view01_employee_info",
-  view01_archives_option_by_emp: "view01_archives_option_by_emp",
   view01_employee_archives: "view01_employee_archives",
   view01_employee_info: "view01_employee_info",
 });

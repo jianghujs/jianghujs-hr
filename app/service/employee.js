@@ -108,7 +108,8 @@ class EmployeeService extends Service {
 
   async getEmployeeInsertId() {
     const { jianghuKnex } = this.app;
-    const maxSidInfo = await jianghuKnex('view01_employee_max_id').first();
+    // 查询 view01_employee 最大的 idSequence
+    const maxSidInfo = await jianghuKnex(tableEnum.view01_employee).max('idSequence as maxId').first();
     //console.log('maxSidInfo: ', maxSidInfo);
     var idSequence = maxSidInfo.maxId + 1;
     //console.log('memberIdNumber: ', idSequence);
