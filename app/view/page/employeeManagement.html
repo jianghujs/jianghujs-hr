@@ -1101,15 +1101,15 @@ SQL END!-->
           }
         });
         const { rows, count } = result.data.appData.resultData;
-        rows.forEach(row => {
-          row.contactPerson = JSON.parse(row.contactPerson || '[]');
-          row.educationExperience = JSON.parse(row.educationExperience || '[]');
-          row.certificate = JSON.parse(row.certificate || '[]');
-          row.trainingExperience = JSON.parse(row.trainingExperience || '[]');
-          row.workExperience = JSON.parse(row.workExperience || '[]');
-          row.salaryCard = JSON.stringify(row.salaryCard || '{}');
-          row.socialSecurity = JSON.stringify(row.socialSecurity || '{}');
-        })
+        // rows.forEach(row => {
+        //   row.contactPerson = JSON.parse(row.contactPerson || '[]');
+        //   row.educationExperience = JSON.parse(row.educationExperience || '[]');
+        //   row.certificate = JSON.parse(row.certificate || '[]');
+        //   row.trainingExperience = JSON.parse(row.trainingExperience || '[]');
+        //   row.workExperience = JSON.parse(row.workExperience || '[]');
+        //   row.salaryCard = JSON.parse(row.salaryCard || '{}');
+        //   row.socialSecurity = JSON.parse(row.socialSecurity || '{}');
+        // })
         this.tableDataFromBackend = rows;
         this.isTableLoading = false;
         // this.setSearchConditions(rows, count);
