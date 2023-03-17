@@ -195,8 +195,8 @@ SQL END!-->
            </v-row>
           <!-- 抽屉操作按钮 -->
           <v-row class="justify-end mx-0 mt-8 px-6">
-            <v-btn color="success ml-2" @click="doUiAction('departApproved')" :disabled="updateItem.departRequestStatus === '已批准'" small>批准申请</v-btn>
-            <v-btn color="warning ml-2" @click="doUiAction('departRejected')" small>拒绝申请</v-btn>
+            <v-btn color="success ml-2" @click="doUiAction('leaveApproved')" :disabled="updateItem.leaveRequestStatus === '已批准'" small>批准申请</v-btn>
+            <v-btn color="warning ml-2" @click="doUiAction('leaveRejected')" small>拒绝申请</v-btn>
             <v-btn class="elevation-0 ml-2" @click="isUpdateDrawerShown = false" small>取消</v-btn>
           </v-row>
         </v-form>
@@ -289,7 +289,7 @@ new Vue({
       {text: "入职状态", value: "entryStatus", width: 120}, 
       {text: "入职日期", value: "dateOfEntry", width: 120}, 
       {text: "到期日期", value: "dateOfContractExpiration", width: 120}, 
-      {text: "申请离职状态", value: "departRequestStatus", width: 120}, 
+      {text: "申请离职状态", value: "leaveRequestStatus", width: 120}, 
       {text: "操作者", value: "operationByUser", width: 120},
       {text: "操作时间", value: "operationAt", width: 250},
     ],
@@ -307,7 +307,7 @@ new Vue({
       if (!this.currentRequestStatusType || this.currentRequestStatusType  === 'all') {
       return this.tableDataFromBackend;
     }
-    return this.tableDataFromBackend.filter(({ departRequestStatus }) => departRequestStatus === this.currentRequestStatusType);
+    return this.tableDataFromBackend.filter(({ leaveRequestStatus }) => leaveRequestStatus === this.currentRequestStatusType);
     },
   },
   watch: {
@@ -333,14 +333,14 @@ new Vue({
           await this.prepareUpdateFormData(uiActionData);
           await this.openUpdateDrawer();
           break;
-        case 'departApproved':
+        case 'leaveApproved':
           await this.confirmDepartApprovedDialog();
           await this.prepareDoUpdateItem();
           await this.doUpdateApprovedItem();
           await this.closeUpdateDrawer();
           await this.getTableData();
           break;
-        case 'departRejected':
+        case 'leaveRejected':
           await this.confirmDepartRejectedDialog();
           await this.prepareDoUpdateItem();
           await this.doUpdateRejectedItem();
@@ -419,7 +419,7 @@ new Vue({
     async doUpdateApprovedItem() {
       const status = {
           entryStatus: "已离职",
-          departRequestStatus:"已批准"
+          leaveRequestStatus:"已批准"
       }
       if (this.newRemarks) {
         status.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.updateItem.remarks;
@@ -471,7 +471,7 @@ new Vue({
     async doUpdateRejectedItem() {
       const status = {
         entryStatus: "在职",
-        departRequestStatus:"已拒绝"
+        leaveRequestStatus:"已拒绝"
       };
       if (this.newRemarks) {
         status.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.updateItem.remarks;

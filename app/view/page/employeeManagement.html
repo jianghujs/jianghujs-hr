@@ -723,7 +723,7 @@ SQL END!-->
                 <!--      </v-col>-->
               </v-row>
               <v-row class="justify-end mx-0 mt-8 px-6">
-                <v-btn class="ml-2" color="success" @click="doUiAction('departRequest')">申请离职</v-btn>
+                <v-btn class="ml-2" color="success" @click="doUiAction('leaveRequest')">申请离职</v-btn>
                 <v-btn class="ml-2" @click="isRequestDrawerShow = false">取消</v-btn>
               </v-row>
             </v-form>
@@ -893,7 +893,7 @@ SQL END!-->
         { text: "员工状态", value: "status", width: 120 },
         { text: "聘用形式", value: "employmentForms", width: 120 },
         { text: "入职状态", value: "entryStatus", width: 120 },
-        { text: "申请离职状态", value: "departRequestStatus", width: 120 },
+        { text: "申请离职状态", value: "leaveRequestStatus", width: 120 },
       ],
       tabs: [
         // { title: '岗位信息', action: 'post' },
@@ -1001,7 +1001,7 @@ SQL END!-->
             await this.prepareDepartData(uiActionData);
             await this.openRequestDialog();
             break;
-          case 'departRequest':
+          case 'leaveRequest':
             await this.confirmDepartRequestDialog();
             await this.doUpdateEmployeeStatus();
             await this.doCreateDepartRequest();
@@ -1110,6 +1110,7 @@ SQL END!-->
         //   row.socialSecurity = JSON.parse(row.socialSecurity || '{}');
         // })
         this.tableDataFromBackend = rows;
+        console.log( this.tableDataFromBackend)
         this.isTableLoading = false;
         // this.setSearchConditions(rows, count);
       },
@@ -1322,7 +1323,7 @@ SQL END!-->
         const { id } = this.editItem;
         const data = {
           entryStatus: "待离职",
-          departRequestStatus: "审核中",
+          leaveRequestStatus: "审核中",
         };
         if (this.newRemarks) {
           data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.editItem.remarks;
@@ -1355,7 +1356,7 @@ SQL END!-->
           dateOfEntry:this.editItem.dateOfEntry,
           dateOfContractExpiration:this.editItem.dateOfContractExpiration,
           entryStatus:'待离职',
-          departRequestStatus:'审核中',
+          leaveRequestStatus:'审核中',
         };
         if (this.newRemarks) {
           data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.editItem.remarks;
