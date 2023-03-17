@@ -667,7 +667,6 @@ SQL END!-->
                   <span class="inputLabel">员工岗位</span>
                   <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['post']" readonly></v-text-field>
                 </v-col>
- 
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学段</span>
                   <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['teachingLevel']" readonly></v-text-field>
@@ -1208,7 +1207,7 @@ SQL END!-->
       },
       async doUpdateItem() {
         if (this.newRemarks) {
-        this.editItem.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + new Date() + this.editItem.remarks;
+        this.editItem.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.editItem.remarks;
       };
       const { id, orgId, orgName, ...data } = this.editItem;
       // const detailData = this.buildEditItemDetailData(data)
@@ -1326,7 +1325,7 @@ SQL END!-->
           departRequestStatus: "审核中",
         };
         if (this.newRemarks) {
-          data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + new Date() + this.editItem.remarks;
+          data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.editItem.remarks;
         };
         await window.jianghuAxios({
           data: {
@@ -1359,7 +1358,7 @@ SQL END!-->
           departRequestStatus:'审核中',
         };
         if (this.newRemarks) {
-          data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + new Date() + this.editItem.remarks;
+          data.remarks = this.newRemarks + '【' + this.userId + this.username + '】' + dayjs().format() + `\n` + this.editItem.remarks;
         };
         await window.jianghuAxios({
           data: {
