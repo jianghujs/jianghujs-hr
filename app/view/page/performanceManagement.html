@@ -74,12 +74,23 @@ SQL END!-->
           class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4">
           <!-- 表格操作按钮 -->
           <template v-slot:item.action="{ item }">
-            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
-              <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+            <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('deleteItem', item)">
+              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除考核
             </span>
-            <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
-              <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
-            </span>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <span  v-bind="attrs" v-on="on" role="button" class="success--text" style="font-size: 12px;font-weight: 500;">操作考核<v-icon small right color="success" class="ml-1">mdi-chevron-down</v-icon></span>
+              </template>
+              <v-list dense>
+                <v-list-item link
+                  v-for="(action, index) in tableButtons"
+                  :key="index"
+                  @click="doUiAction(action.value, item)"
+                >
+                  <v-list-item-title>{{ action.text }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </template>
           <!-- 没有数据 -->
           <template v-slot:loading>
@@ -112,20 +123,14 @@ SQL END!-->
           <template>
             <v-row class="mt-0 px-4">
               <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">考核Id</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.performanceId"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核名称</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.performanceName"></v-text-field>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.performanceName" :rules="requireRules" ></v-text-field>
               </v-col>
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核周期</span>
                 <v-select class="jh-v-input mr-2" dense filled single-line v-model="createItem.performanceCycle"
                 :items="constantObj.performanceCycle"></v-select>
               </v-col>
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核开始时间</span>
                 <v-menu class="jh-v-input" offset-y max-width="290">
@@ -136,7 +141,6 @@ SQL END!-->
                   <v-date-picker color="success" elevation="20" v-model="createItem.startTime"></v-date-picker>
                 </v-menu>
               </v-col>
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核结束时间</span>
                 <v-menu class="jh-v-input" offset-y max-width="290">
@@ -147,112 +151,131 @@ SQL END!-->
                   <v-date-picker color="success" elevation="20" v-model="createItem.endTime"></v-date-picker>
                 </v-menu>
               </v-col>
-              
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核员工</span>
                 <v-autocomplete 
                   class="cus-v-input mr-2" 
                   dense filled single-line clearable
-                  v-model="createItem.employeeId" 
+                  v-model="createItem.employeeName" 
                   :items="employeeList" 
                   item-text="employeeName" 
-                  item-value="employeeId"
+                  item-value="employeeName"
                   :rules="validationRules.requireRules"
                   multiple
                   @change="(employeeId) => {
                     const employee = employeeList.find(employee => employee.employeeId === employeeId);
                     addItem.employeeId = employee.employeeId;
                     addItem.employeeName = employee.employeeName;
-                  }">
+                  }"
+                  :rules="requireRules"
+                >
                </v-autocomplete>
               </v-col>
-              
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">评分人</span>
                 <v-autocomplete 
                   class="cus-v-input mr-2" 
                   dense filled single-line clearable
-                  v-model="createItem.raterId" 
+                  v-model="createItem.raterName" 
                   :items="employeeList" 
                   item-text="employeeName" 
-                  item-value="employeeId"
+                  item-value="employeeName"
                   :rules="validationRules.requireRules"
                   multiple
                   @change="(employeeId) => {
                     const employee = employeeList.find(employee => employee.employeeId === employeeId);
                     addItem.employeeId = employee.employeeId;
                     addItem.employeeName = employee.employeeName;
-                  }">
+                  }"
+                  :rules="requireRules"
+                >
                </v-autocomplete>
               </v-col>
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核状态</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.status"></v-text-field>
+                <v-select class="jh-v-input mr-2" dense filled single-line v-model="createItem.status"
+                :items="constantObj.status"></v-select>
               </v-col>
-
               <v-col cols="12" sm="12" md="4">
                 <span class="jh-input-label">考核备注</span>
                 <v-text-field class="jh-v-input" dense single-line filled v-model="createItem.remarks"></v-text-field>
               </v-col>
-
             </v-row>
-          <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+        
             <v-row>
               <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核内容</span>
             </v-row>
-            <v-container class="pa-0">
-             <v-card elevation="0" outlined>
-                 <v-data-table
-                   :headers="performanceContent"
-                   :items="value"
-                   :loading="isTableLoading"
-                   hide-default-footer
-                   class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-                   <!-- 表格操作按钮 -->
-                   <template v-slot:item.indicator="{ item }">
-                     <v-text-field 
-                       class="cus-v-input mr-2" dense filled single-line 
-                       type="text"> 
-                     </v-text-field>
-                   </template>
-                   <template v-slot:item.indicatorDescription="{ item }">
-                     <v-text-field 
-                       class="cus-v-input mr-2" dense filled single-line 
-                       type="text"> 
-                     </v-text-field>
-                   </template>
-                   <template v-slot:item.indicatorPercentage="{ item }">
-                     <v-text-field 
-                       class="cus-v-input mr-2" dense filled single-line 
-                       type="text"> 
-                     </v-text-field>
-                   </template>
-                   <template v-slot:item.standard="{ item }">
-                    <v-text-field 
-                      class="cus-v-input mr-2" dense filled single-line 
-                      type="text"> 
-                    </v-text-field>
-                  </template>
 
-                   <template v-slot:item.action="{ item }">
-                     <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
-                       <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
-                     </span>
-                     <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
-                       <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
-                     </span>
-                   </template>
-                 </v-data-table>
-               </v-card>
-               <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-                <v-btn class="add-btn" @click="doUiAction('addItem')">添加指标</v-btn>
-               </v-col>
-             </v-container>
-           </template>
-          </v-col> 
+            <v-row class="mt-0 px-4">
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标名称</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicator"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标说明</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorDescription"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标权重</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorPercentage"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标标准</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.standard"></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+              <v-container class="pa-0">
+              <v-card elevation="0" outlined>
+                  <v-data-table
+                    :headers="performanceContent"
+                    :items="value"
+                    :loading="isTableLoading"
+                    hide-default-footer
+                    class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+                    <!-- 表格操作按钮 -->
+                    <template v-slot:item.indicator="{ item }">
+                      <v-text-field 
+                        class="cus-v-input mr-2" dense filled single-line 
+                        type="text"> 
+                      </v-text-field>
+                    </template>
+                    <template v-slot:item.indicatorDescription="{ item }">
+                      <v-text-field 
+                        class="cus-v-input mr-2" dense filled single-line 
+                        type="text"> 
+                      </v-text-field>
+                    </template>
+                    <template v-slot:item.indicatorPercentage="{ item }">
+                      <v-text-field 
+                        class="cus-v-input mr-2" dense filled single-line 
+                        type="text"> 
+                      </v-text-field>
+                    </template>
+                    <template v-slot:item.standard="{ item }">
+                      <v-text-field 
+                        class="cus-v-input mr-2" dense filled single-line 
+                        type="text"> 
+                      </v-text-field>
+                    </template>
+
+                    <template v-slot:item.action="{ item }">
+                      <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
+                        <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+                      </span>
+                      <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
+                        <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+                      </span>
+                    </template>
+                  </v-data-table>
+                </v-card>
+                <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <v-btn class="add-btn" @click="doUiAction('addItem')">添加指标</v-btn>
+                </v-col>
+              </v-container>
+            </template>
+            </v-col> 
 
           <!-- 抽屉操作按钮 -->
           <v-row class="justify-end mx-0 mt-8 px-6">
@@ -270,68 +293,173 @@ SQL END!-->
         <v-form ref="updateForm" lazy-validation>
           <!-- 抽屉标题 -->
           <v-row>
-            <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">修改信息</span>
+            <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核信息</span>
           </v-row>
           <!-- 抽屉表单 -->
           <v-row class="mt-0 px-4">
             <!-- <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.xxxId" :rules="validationRules.requireRules"></v-text-field> -->
              
             <v-col cols="12" sm="12" md="4">
-              <span class="jh-input-label">performanceId</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.performanceId"></v-text-field>
-            </v-col>
-             
-            <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核名称</span>
               <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.performanceName"></v-text-field>
             </v-col>
-             
+
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核周期</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.performanceCycle"></v-text-field>
+              <v-select class="jh-v-input mr-2" dense filled single-line v-model="updateItem.performanceCycle"
+              :items="constantObj.performanceCycle"></v-select>
             </v-col>
              
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核内容</span>
               <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.performanceContent"></v-text-field>
             </v-col>
-             
+
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核开始时间</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.startTime"></v-text-field>
+              <v-menu class="jh-v-input" offset-y max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field class="jh-v-input" dense filled single-line v-on="on"
+                    :value="updateItem.startTime"></v-text-field>
+                </template>
+                <v-date-picker color="success" elevation="20" v-model="updateItem.startTime"></v-date-picker>
+              </v-menu>
             </v-col>
-             
+
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核结束时间</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.endTime"></v-text-field>
+              <v-menu class="jh-v-input" offset-y max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field class="jh-v-input" dense filled single-line v-on="on"
+                    :value="updateItem.endTime"></v-text-field>
+                </template>
+                <v-date-picker color="success" elevation="20" v-model="updateItem.endTime"></v-date-picker>
+              </v-menu>
             </v-col>
-             
+
             <v-col cols="12" sm="12" md="4">
-              <span class="jh-input-label">考核员工Id</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.employeesId"></v-text-field>
+              <span class="jh-input-label">考核员工</span>
+              <v-autocomplete 
+                class="cus-v-input mr-2" 
+                dense filled single-line clearable
+                v-model="updateItem.employeeName" 
+                :items="employeeList" 
+                item-text="employeeName" 
+                item-value="employeeName"
+                :rules="validationRules.requireRules"
+                multiple
+                @change="(employeeId) => {
+                  const employee = employeeList.find(employee => employee.employeeId === employeeId);
+                  addItem.employeeId = employee.employeeId;
+                  addItem.employeeName = employee.employeeName;
+                }"
+                :rules="requireRules"
+              >
+             </v-autocomplete>
             </v-col>
-             
-            <v-col cols="12" sm="12" md="4">
-              <span class="jh-input-label">考核员工名称</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.employeesName"></v-text-field>
-            </v-col>
-             
-            <v-col cols="12" sm="12" md="4">
-              <span class="jh-input-label">考核评分人Id</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.raterId"></v-text-field>
-            </v-col>
-             
-            <v-col cols="12" sm="12" md="4">
-              <span class="jh-input-label">考核评分人名称</span>
-              <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.raterName"></v-text-field>
-            </v-col>
+
+             <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">评分人</span>
+                <v-autocomplete 
+                  class="cus-v-input mr-2" 
+                  dense filled single-line clearable
+                  v-model="updateItem.raterName" 
+                  :items="employeeList" 
+                  item-text="employeeName" 
+                  item-value="employeeName"
+                  :rules="validationRules.requireRules"
+                  multiple
+                  @change="(employeeId) => {
+                    const employee = employeeList.find(employee => employee.employeeId === employeeId);
+                    addItem.employeeId = employee.employeeId;
+                    addItem.employeeName = employee.employeeName;
+                  }"
+                  :rules="requireRules"
+                >
+               </v-autocomplete>
+              </v-col>
              
             <v-col cols="12" sm="12" md="4">
               <span class="jh-input-label">考核状态</span>
               <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.status"></v-text-field>
             </v-col>
-                       
+
           </v-row>
+
+            <v-row>
+              <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核内容</span>
+            </v-row>
+
+            <v-row class="mt-0 px-4">
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标名称</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicator"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标说明</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorDescription"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标权重</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorPercentage"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="12" md="4">
+                <span class="jh-input-label">指标标准</span>
+                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.standard"></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+              <v-container class="pa-0">
+               <v-card elevation="0" outlined>
+                   <v-data-table
+                     :headers="performanceContent"
+                     :items="updateItem.targetList"
+                     :loading="isTableLoading"
+                     hide-default-footer
+                     class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
+                     <!-- 表格操作按钮 -->
+                     <template v-slot:item.indicator="{ item }">
+                       <v-text-field 
+                         class="cus-v-input mr-2" dense filled single-line 
+                         type="text"> 
+                       </v-text-field>
+                     </template>
+                     <template v-slot:item.indicatorDescription="{ item }">
+                       <v-text-field 
+                         class="cus-v-input mr-2" dense filled single-line 
+                         type="text"> 
+                       </v-text-field>
+                     </template>
+                     <template v-slot:item.indicatorPercentage="{ item }">
+                       <v-text-field 
+                         class="cus-v-input mr-2" dense filled single-line 
+                         type="text"> 
+                       </v-text-field>
+                     </template>
+                     <template v-slot:item.standard="{ item }">
+                      <v-text-field 
+                        class="cus-v-input mr-2" dense filled single-line 
+                        type="text"> 
+                      </v-text-field>
+                    </template>
+  
+                     <template v-slot:item.action="{ item }">
+                      <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
+                         <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
+                       </span>
+                       <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
+                         <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
+                       </span>
+                     </template>
+                   </v-data-table>
+                 </v-card>
+                 <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
+                  <v-btn class="add-btn" @click="doUiAction('addItem')">添加指标</v-btn>
+                 </v-col>
+               </v-container>
+             </template>
+            </v-col> 
           <!-- 抽屉操作按钮 -->
           <v-row class="justify-end mx-0 mt-8 px-6">
             <v-btn color="success" @click="doUiAction('updateItem')" small>保存</v-btn>
@@ -342,6 +470,79 @@ SQL END!-->
         <v-btn elevation="0" color="success" fab absolute top left small tile class="drawer-close-float-btn" @click="isUpdateDrawerShown = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
+      </v-navigation-drawer>
+      <!-- 录入指标抽屉 -->
+      <v-dialog v-model="isEntryDialogShown" persistent width="70%">
+        <v-card>
+          <v-card-title>
+            <div class="d-flex justify-space-between align-center" style="width: 100%;">
+              <div style="font-size: 16px;">实际指标数据</div>
+              <div>
+                <v-btn class="elevation-0" fab x-small @click="isEntryDialogShown = false">
+                  <v-icon dark>mdi-close</v-icon>
+                </v-btn>
+              </div>
+            </div>
+          </v-card-title>
+          <v-card-text class="px-0">
+            <v-container class="px-0">
+              <edit-form 
+              >
+              <v-row class="mt-0 px-4">
+                <!-- <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.xxxId" :rules="validationRules.requireRules"></v-text-field> -->
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="jh-input-label">考核指标</span>
+                  <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.performanceContent" readonly></v-text-field>
+                </v-col>
+                
+                <v-col cols="12" sm="12" md="4">
+                  <span class="jh-input-label">实际考核指标01数据</span>
+                  <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.actualTargetData"></v-text-field>
+                </v-col>
+                
+                <v-col cols="12" sm="12" md="4">
+                  <span class="jh-input-label">实际考核指标02数据</span>
+                  <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.actualTargetData"></v-text-field>
+                </v-col>
+
+                <v-col cols="12" sm="12" md="4">
+                  <span class="jh-input-label">实际考核指标03数据</span>
+                  <v-text-field class="jh-v-input" dense single-line filled v-model="updateItem.actualTargetData"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="justify-end mx-0 mt-8 px-6">
+                <v-btn color="success" @click="doUiAction('entryItem')" small>保存</v-btn>
+                <v-btn class="elevation-0 ml-2" @click="isEntryDialogShown = false" small>取消</v-btn>
+              </v-row>
+              </edit-form>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+       <!-- 查看结果抽屉 -->
+       <v-navigation-drawer v-model="isResultDrawerShown" v-click-outside="drawerClickOutside" fixed temporary right width="80%" class="elevation-24">
+        <v-row class="mt-0 px-4">
+          <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核结果</span>
+            <!-- 表格 -->
+          <v-data-table
+          :headers="resultHeaders"
+          :items="resultTableData"
+          :footer-props="{ itemsPerPageOptions: [20, 50, -1], itemsPerPageText: '每页', itemsPerPageAllText: '所有'}"
+          :items-per-page="-1"
+          mobile-breakpoint="0"
+          :loading="isTableLoading"
+          :class="{'zebraLine': isTableZebraLineShown }"
+          fixed-header
+          class="jh-fixed-table-height elevation-0 mt-0 mb-xs-4">
+          <!-- 表格分页 -->
+          <template v-slot:footer.page-text="pagination">
+            <span>{{pagination.pageStart}}-{{pagination.pageStop}}</span>
+            <span class="ml-1">共{{pagination.itemsLength}}条</span>
+          </template>
+        </v-data-table>
+        </v-row>
+      
       </v-navigation-drawer>
       <!-- <<<<<<<<<<<<< 页面内容 -->
     </div>
@@ -389,6 +590,9 @@ SQL END!-->
           disabled: true,
         }
       ],
+      requireRules: [
+        v => !!v || '必填',
+      ],
       value: {
         type: Array,
         default: () => [],
@@ -414,6 +618,9 @@ SQL END!-->
           { text: "半年度考核", value: "半年度考核" },
           { text: "年度考核", value: "年度考核" },
         ],
+        status: [
+          { text: "未开启", value: "未开启" }
+        ],
       },
       currentSceneId: null,
       serverSearchInput: {
@@ -422,16 +629,29 @@ SQL END!-->
       searchInput: null,
       isTableLoading: true,
       tableData: [],
+      resultTableData:[],
       headers: [
-        { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
-        { text: "performanceId", value: "performanceId", width: 120 },
+        { text: '操作', value: 'action', align: 'center', sortable: false, width: 200, class: 'fixed', cellClass: 'fixed' },
         { text: "考核名称", value: "performanceName", width: 120 },
         { text: "考核周期", value: "performanceCycle", width: 120 },
         { text: "考核内容", value: "performanceContent", width: 120 },
         { text: "考核开始时间", value: "startTime", width: 120 },
         { text: "考核结束时间", value: "endTime", width: 120 },
-        { text: "考核员工Id", value: "employeesId", width: 120 },
-        { text: "考核员工名称", value: "employeesName", width: 120 },
+        { text: "考核员工Id", value: "employeeId", width: 120 },
+        { text: "考核员工名称", value: "employeeName", width: 120 },
+        { text: "考核评分人Id", value: "raterId", width: 120 },
+        { text: "考核评分人名称", value: "raterName", width: 120 },
+        { text: "考核状态", value: "status", width: 120 },
+        { text: "考核备注", value: "remarks", width: 120 },
+      ],
+      resultHeaders: [
+        { text: "考核名称", value: "performanceName", width: 120 },
+        { text: "考核周期", value: "performanceCycle", width: 120 },
+        { text: "考核内容", value: "performanceContent", width: 120 },
+        { text: "考核开始时间", value: "startTime", width: 120 },
+        { text: "考核结束时间", value: "endTime", width: 120 },
+        { text: "考核员工Id", value: "employeeId", width: 120 },
+        { text: "考核员工名称", value: "employeeName", width: 120 },
         { text: "考核评分人Id", value: "raterId", width: 120 },
         { text: "考核评分人名称", value: "raterName", width: 120 },
         { text: "考核状态", value: "status", width: 120 },
@@ -444,20 +664,30 @@ SQL END!-->
         { text: "指标权重", value: "indicatorPercentage", width: 120 },
         { text: "指标标准", value: "standard", width: 120 },
       ],
-
+      tableButtons: [
+        { text: '查看考核', value: 'startUpdateItem' },
+        { text: '录入指标', value: 'startEntryItem' },
+        { text: '考核评分', value: 'startRateItem' },
+        { text: '考核结束', value: 'startCompleteItem' },
+        { text: '考核结果', value: 'getPerformanceResult' },
+      ],
       isCreateDrawerShown: false,
       createItem: {},
       createActionData: {},
       isUpdateDrawerShown: false,
       purchaseOrderGoodTableLoading: false,
+      isEntryDialogShown: false,
       updateItem: {},
       updateItemId: null,
       updateActionData: {},
       deleteItem: {},
       deleteItemId: null,
+      performanceItem:{},
       value: [],
-      employeeList: []
-
+      employeeList: [],
+      performanceContentList: [],
+      endPerformanceItem:{},
+      isResultDrawerShown: false
     }),
     async created() {
     },
@@ -509,6 +739,37 @@ SQL END!-->
             await this.doDeleteItem();
             await this.clearDeleteItem();
             await this.getTableData();
+            break;
+          case 'startEntryItem':
+            await this.prepareEntryFormData(uiActionData);
+            await this.openEntryDialog();
+            break;
+          case 'entryItem':
+            await this.confirmUpdateItemDialog();
+            await this.prepareDoUpdateItem();
+            await this.doUpdateItem();
+            await this.closeEntryDialog();
+            await this.getTableData();
+            break;
+          case 'startRateItem':
+            await this.preparePerformanceData(uiActionData);
+            await this.confirmStartRateItemDialog();
+            await this.prepareDoPerformanceItem();
+            await this.doInsertPerformanceItem();
+            await this.clearPerformanceItem();
+            break;
+          case 'startCompleteItem':
+            await this.prepareCompleteData(uiActionData);
+            await this.confirmCompleteItemDialog();
+            await this.prepareDoCompleteItem();
+            await this.doInsertCompleteItem();
+            await this.clearCompleteItem();
+            await this.getTableData();
+            break;
+          case 'getPerformanceResult':
+          await this.prepareResultFormData(uiActionData);
+            await this.openResultDrawer();
+            await this.getResultTableData();
             break;
           default:
             console.error("[doUiAction] uiActionId not find", { uiActionId });
@@ -589,7 +850,10 @@ SQL END!-->
             appData: {
               pageId: 'performanceManagement',
               actionId: 'insertItem',
-              actionData: this.createActionData
+              actionData: {
+                ...this.createActionData,
+                performanceContent: JSON.stringify({ ...this.performanceContentList })
+              }
             }
           }
         })
@@ -602,13 +866,17 @@ SQL END!-->
         this.createActionData = null;
       },
       async addItem() {
-        console.log(...this.value)
-        this.$emit("input", [...this.value, { indicator: null, indicatorDescription: null, indicatorPercentage: null, standard: null}]);
+        this.updateItem.targetList.push({ indicator: null, indicatorDescription: null, indicatorPercentage: null, standard: null })
+        debugger
+        //this.$emit("input", [...this.value, ]);
       },
       // ---------- <<<<<<<<<<< 新增数据 uiAction ---------
       // ---------- 修改数据 uiAction >>>>>>>>>>>> --------
       async prepareUpdateFormData(funObj) {
-        this.updateItem = _.cloneDeep(funObj);
+        this.updateItem = {...funObj,targetList:[]};
+       // this.updateItem.targetList = [];
+        //this.performanceContentList = this.updateItem.performanceContent
+        //this.performanceContentList = _.cloneDeep(funObj);
       },
 
       async openUpdateDrawer() {
@@ -689,8 +957,120 @@ SQL END!-->
       async clearDeleteItem() {
         this.deleteItem = {};
         this.deleteItemId = null;
-      }
+      },
       // ---------- <<<<<<<<<<< 删除数据 uiAction ---------
+
+      // ---------- 开启录入指标数据 uiAction >>>>>>>>>>>> --------
+      async prepareEntryFormData(funObj) {
+        this.updateItem = _.cloneDeep(funObj);
+      },
+
+      async openEntryDialog() {
+        this.isEntryDialogShown = true;
+      },
+
+      async closeEntryDialog() {
+        this.isEntryDialogShown = false;
+        this.updateItem = {};
+        this.updateActionData = null;
+        this.updateItemId = null;
+      },
+      // ---------- <<<<<<<<<<< 结束录入指标数据 uiAction ---------
+
+      // ---------- 开启评分数据 uiAction >>>>>>>>>>>> --------
+      async preparePerformanceData(funObj) {
+        this.performanceItem = _.cloneDeep(funObj);
+      },
+      async confirmStartRateItemDialog() {
+        if (await window.confirmDialog({ title: "开启", content: "确定开启评分吗？" }) === false) {
+          throw new Error("[confirmStartRateItemDialog] 否");
+        }
+      },
+      async prepareDoPerformanceItem() {
+        const { id, operation, operationAt, operationByUser, operationByUserId, ...data } = this.performanceItem;
+        this.performanceItem = data;
+        console.log(this.performanceItem)
+      },
+      async doInsertPerformanceItem() {
+        console.log(this.performanceItem)
+        await window.vtoast.loading("新增需评分数据");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'performanceManagement',
+              actionId: 'insertPerformanceRateItem',
+              actionData: this.performanceItem,
+            }
+          }
+        });
+        await window.vtoast.success("新增数据成功");
+      },
+      async clearPerformanceItem() {
+        this.performanceItem = {};
+      },
+      // ---------- <<<<<<<<<<< 结束评分数据 uiAction ---------
+
+      // ----------  开启结束考核数据 uiAction >>>>>>>>>>>> --------
+        async prepareCompleteData(funObj) {
+        this.endPerformanceItem = _.cloneDeep(funObj);
+      },
+      async confirmCompleteItemDialog() {
+        if (await window.confirmDialog({ title: "结束", content: "确定结束考核吗？" }) === false) {
+          throw new Error("[confirmStartPerformanceItemDialog] 否");
+        }
+      },
+      async prepareDoCompleteItem() {
+        const { id, performanceContent, performanceCycle, remarks, operation, operationAt, operationByUser, operationByUserId, ...data } = this.endPerformanceItem;
+        this.endPerformanceItem = data;
+        this.endPerformanceItem.status = '已归档';
+      },
+      async doInsertCompleteItem() {
+        await window.vtoast.loading("新增归档数据");
+        await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'performanceManagement',
+              actionId: 'insertEndPerformanceItem',
+              actionData: this.endPerformanceItem,
+            }
+          }
+        });
+        await window.vtoast.success("新增数据成功");
+      },
+      async clearCompleteItem() {
+        this.endPerformanceItem = {};
+      },
+      // ---------- <<<<<<<<<<< 结束结束考核数据 uiAction ---------
+
+      // ----------  开启查看结果数据 uiAction >>>>>>>>>>>> --------
+
+      async prepareResultFormData(funObj) {
+        this.updateItem = _.cloneDeep(funObj);
+        console.log(this.updateItem)
+      },
+
+      async openResultDrawer() {
+        this.isResultDrawerShown = true;
+      },
+
+      async getResultTableData() {
+        this.isTableLoading = true;
+        const rows = (await window.jianghuAxios({
+          data: {
+            appData: {
+              pageId: 'performanceManagement',
+              actionId: 'selectResultItemList',
+              actionData: {},
+              where: { performanceName: this.updateItem.performanceName },
+              orderBy: [{ column: 'operationAt', order: 'desc' }]
+            }
+          }
+        })).data.appData.resultData.rows;
+        this.resultTableData = rows;
+        this.isTableLoading = false;
+      },
+
+      // ---------- <<<<<<<<<<< 结束查看结果数据 uiAction ---------
     }
   })
 </script>
@@ -700,11 +1080,6 @@ SQL END!-->
     margin-top: 5px;
     padding: 5px;
   }
-  </style>
+</style>
 <style scoped>
 </style>{% endblock %}
-
-
-
-
-
