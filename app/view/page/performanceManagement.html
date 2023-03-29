@@ -206,76 +206,9 @@ SQL END!-->
               <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核内容</span>
             </v-row>
 
-            <v-row class="mt-0 px-4">
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标名称</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicator"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标说明</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorDescription"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标权重</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorPercentage"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标标准</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.standard"></v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-              <v-container class="pa-0">
-              <v-card elevation="0" outlined>
-                  <v-data-table
-                    :headers="performanceContent"
-                    :items="value"
-                    :loading="isTableLoading"
-                    hide-default-footer
-                    class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-                    <!-- 表格操作按钮 -->
-                    <template v-slot:item.indicator="{ item }">
-                      <v-text-field 
-                        class="cus-v-input mr-2" dense filled single-line 
-                        type="text"> 
-                      </v-text-field>
-                    </template>
-                    <template v-slot:item.indicatorDescription="{ item }">
-                      <v-text-field 
-                        class="cus-v-input mr-2" dense filled single-line 
-                        type="text"> 
-                      </v-text-field>
-                    </template>
-                    <template v-slot:item.indicatorPercentage="{ item }">
-                      <v-text-field 
-                        class="cus-v-input mr-2" dense filled single-line 
-                        type="text"> 
-                      </v-text-field>
-                    </template>
-                    <template v-slot:item.standard="{ item }">
-                      <v-text-field 
-                        class="cus-v-input mr-2" dense filled single-line 
-                        type="text"> 
-                      </v-text-field>
-                    </template>
-
-                    <template v-slot:item.action="{ item }">
-                      <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
-                        <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
-                      </span>
-                      <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
-                        <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
-                      </span>
-                    </template>
-                  </v-data-table>
-                </v-card>
-                <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-                  <v-btn class="add-btn" @click="doUiAction('addItem')">添加指标</v-btn>
-                </v-col>
-              </v-container>
-            </template>
-            </v-col> 
+            <v-col cols="12">
+              <performanceManagement-performanceContent v-model="createItem.performanceContent"/>
+            </v-col>
 
           <!-- 抽屉操作按钮 -->
           <v-row class="justify-end mx-0 mt-8 px-6">
@@ -385,81 +318,12 @@ SQL END!-->
             </v-col>
 
           </v-row>
-
             <v-row>
               <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">考核内容</span>
             </v-row>
-
-            <v-row class="mt-0 px-4">
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标名称</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicator"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标说明</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorDescription"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标权重</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.indicatorPercentage"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="12" md="4">
-                <span class="jh-input-label">指标标准</span>
-                <v-text-field class="jh-v-input" dense single-line filled v-model="performanceContentList.standard"></v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-              <v-container class="pa-0">
-               <v-card elevation="0" outlined>
-                   <v-data-table
-                     :headers="performanceContent"
-                     :items="updateItem.targetList"
-                     :loading="isTableLoading"
-                     hide-default-footer
-                     class="elevation-0 mt-0 mb-xs-4 flex-fill d-flex flex-column">
-                     <!-- 表格操作按钮 -->
-                     <template v-slot:item.indicator="{ item }">
-                       <v-text-field 
-                         class="cus-v-input mr-2" dense filled single-line 
-                         type="text"> 
-                       </v-text-field>
-                     </template>
-                     <template v-slot:item.indicatorDescription="{ item }">
-                       <v-text-field 
-                         class="cus-v-input mr-2" dense filled single-line 
-                         type="text"> 
-                       </v-text-field>
-                     </template>
-                     <template v-slot:item.indicatorPercentage="{ item }">
-                       <v-text-field 
-                         class="cus-v-input mr-2" dense filled single-line 
-                         type="text"> 
-                       </v-text-field>
-                     </template>
-                     <template v-slot:item.standard="{ item }">
-                      <v-text-field 
-                        class="cus-v-input mr-2" dense filled single-line 
-                        type="text"> 
-                      </v-text-field>
-                    </template>
-  
-                     <template v-slot:item.action="{ item }">
-                      <span role="button" class="success--text font-weight-medium font-size-2 mr-2" @click="doUiAction('startUpdateItem', item)">
-                         <v-icon size="16" class="success--text">mdi-note-edit-outline</v-icon>修改
-                       </span>
-                       <span role="button" class="success--text font-weight-medium font-size-2" @click="doUiAction('deleteItem', item)">
-                         <v-icon size="16" class="success--text">mdi-trash-can-outline</v-icon>删除
-                       </span>
-                     </template>
-                   </v-data-table>
-                 </v-card>
-                 <v-col cols="12" sm="12" md="12" xl="12" :class="{'pa-0': isMobile, 'px-4': isMobile, 'pt-6': isMobile}">
-                  <v-btn class="add-btn" @click="doUiAction('addItem')">添加指标</v-btn>
-                 </v-col>
-               </v-container>
-             </template>
-            </v-col> 
+            <v-col cols="12">
+              <performanceManagement-performanceContent v-model="updateItem.performanceContent" readonly/>
+            </v-col>
           <!-- 抽屉操作按钮 -->
           <v-row class="justify-end mx-0 mt-8 px-6">
             <v-btn color="success" @click="doUiAction('updateItem')" small>保存</v-btn>
@@ -573,6 +437,7 @@ SQL END!-->
 {% block vueScript %}
 
 {% include 'common/jianghuJs/fixedTableHeightV4.html' %}
+{% include 'component/performance/performanceManagement-performanceContent.html' %}
 <script type="module">
   new Vue({
     el: '#app',
@@ -865,16 +730,12 @@ SQL END!-->
         this.createItem = {};
         this.createActionData = null;
       },
-      async addItem() {
-        this.updateItem.targetList.push({ indicator: null, indicatorDescription: null, indicatorPercentage: null, standard: null })
-        debugger
-        //this.$emit("input", [...this.value, ]);
-      },
       // ---------- <<<<<<<<<<< 新增数据 uiAction ---------
       // ---------- 修改数据 uiAction >>>>>>>>>>>> --------
       async prepareUpdateFormData(funObj) {
-        this.updateItem = {...funObj,targetList:[]};
-       // this.updateItem.targetList = [];
+        this.updateItem = {...funObj};
+        // this.updateItem = {...funObj,targetList:[]};
+        // this.updateItem.targetList = [];
         //this.performanceContentList = this.updateItem.performanceContent
         //this.performanceContentList = _.cloneDeep(funObj);
       },
@@ -1074,12 +935,5 @@ SQL END!-->
     }
   })
 </script>
-<style>
-  .add-btn {
-    width: 100%;
-    margin-top: 5px;
-    padding: 5px;
-  }
-</style>
 <style scoped>
 </style>{% endblock %}

@@ -610,96 +610,79 @@ SQL END!-->
             </v-row>
             <v-form v-model="isFormValid" ref="form" lazy-validation>
               <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">基本信息</span>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">{{editItem.employeeName}}</span>
                 <v-spacer></v-spacer>
               </v-row>
               <v-row class="mt-0 px-4">
- 
                <v-col cols="12" sm="12" md="4">
-                 <span class="inputLabel">员工编号</span>
-                 <v-text-field class="jh-v-input" dense filled single-line v-model="editItem['employeeId']" readonly></v-text-field>
+                <span class="inputLabel">员工编号</span>
+                 <v-text-field class="jh-v-input" v-model="editItem['employeeId']" readonly disabled></v-text-field>
                </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工姓名</span>
-                  <v-text-field class="jh-v-input" dense filled single-line v-model="editItem['employeeName']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input" v-model="editItem['employeeName']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工性别</span>
-                  <v-text-field class="jh-v-input" dense filled single-line v-model="editItem['sex']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input" v-model="editItem['sex']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工年龄</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['age']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['age']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">联系电话</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['contactNumber']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['contactNumber']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">身份证号</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['icNumber']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['icNumber']" readonly disabled></v-text-field>
                 </v-col>
- 
-                <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">历史备注</span>
-                  <v-textarea class="jh-v-input " rows="2" dense filled single-line v-model="editItem['remarks']" readonly ></v-textarea>
-                </v-col>
- 
-                <v-col cols="12" sm="12" md="4">
-                 <span class="inputLabel">添加备注</span>
-                 <v-textarea class="jh-v-input " rows="2" dense filled single-line v-model="newRemarks" :rules="requireRemarkRules"></v-textarea>
-               </v-col>
-         
               </v-row>
- 
-              <v-row>
-                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">岗位信息</span>
-                <v-spacer></v-spacer>
-              </v-row>
- 
+
               <v-row class="mt-0 px-4">
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工岗位</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['post']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['post']" readonly disabled></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学段</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['teachingLevel']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['teachingLevel']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">任教学科</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['teachingSubject']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['teachingSubject']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">员工状态</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['status']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['status']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">聘用形式</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['employmentForms']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['employmentForms']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
                   <span class="inputLabel">入职状态</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['entryStatus']" readonly></v-text-field>
+                  <v-text-field class="jh-v-input " v-model="editItem['entryStatus']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">入职日期</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['dateOfEntry']" readonly></v-text-field>
+                  <span class="inputLabel">入职时间</span>
+                  <v-text-field class="jh-v-input " v-model="editItem['dateOfEntry']" readonly disabled></v-text-field>
                 </v-col>
  
                 <v-col cols="12" sm="12" md="4">
-                  <span class="inputLabel">到期日期</span>
-                  <v-text-field class="jh-v-input " dense filled single-line v-model="editItem['dateOfContractExpiration']" readonly></v-text-field>
+                  <span class="inputLabel">到期时间</span>
+                  <v-text-field class="jh-v-input " v-model="editItem['dateOfContractExpiration']" readonly disabled></v-text-field>
                 </v-col>
                 <!--      <v-col cols="12" sm="12" md="4">-->
                 <!--        &lt;!&ndash; 必填字段样式 demo :rules="requireRules" &ndash;&gt;-->
@@ -722,6 +705,22 @@ SQL END!-->
                 <!--        </v-menu>-->
                 <!--      </v-col>-->
               </v-row>
+              <v-row>
+                <span class="text-subtitle-1 font-weight-medium pa-6 pl-7">离职备注</span>
+                <v-spacer></v-spacer>
+              </v-row>
+              <v-row class="mt-0 px-4">
+                <v-col cols="12" sm="12" md="4">
+                  <span class="inputLabel">历史备注</span>
+                  <v-textarea class="jh-v-input " rows="2" dense filled single-line v-model="editItem['remarks']" readonly ></v-textarea>
+                </v-col>
+ 
+                <v-col cols="12" sm="12" md="4">
+                 <span class="inputLabel">添加备注</span>
+                 <v-textarea class="jh-v-input " rows="2" dense filled single-line v-model="newRemarks" :rules="requireRemarkRules"></v-textarea>
+               </v-col>
+              </v-row>
+ 
               <v-row class="justify-end mx-0 mt-8 px-6">
                 <v-btn class="ml-2" color="success" @click="doUiAction('leaveRequest')">申请离职</v-btn>
                 <v-btn class="ml-2" @click="isRequestDrawerShow = false">取消</v-btn>
