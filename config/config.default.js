@@ -17,10 +17,10 @@ module.exports = appInfo => {
 
   return {
     appId,
-    appTitle: '员工管理',
+    appTitle: '人资',
     // appLogo: `${appId}/public/logo.png`,
     appLogo: `/${appId}/public/logo.png`,
-    appType: 'multiApp',
+    appType: 'single',
     appDirectoryLink: '/',
     indexPage: `/${appId}/page/workbench`,
     loginPage: `/${appId}/page/login`,
